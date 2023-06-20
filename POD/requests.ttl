@@ -1,0 +1,153 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> . 
+@prefix oac: <https://w3id.org/oac/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix dpv: <https://w3id.org/dpv#> .
+@prefix dpvpd: <https://w3id.org/dpv/dpv-pd#> .
+@prefix ex: <http://example.com#> .
+
+ex:request1 a odrl:Request;
+    dct:description "To use CGM data to explore how glucose levels vary throughout the day" ;
+    dct:creator ex:UniversityRequester ;
+    dct:issued "2023-06-04T17:58:31"^^xsd:dateTime ;
+    odrl:uid ex:request1;
+    odrl:profile oac: ;
+    odrl:permission [
+        odrl:assigner ex:DataConsensus ;
+        odrl:assignee ex:UniversityRequester;
+        odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
+        odrl:target dpvpd:MedicalHealth;
+        odrl:constraint [
+            odrl:and [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Purpose ;
+                odrl:operator odrl:isA ;
+                odrl:rightOperand dpv:AcademicResearch
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Purpose ;
+                odrl:operator odrl:isNoneOf ;
+                odrl:rightOperand dpv:CommercialResearch, dpv:SellInsightsFromData, dpv:SellDataToThirdParties
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Organisation   ;
+                odrl:operator odrl:isA ;
+                odrl:rightOperand dpv:AcademicScientificOrganisation
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
+                odrl:operator odrl:isAllOf ;
+                odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:ComplianceMonitoring, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Recipient  ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand ex:PatientGroup
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand dpv:UntilTimeDuration ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand "2023-12-31"^^xsd:date 
+            ] 
+        ]
+    ] .
+
+ex:request2 a odrl:Request;
+    dct:description "Aim to analyze the data to identify patterns that could help them understand the relationship between glucose levels and health outcomes, particularly in individuals with diabetes. The insurance company intends to use this information to refine their underwriting processes, design personalized insurance products, and provide policyholders with incentives for managing their glucose levels effectively." ;
+    dct:creator ex:InsuranceRequester ;
+    dct:issued "2023-06-04T17:58:31"^^xsd:dateTime ;
+    odrl:uid ex:request2;
+    odrl:profile oac: ;
+    odrl:permission [
+        odrl:assigner ex:DataConsensus ;
+        odrl:assignee ex:InsuranceRequester;
+        odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
+        odrl:target dpvpd:MedicalHealth;
+        odrl:constraint [
+            odrl:and [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Purpose ;
+                odrl:operator odrl:isA ;
+                odrl:rightOperand dpv:CommercialResearch
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Purpose ;
+                odrl:operator odrl:isNoneOf ;
+                odrl:rightOperand dpv:SellDataToThirdParties
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Organisation   ;
+                odrl:operator odrl:isA ;
+                odrl:rightOperand dpv:ForProfitOrganisation
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
+                odrl:operator odrl:isAllOf ;
+                odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining,  dpv:CybersecurityTraining, dpv:NDA, dpv:ConsultationWithDPO, dpv:CertificationSeal, dpv:IncidentReportingCommunication, dpv:IncidentManagementProcedures, dpv:ComplianceMonitoring, dpv:LoggingPolicies, dpv:MultiFactorAuthentication, dpv:PhysicalAssessControlMethod, dpv:NeworkSecurityProtocols, dpv:EncryptionInTransfer, dpv:EncryptionAtRest, dpv:CryptographicMethods
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Recipient  ;
+                odrl:operator odrl:isAnyOf ;
+                odrl:rightOperand ex:PatientGroup, ex:InsuranceRequester
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand dpv:UntilTimeDuration ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand "2024-12-31"^^xsd:date 
+            ] 
+        ]
+    ] .
+
+
+ex:request3 a odrl:Request;
+    dct:description "A new nonprofit organization looking to improve healthcare resources for people with diabetes. " ;
+    dct:creator ex:NonprofitRequester ;
+    dct:issued "2023-06-04T17:58:31"^^xsd:dateTime ;
+    odrl:uid ex:request3;
+    odrl:profile oac: ;
+    odrl:permission [
+        odrl:assigner ex:DataConsensus ;
+        odrl:assignee ex:NonprofitRequester;
+        odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
+        odrl:target dpvpd:MedicalHealth;
+            odrl:constraint [
+            odrl:and [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Purpose ;
+                odrl:operator odrl:isA ;
+                odrl:rightOperand dpv:NonCommercialResearch
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Purpose ;
+                odrl:operator odrl:isNoneOf ;
+                odrl:rightOperand dpv:SellDataToThirdParties
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Organisation   ;
+                odrl:operator odrl:isA ;
+                odrl:rightOperand dpv:NonProfitOrganisation
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
+                odrl:operator odrl:isAllOf ;
+                odrl:rightOperand dpv:PasswordAuthentication, dpv:OperatingSystemSecurity, dpv:EncryptionInTransfer 
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand oac:Recipient  ;
+                odrl:operator odrl:isAnyOf ;
+                odrl:rightOperand ex:PatientGroup
+            ] , [
+                a odrl:Constraint ;
+                odrl:leftOperand dpv:UntilTimeDuration ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand "2044-12-31"^^xsd:date 
+            ] 
+        ]
+    ] .

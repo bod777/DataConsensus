@@ -1,0 +1,8 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix user: <http://example.com/app/user_types#>.
+
+<https://id.inrupt.com/johndoe> a user:User ;
+  foaf:name "John Doe" ;
+  user:hasUserType user:Member ;
+  user:dataSource <http://example.com/pods/johndoe> .

@@ -1,0 +1,45 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dpv: <https://w3id.org/dpv#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix user: <XXXX/app/user_types#> .
+
+# User types
+user:User a rdfs:Class ;
+    rdfs:label "User" .
+
+user:Member a rdfs:Class ;
+    rdfs:label "Member" ;
+    rdfs:type dpv:DataSubject ;
+    rdfs:subClassOf user:User .
+
+user:ThirdParty a rdfs:Class ;
+    rdfs:label "Third Party" ;
+    rdfs:type dpv:ThirdParty ;
+    rdfs:subClassOf user:User .
+
+user:Admin a rdfs:Class ;
+    rdfs:label "Admin" ;
+    rdfs:type foaf:Person ;
+    rdfs:subClassOf user:User .
+
+# User properties
+user:hasUserType a rdf:Property ;
+    rdfs:domain user:User ;
+    rdfs:range rdfs:Class .
+
+user:dataSource a rdf:Property ;
+    rdfs:domain user:Member ;
+    rdfs:range rdf:Resource .
+
+dpv:Organisation a rdf:Property ;
+    rdfs:domain user:ThirdParty ;
+    rdfs:range rdf:Resource .
+
+dct:description a rdf:Property ;
+    rdfs:domain user:ThirdParty ;
+    rdfs:range xsd:string .
+
+dpv:email a rdf:Property ;
+    rdfs:domain user:ThirdParty ;
+    rdfs:range xsd:string .
