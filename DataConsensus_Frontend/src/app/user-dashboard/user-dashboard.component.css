@@ -1,0 +1,35 @@
+#upvotebuttonList {
+    list-style: none;
+}
+
+.mat-green {
+    color: green;
+}
+
+.mat-red {
+    color: red;
+}
+
+/* mat-grid-tile {
+    background: lightblue;
+    
+} */
+
+
+mat-selection-list {
+    max-height: 400px;
+    overflow: auto;
+}
+
+request-tile {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.pad-top-heading{
+    padding-top:5em;
+}
+
+.pad-top-item{
+    padding-top:4em;
+}
