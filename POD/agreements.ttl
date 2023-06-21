@@ -21,8 +21,8 @@ ex:agreement1 a odrl:Agreement ;
   dct:issued "2023-06-08T18:13:37"^^xsd:dateTime ;
   odrl:uid ex:agreement1 ;
   dct:references ex:offer1, ex:request1 ;
-  dpv:hasDataSubject ex:PatientGroup ;
-  dpv:hasDataController ex:DataConsensus ;
+  dpv:hasDataSubject ex:DataConsensus ;
+  dpv:hasJointDataController ex:DataConsensus, ex:UniversityRequester ;
   dpv:hasLegalBasis dpv:Consent ;
   odrl:permission [
     odrl:assigner ex:DataConsensus ;

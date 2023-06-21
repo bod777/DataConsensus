@@ -92,7 +92,8 @@ module.exports = {
     submitCompanyRequest: async function (req, sessionID) {
 
         session = await getSessionFromStorage(sessionID);
-        let dataseturl = CONSTANTS.COMPANY_REQUESTS;
+        let dataseturl = requestsURL;
+
         let date_ob = new Date();
         let date = ("0" + date_ob.getDate()).slice(-2);
         // current month
@@ -320,10 +321,5 @@ module.exports = {
             { fetch: session.fetch }
         );
     },
-
-    getAllCompanyRequests: async function (sessionId) {
-        session = await getSessionFromStorage(sessionId);
-        return await this.getGivenSolidDataset(CONSTANTS.COMPANY_REQUESTS, session);
-    }
 }
 
