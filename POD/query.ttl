@@ -1,0 +1,10 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ex: <http://example.com/vocab/>
+PREFIX exdoc: <http://example.com/documents/>
+
+SELECT (COUNT(?vote) AS ?firstPreferenceVotes)
+WHERE {
+  ?vote rdf:type ex:Vote ;
+        ex:hasDocument exdoc:DocumentA ;
+        ex:voteRank 1 .
+}

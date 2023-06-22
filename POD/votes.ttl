@@ -1,0 +1,24 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex: <http://example.com/vocab/> .
+
+# Define the Vote entity
+ex:Vote rdf:type rdfs:Class ;
+    rdfs:label "Vote" .
+
+# Properties of the Vote entity
+ex:hasVoter rdf:type rdf:Property ;
+    rdfs:label "has voter" ;
+    rdfs:range ex:Member ;
+    rdfs:domain ex:Vote .
+
+ex:hasDocument rdf:type rdf:Property ;
+    rdfs:label "has document" ;
+    rdfs:range ex:Document ;
+    rdfs:domain ex:Vote .
+
+ex:voteRank rdf:type rdf:Property ;
+    rdfs:label "vote rank" ;
+    rdfs:range xsd:integer ;
+    rdfs:domain ex:Vote .
+

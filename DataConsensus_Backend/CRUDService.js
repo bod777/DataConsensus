@@ -113,7 +113,9 @@ module.exports = {
         let courseSolidDataset = await (this.getGivenSolidDataset(requestsURL, session));
         let count = getThing(courseSolidDataset, requestsURL + "#requestCount");
 
-        //string literal is given as output
+        // this looks like it is creating the ID for the new request...
+        // it has a separate thing with the number of requests
+        // this might work for me actually
 
         let requestCount;
         if (count) {
@@ -133,21 +135,26 @@ module.exports = {
 
         }
 
+        // dct:creator
         if (req.requestedBy == '') {
             req.requestedBy = "https://asegroup.inrupt.net/profile/card#me"
         }
+        // no idea
         let timevoteGroup = buildThing({ name: "http://example.com" + "#timepeopleVoted" + count })
             .addUrl("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://d-nb.info/standards/elementset/gnd#GroupOfPersons")
             .build();
+        // odrl:purpose
         let purposevoteGroup = buildThing({ name: "http://example.com" + "#purposepeopleVoted" + count })
             .addUrl("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://d-nb.info/standards/elementset/gnd#GroupOfPersons")
             .build();
         let historyvoteGroup = buildThing({ name: "http://example.com" + "#historypeopleVoted" + count })
             .addUrl("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://d-nb.info/standards/elementset/gnd#GroupOfPersons")
             .build();
+        // related to the negative constraint
         let datasellvoteGroup = buildThing({ name: "http://example.com" + "#datasellpeopleVoted" + count })
             .addUrl("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://d-nb.info/standards/elementset/gnd#GroupOfPersons")
             .build();
+        // related to actions but
         let copyvoteGroup = buildThing({ name: "http://example.com" + "#datacopyvoteGroup" + count })
             .addUrl("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://d-nb.info/standards/elementset/gnd#GroupOfPersons")
             .build();
