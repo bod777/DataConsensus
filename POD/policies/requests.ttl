@@ -1,27 +1,25 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix odrl: <http://www.w3.org/ns/odrl/2/> . 
-@prefix oac: <https://w3id.org/oac/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix dct: <http://purl.org/dc/terms/> .
-@prefix vann: <http://purl.org/vocab/vann/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
 @prefix dpv: <https://w3id.org/dpv#> .
 @prefix dpvpd: <https://w3id.org/dpv/dpv-pd#> .
-@prefix ex: <http://example.com#> .
+@prefix oac: <https://w3id.org/oac/> .
+@prefix policy: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy#> .
+@prefix project: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/projects#> .
+@prefix pod: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/offers#> .
 
-ex:request1.1 a odrl:Request;
-    dct:description "To use CGM data to explore how glucose levels vary throughout the day" ;
-    dct:creator ex:UniversityRequester ;
-    dct:issued "2023-06-04T17:58:31"^^xsd:dateTime ;
-    odrl:uid ex:request1.1;
+pod:1 a odrl:Request;
+    dct:creator <https://id.inrupt.com/DrJohnSmith>;
+    dct:issued "2023-06-04T17:58:31"^^xsd:dateTime ;    
+    dct:isPartOf project:1 ;
+    policy:hasStatus policy:Approved;
+    odrl:uid pod:1;
     odrl:profile oac: ;
     odrl:permission [
-        odrl:assigner ex:DataConsensus ;
-        odrl:assignee ex:UniversityRequester;
+        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+        odrl:assignee <https://id.inrupt.com/DrJohnSmith> ;
         odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
         odrl:target dpvpd:MedicalHealth;
         odrl:constraint [
@@ -48,8 +46,8 @@ ex:request1.1 a odrl:Request;
             ] , [
                 a odrl:Constraint ;
                 odrl:leftOperand oac:Recipient  ;
-                odrl:operator odrl:eq ;
-                odrl:rightOperand ex:PatientGroup
+                odrl:operator odrl:isAnyOf ;
+                odrl:rightOperand <https://id.inrupt.com/DrJohnSmith>, <https://id.inrupt.com/DataConsensus>, dpv:AcademicScientificOrganisation
             ] , [
                 a odrl:Constraint ;
                 odrl:leftOperand dpv:UntilTimeDuration ;
@@ -59,15 +57,16 @@ ex:request1.1 a odrl:Request;
         ]
     ] .
 
-ex:request2.1 a odrl:Request;
-    dct:description "Aim to analyze the data to identify patterns that could help them understand the relationship between glucose levels and health outcomes, particularly in individuals with diabetes. The insurance company intends to use this information to refine their underwriting processes, design personalized insurance products, and provide policyholders with incentives for managing their glucose levels effectively." ;
-    dct:creator ex:InsuranceRequester ;
+pod:2 a odrl:Request;
+    dct:creator <https://id.inrupt.com/AIB> ;
     dct:issued "2023-06-04T17:58:31"^^xsd:dateTime ;
-    odrl:uid ex:request2.1;
+    dct:isPartOf project:2 ;
+    policy:hasStatus policy:Rejected;
+    odrl:uid pod:2;
     odrl:profile oac: ;
     odrl:permission [
-        odrl:assigner ex:DataConsensus ;
-        odrl:assignee ex:InsuranceRequester;
+        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+        odrl:assignee <https://id.inrupt.com/AIB> ;
         odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
         odrl:target dpvpd:MedicalHealth;
         odrl:constraint [
@@ -95,7 +94,7 @@ ex:request2.1 a odrl:Request;
                 a odrl:Constraint ;
                 odrl:leftOperand oac:Recipient  ;
                 odrl:operator odrl:isAnyOf ;
-                odrl:rightOperand ex:PatientGroup, ex:InsuranceRequester
+                odrl:rightOperand <https://id.inrupt.com/AIB>, <https://id.inrupt.com/DataConsensus>, dpv:AcademicScientificOrganisation
             ] , [
                 a odrl:Constraint ;
                 odrl:leftOperand dpv:UntilTimeDuration ;
@@ -106,15 +105,16 @@ ex:request2.1 a odrl:Request;
     ] .
 
 
-ex:request3.1 a odrl:Request;
-    dct:description "A new nonprofit organization looking to improve healthcare resources for people with diabetes. " ;
-    dct:creator ex:NonprofitRequester ;
+pod:3 a odrl:Request;
+    dct:creator <https://id.inrupt.com/FightDiabetesDublin> ;
     dct:issued "2023-06-04T17:58:31"^^xsd:dateTime ;
-    odrl:uid ex:request3.1;
+    dct:hasVersion pod:4;
+    policy:hasStatus policy:Rejected;
+    odrl:uid pod:3;
     odrl:profile oac: ;
     odrl:permission [
-        odrl:assigner ex:DataConsensus ;
-        odrl:assignee ex:NonprofitRequester;
+        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+        odrl:assignee <https://id.inrupt.com/FightDiabetesDublin>;
         odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
         odrl:target dpvpd:MedicalHealth;
             odrl:constraint [
@@ -140,11 +140,6 @@ ex:request3.1 a odrl:Request;
                 odrl:rightOperand dpv:PasswordAuthentication, dpv:OperatingSystemSecurity, dpv:EncryptionInTransfer 
             ] , [
                 a odrl:Constraint ;
-                odrl:leftOperand oac:Recipient  ;
-                odrl:operator odrl:isAnyOf ;
-                odrl:rightOperand ex:PatientGroup
-            ] , [
-                a odrl:Constraint ;
                 odrl:leftOperand dpv:UntilTimeDuration ;
                 odrl:operator odrl:eq ;
                 odrl:rightOperand "2044-12-31"^^xsd:date 
@@ -152,15 +147,17 @@ ex:request3.1 a odrl:Request;
         ]
     ] .
 
-ex:request3.2 a odrl:Request;
+pod:4 a odrl:Request;
     dct:description "A new nonprofit organization looking to improve healthcare resources for people with diabetes. " ;
-    dct:creator ex:NonprofitRequester ;
+    dct:creator <https://id.inrupt.com/DataConsensus> ;
     dct:issued "2023-06-04T17:58:31"^^xsd:dateTime ;
-    odrl:uid ex:request3.2;
+    dct:isVersionOf pod:3;
+    policy:hasStatus policy:Approved;
+    odrl:uid pod:4;
     odrl:profile oac: ;
     odrl:permission [
-        odrl:assigner ex:DataConsensus ;
-        odrl:assignee ex:NonprofitRequester;
+        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+        odrl:assignee <https://id.inrupt.com/FightDiabetesDublin>;
         odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
         odrl:target dpvpd:MedicalHealth;
             odrl:constraint [
@@ -188,7 +185,7 @@ ex:request3.2 a odrl:Request;
                 a odrl:Constraint ;
                 odrl:leftOperand oac:Recipient  ;
                 odrl:operator odrl:isAnyOf ;
-                odrl:rightOperand ex:PatientGroup
+                odrl:rightOperand <https://id.inrupt.com/FightDiabetesDublin>, <https://id.inrupt.com/DataConsensus>
             ] , [
                 a odrl:Constraint ;
                 odrl:leftOperand dpv:UntilTimeDuration ;

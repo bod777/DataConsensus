@@ -1,13 +1,13 @@
-class Proposal {
+class Policy {
     constructor(id, timestamp, creator, issued, description, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasure, organisationalMeasure, recipients, untilTimeDuration, status) {
-        this.id = id; // Unique identifier for the proposal 
-        this.timestamp = timestamp; // Timestamp when the proposal was submitted
-        this.creator = creator; // ID of the user who created the proposal
-        this.issued = issued; // Timestamp when the proposal was issued
-        this.description = description; // Description of the proposal
-        this.assigner = assigner; // ID of the user who assigned the proposal
-        this.assignee = assignee; // ID of the user who was assigned the proposal
-        this.purpose = purpose; // Purpose of the proposal
+        this.id = id; // Unique identifier for the policy 
+        this.timestamp = timestamp; // Timestamp when the policy was submitted
+        this.creator = creator; // ID of the user who created the policy
+        this.issued = issued; // Timestamp when the policy was issued
+        this.description = description; // Description of the policy
+        this.assigner = assigner; // ID of the user who assigned the policy
+        this.assignee = assignee; // ID of the user who was assigned the policy
+        this.purpose = purpose; // Purpose of the policy
         this.sellingData = sellingData; // Data that is sold
         this.sellingInsights = sellingInsights; // Insights that are sold
         this.organisation = organisation; // Organisation that is selling the data
@@ -15,14 +15,14 @@ class Proposal {
         this.organisationalMeasure = organisationalMeasure; // Organisational measures that are taken to protect the data
         this.recipients = recipients; // Recipients of the data
         this.untilTimeDuration = untilTimeDuration; // Duration of the data usage
-        this.status = status; // Status of the proposal
+        this.status = status; // Status of the policy
     }
 
-    getProposal() {
+    getPolicy() {
         return this;
     }
 
-    setProposal(id, timestamp, creator, issued, description, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasure, organisationalMeasure, recipients, untilTimeDuration, status) {
+    setPolicy(id, timestamp, creator, issued, description, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasure, organisationalMeasure, recipients, untilTimeDuration, status) {
         this.id = id;
         this.timestamp = timestamp;
         this.creator = creator;
@@ -43,7 +43,7 @@ class Proposal {
 
     // toString
     toString() {
-        return `Proposal: ${this.id} ${this.timestamp} ${this.creator} ${this.issued} ${this.description} ${this.assigner} ${this.assignee} ${this.purpose} ${this.sellingData} ${this.sellingInsights} ${this.organisation} ${this.technicalMeasure} ${this.organisationalMeasure} ${this.recipients} ${this.untilTimeDuration} ${this.status}`;
+        return `Policy: ${this.id} ${this.timestamp} ${this.creator} ${this.issued} ${this.description} ${this.assigner} ${this.assignee} ${this.purpose} ${this.sellingData} ${this.sellingInsights} ${this.organisation} ${this.technicalMeasure} ${this.organisationalMeasure} ${this.recipients} ${this.untilTimeDuration} ${this.status}`;
     }
 
     // toJSON
@@ -54,7 +54,7 @@ class Proposal {
     // fromJSON
     fromJSON(json) {
         const obj = JSON.parse(json);
-        return new Proposal(obj.id, obj.timestamp, obj.creator, obj.issued, obj.description, obj.assigner, obj.assignee, obj.purpose, obj.sellingData, obj.sellingInsights, obj.organisation, obj.technicalMeasure, obj.organisationalMeasure, obj.recipients, obj.untilTimeDuration, obj.status);
+        return new Policy(obj.id, obj.timestamp, obj.creator, obj.issued, obj.description, obj.assigner, obj.assignee, obj.purpose, obj.sellingData, obj.sellingInsights, obj.organisation, obj.technicalMeasure, obj.organisationalMeasure, obj.recipients, obj.untilTimeDuration, obj.status);
     }
 
     // Getters

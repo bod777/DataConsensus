@@ -1,28 +1,30 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
 @prefix dpv: <https://w3id.org/dpv#> .
-@prefix oac: <https://w3id.org/oac/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix dct: <http://purl.org/dc/terms/> .
-@prefix vann: <http://purl.org/vocab/vann/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix acl: <http://www.w3.org/ns/auth/acl#> .
-@prefix dpv: <https://w3id.org/dpv#> .
 @prefix dpvpd: <https://w3id.org/dpv/dpv-pd#> .
-@prefix ex: <http://example.com> .
+@prefix oac: <https://w3id.org/oac/> .
+@prefix project: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/projects#> .
+@prefix offer: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/offers#> .
+@prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/requests#> .
+@prefix pod: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/agreements#> .
 
-ex:offer1 a odrl:Offer ;
+pod:1 a odrl:Agreement ;
+    odrl:profile oac: ;  
     dct:description "To use CGM data to explore how glucose levels vary throughout the day" ;
-    dct:creator ex:DataConsensus ;
-    dct:issued "2022-11-08T17:26:35"^^xsd:dateTime ;
-    odrl:uid ex:offer1 ;
-    odrl:profile oac: ;
+    dct:creator <https://id.inrupt.com/odonneb4> ;
+    dct:issued "2023-06-08T18:13:37"^^xsd:dateTime ;
+    dct:isPartOf project:1 ;
+    odrl:uid pod:1 ;
+    dct:references offer:1, request:1 ;
+    dpv:hasDataSubject <https://id.inrupt.com/DataConsensus> ;
+    dpv:hasJointDataController <https://id.inrupt.com/DataConsensus>, <https://id.inrupt.com/DrJohnSmith> ;
+    dpv:hasLegalBasis dpv:Consent ;
     odrl:permission [
-        odrl:assigner ex:DataConsensus ;
-        odrl:assignee ex:UniversityRequester;
+        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+        odrl:assignee <https://id.inrupt.com/DrJohnSmith> ;
         odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform;
         odrl:target dpvpd:MedicalHealth;
         odrl:constraint [
@@ -38,39 +40,42 @@ ex:offer1 a odrl:Offer ;
                 odrl:rightOperand dpv:CommercialResearch, dpv:SellInsightsFromData, dpv:SellDataToThirdParties
             ] , [
                 a odrl:Constraint ;
-                odrl:leftOperand oac:Organisation   ;
+                odrl:leftOperand oac:Organisation ;
                 odrl:operator odrl:isA ;
                 odrl:rightOperand dpv:AcademicScientificOrganisation
             ] , [
                 a odrl:Constraint ;
-                odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
+                odrl:leftOperand oac:TechnicalOrganisationalMeasure ;
                 odrl:operator odrl:isAllOf ;
                 odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:ComplianceMonitoring, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest
             ] , [
                 a odrl:Constraint ;
-                odrl:leftOperand oac:Recipient  ;
-                odrl:operator odrl:eq ;
-                odrl:rightOperand ex:PatientGroup
+                odrl:leftOperand oac:Recipient ;
+                odrl:operator odrl:isAnyOf ;
+                odrl:rightOperand <https://id.inrupt.com/DrJohnSmith>, <https://id.inrupt.com/DataConsensus>, dpv:AcademicScientificOrganisation
             ] , [
                 a odrl:Constraint ;
                 odrl:leftOperand dpv:UntilTimeDuration ;
                 odrl:operator odrl:eq ;
-                odrl:rightOperand "2023-12-31"^^xsd:date 
+                odrl:rightOperand "2023-12-31"^^xsd:date
             ]
         ]
     ] .
 
-
-ex:offer3 a odrl:Offer ;
-    dct:description """Offer to read identifier data for identity verification 
-        and behavioral data for research and development""" ;
-    dct:creator ex:JaneDoe ;
-    dct:issued "2022-11-08T17:26:35"^^xsd:dateTime ;
-    odrl:uid ex:offer3 ;
-    odrl:profile oac: ;
+pod:2 a odrl:Agreement ;
+    odrl:profile oac: ;  
+    dct:description "To use CGM data to explore how glucose levels vary throughout the day" ;
+    dct:creator <https://id.inrupt.com/odonneb4> ;
+    dct:issued "2023-06-08T18:13:37"^^xsd:dateTime ;
+    dct:isPartOf project:3 ;
+    odrl:uid pod:2 ;
+    dct:references offer:2, request:3 ;
+    dpv:hasDataSubject <https://id.inrupt.com/DataConsensus> ;
+    dpv:hasJointDataController <https://id.inrupt.com/DataConsensus>, <https://id.inrupt.com/FightDiabetesDublin> ;
+    dpv:hasLegalBasis dpv:Consent ;
     odrl:permission [
-        odrl:assigner ex:DataConsensus ;
-        odrl:assignee ex:NonprofitRequester;
+        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+        odrl:assignee <https://id.inrupt.com/FightDiabetesDublin> ;
         odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform;
         odrl:target dpvpd:MedicalHealth;
         odrl:constraint [
@@ -101,8 +106,8 @@ ex:offer3 a odrl:Offer ;
             [
                 a odrl:Constraint ;
                 odrl:leftOperand oac:Recipient  ;
-                odrl:operator odrl:eq ;
-                odrl:rightOperand ex:PatientGroup
+                odrl:operator odrl:isAnyOf ;
+                odrl:rightOperand <https://id.inrupt.com/FightDiabetesDublin>, <https://id.inrupt.com/DataConsensus>
             ],
             [
                 a odrl:Constraint ;

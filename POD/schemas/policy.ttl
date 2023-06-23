@@ -1,0 +1,20 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix policy: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy#> .
+
+policy:status a rdfs:Class ;
+    owl:oneOf (policy:Approved policy:Rejected policy:Pending policy:Draft) .
+
+policy:Approved a policy:status ;
+    rdfs:label "Approved" .
+policy:Rejected a policy:status ;
+    rdfs:label "Rejected" .
+policy:Pending a policy:status ;
+    rdfs:label "Pending" .
+policy:Draft a policy:status ;
+    rdfs:label "Draft" .
+
+policy:hasStatus a rdf:Property ;
+    rdfs:domain odrl:Request, odrl:Offer ;
+    rdfs:range policy:status .

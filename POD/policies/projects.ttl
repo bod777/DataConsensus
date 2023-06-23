@@ -1,0 +1,27 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix dpv: <https://w3id.org/dpv#> .
+@prefix dpvpd: <https://w3id.org/dpv/dpv-pd#> .
+@prefix oac: <https://w3id.org/oac/> .
+@prefix project: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/project#> .
+@prefix pod: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/projects#> .
+
+pod:1 a dct:Project ;
+    dct:title "UserStory1" ;
+    dct:description "To use CGM data to explore how glucose levels vary throughout the day" ;
+    project:adminApproved true ;
+    project:completionDate "2023-06-24T17:58:31"^^xsd:dateTime .
+
+pod:1 a dct:Project ;
+    dct:title "UserStory2" ;
+    dct:description "Aim to analyze the data to identify patterns that could help them understand the relationship between glucose levels and health outcomes, particularly in individuals with diabetes. The insurance company intends to use this information to refine their underwriting processes, design personalized insurance products, and provide policyholders with incentives for managing their glucose levels effectively." ;
+    project:completionDate "2023-06-24T17:58:31"^^xsd:dateTime .
+
+pod:1 a dct:Project ;
+    dct:title "UserStory3" ;
+    dct:description "A new nonprofit organization looking to improve healthcare resources for people with diabetes." ;
+    project:adminApproved true ;
+    project:completionDate "2023-06-24T17:58:31"^^xsd:dateTime .

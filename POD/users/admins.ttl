@@ -1,10 +1,7 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
-@prefix app: <http://example.com/app#>.
-@prefix user: <http://example.com/app/user_types#>.
-@prefix dct: <http://purl.org/dc/terms/> .
+@prefix user: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/user#> .
 
-
-<https://id.inrupt.com/cdst1> a app:User ;
+<https://id.inrupt.com/odonneb4> a user:User ;
   foaf:name "Bríd O'Donnell" ;
-  app:hasUserType user:Admin .
+  user:hasUserType user:Admin .

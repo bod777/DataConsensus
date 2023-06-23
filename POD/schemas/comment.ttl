@@ -1,0 +1,50 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix comment: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/comment#> .
+@prefix user: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/user#> .
+
+comment:Comment a rdfs:Class ;
+    rdfs:label "Comment" .
+
+comment:id a rdf:Property ;
+    rdfs:label "ID" ;
+    rdfs:range xsd:string ;
+    rdfs:domain comment:Comment .
+
+dct:created a rdf:Property ;
+    rdfs:label "Created Timestamp" ;
+    rdfs:range xsd:dateTime ;
+    rdfs:domain comment:Comment .
+
+dct:references a rdf:Property ;
+    rdfs:label "Policy ID" ;
+    rdfs:range odrl:Policy ;
+    rdfs:domain comment:Comment .
+
+dct:creator a rdf:Property ;
+    rdfs:label "Author" ;
+    rdfs:range user:User ;
+    rdfs:domain comment:Comment .
+
+dct:Text a rdf:Property ;
+    rdfs:label "Content" ;
+    rdfs:range xsd:string ;
+    rdfs:domain comment:Comment .
+
+dct:modified  a rdf:Property ;
+    rdfs:label "Modified Timestamp" ;
+    rdfs:range xsd:dateTime ;
+    rdfs:domain comment:Comment .
+
+comment:wasModerated a rdf:Property ;
+    rdfs:label "Moderated" ;
+    rdfs:range xsd:boolean ;
+    rdfs:domain comment:Comment .
+
+comment:hasModerator a rdf:Property ;
+    rdfs:label "Moderator ID" ;
+    rdfs:range user:Admin ; 
+    rdfs:domain comment:Comment .
