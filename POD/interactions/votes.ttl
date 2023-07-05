@@ -5,12 +5,26 @@
 @prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/requests#> .
 @prefix pod: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/votes#> .
 
-pod:vote123 a vote:Vote ;
+pod:1 a vote:Vote ;
     vote:hasVoter <https://id.inrupt.com/JohnDoe>;
-    vote:hasDocument offer:Offer1 ;
+    vote:hasDocument request:1 ;
+    dct:isPartOf project:1 ;
+    vote:voteRank 0 .
+
+pod:2 a vote:Vote ;
+    vote:hasVoter <https://id.inrupt.com/JohnDoe> ;
+    vote:hasDocument request:2 ;
+    dct:isPartOf project:2 ;
     vote:voteRank 1 .
 
-pod:vote456 a vote:Vote ;
+pod:3 a vote:Vote ;
     vote:hasVoter <https://id.inrupt.com/JohnDoe> ;
-    vote:hasDocument request:Request1 ;
+    vote:hasDocument request:3 ;
+    dct:isPartOf project:3 ;
+    vote:voteRank 1 .
+
+pod:4 a vote:Vote ;
+    vote:hasVoter <https://id.inrupt.com/JohnDoe> ;
+    vote:hasDocument offer:1 ;
+    dct:isPartOf project:3 ;
     vote:voteRank 0 .

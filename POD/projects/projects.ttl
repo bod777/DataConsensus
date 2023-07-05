@@ -12,16 +12,29 @@
 pod:1 a dct:Project ;
     dct:title "UserStory1" ;
     dct:description "To use CGM data to explore how glucose levels vary throughout the day" ;
-    project:adminApproved true ;
-    project:completionDate "2023-06-24T17:58:31"^^xsd:dateTime .
+    oac:Organisation dpv:AcademicScientificOrganisation;
+    dct:creator <https://id.inrupt.com/DrJohnSmith>;
+    project:deliberationTime 7 ;
+    project:offerTime 7 ;
+    project:threshold 0.5 ;
+    project:hasAgreement true .
 
-pod:1 a dct:Project ;
+pod:2 a dct:Project ;
     dct:title "UserStory2" ;
     dct:description "Aim to analyze the data to identify patterns that could help them understand the relationship between glucose levels and health outcomes, particularly in individuals with diabetes. The insurance company intends to use this information to refine their underwriting processes, design personalized insurance products, and provide policyholders with incentives for managing their glucose levels effectively." ;
-    project:completionDate "2023-06-24T17:58:31"^^xsd:dateTime .
+    oac:Organisation dpv:ForProfitOrganisation ;
+    dct:creator <https://id.inrupt.com/AIG>;
+    project:deliberationTime 7 ;
+    project:offerTime 7 ;
+    project:threshold 0.5 ;
+    project:hasAgreement false .
 
-pod:1 a dct:Project ;
+pod:3 a dct:Project ;
     dct:title "UserStory3" ;
     dct:description "A new nonprofit organization looking to improve healthcare resources for people with diabetes." ;
-    project:adminApproved true ;
-    project:completionDate "2023-06-24T17:58:31"^^xsd:dateTime .
+    oac:Organisation dpv:NonProfitOrganisation;
+    dct:creator <https://id.inrupt.com/FightDiabetesDublin>;
+    project:requestTime 7 ;
+    project:offerTime 7 ;
+    project:threshold 0.5 ;
+    project:hasAgreement true .

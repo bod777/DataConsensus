@@ -9,16 +9,16 @@
 @prefix project: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/projects#> .
 @prefix offer: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/offers#> .
 @prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/requests#> .
-@prefix pod: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/agreements#> .
+@prefix agreement: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/agreements#> .
 
-pod:1 a odrl:Agreement ;
+agreement:1 a odrl:Agreement ;
     odrl:profile oac: ;  
     dct:description "To use CGM data to explore how glucose levels vary throughout the day" ;
     dct:creator <https://id.inrupt.com/odonneb4> ;
     dct:issued "2023-06-08T18:13:37"^^xsd:dateTime ;
     dct:isPartOf project:1 ;
-    odrl:uid pod:1 ;
-    dct:references offer:1, request:1 ;
+    odrl:uid agreement:1 ;
+    dct:references request:1 ;
     dpv:hasDataSubject <https://id.inrupt.com/DataConsensus> ;
     dpv:hasJointDataController <https://id.inrupt.com/DataConsensus>, <https://id.inrupt.com/DrJohnSmith> ;
     dpv:hasLegalBasis dpv:Consent ;
@@ -62,14 +62,14 @@ pod:1 a odrl:Agreement ;
         ]
     ] .
 
-pod:2 a odrl:Agreement ;
+agreement:2 a odrl:Agreement ;
     odrl:profile oac: ;  
     dct:description "To use CGM data to explore how glucose levels vary throughout the day" ;
     dct:creator <https://id.inrupt.com/odonneb4> ;
     dct:issued "2023-06-08T18:13:37"^^xsd:dateTime ;
     dct:isPartOf project:3 ;
-    odrl:uid pod:2 ;
-    dct:references offer:2, request:3 ;
+    odrl:uid agreement:2 ;
+    dct:references offer:1 ;
     dpv:hasDataSubject <https://id.inrupt.com/DataConsensus> ;
     dpv:hasJointDataController <https://id.inrupt.com/DataConsensus>, <https://id.inrupt.com/FightDiabetesDublin> ;
     dpv:hasLegalBasis dpv:Consent ;

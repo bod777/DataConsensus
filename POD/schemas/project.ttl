@@ -16,14 +16,26 @@ dct:description a rdfs:Property ;
     rdfs:domain project:Project ;
     rdfs:range xsd:string .
 
-project:adminApproved a rdf:Property ;
+oac:Organisation a rdfs:Property ;
+    rdfs:domain project:Project ;
+    rdfs:range oac:Organisation .
+
+dct:creator a rdfs:Property ;
+    rdfs:domain project:Project ;
+    rdfs:range user:ThirdParty .
+
+project:requestTime a rdf:Property ;
+    rdfs:domain project:Project ;
+    rdfs:range xsd:integer .
+
+project:offerTime a rdf:Property ;
+    rdfs:domain project:Project ;
+    rdfs:range xsd:integer .
+
+project:threshold a rdf:Property ;
+    rdfs:domain project:Project ;
+    rdfs:range xsd:integer .
+
+project:hasAgreement a rdf:Property ;
     rdfs:domain project:Project ;
     rdfs:range xsd:boolean .
-
-project:adminComment a rdf:Property ;
-    rdfs:domain project:Project ;
-    rdfs:range xsd:string .
-
-project:completionDate  a rdf:Property ;
-    rdfs:domain project:Project ;
-    rdfs:range xsd:dateTime .

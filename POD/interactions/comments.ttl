@@ -9,7 +9,7 @@
 
 pod:Comment1 a comment:Comment ;
     dct:created "2023-06-23T12:34:56Z"^^xsd:dateTime ;
-    dct:references  offer:Offer1;
+    dct:references  offer:1;
     dct:creator <https://id.inrupt.com/JohnDoe> ;
     dct:Text "This is a great policy!" ;
     dct:modified "2023-06-23T12:34:56Z"^^xsd:dateTime ;
@@ -17,9 +17,9 @@ pod:Comment1 a comment:Comment ;
 
 pod:Comment2 a comment:Comment ;
     dct:created "2023-06-24T14:35:56Z"^^xsd:dateTime ;
-    dct:references request:Request1 ;
+    dct:references request:1 ;
     dct:creator <https://id.inrupt.com/JohnDoe> ;
     dct:Text "I agree with the previous comment." ;
     dct:modified "2023-06-24T14:35:56Z"^^xsd:dateTime ;
     comment:wasModerated "true"^^xsd:boolean ;
-    comment:hasModerator user:Admin1 .
+    comment:hasModerator <https://id.inrupt.com/odonneb4> .

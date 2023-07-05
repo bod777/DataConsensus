@@ -3,8 +3,27 @@
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
 @prefix policy: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy#> .
 
-policy:status a rdfs:Class ;
-    owl:oneOf (policy:Approved policy:Rejected policy:Pending policy:Draft) .
+policy:Seal a dpv:CertificationSeal, odrl:LeftOperand ;
+    rdfs:label "European Data Protection Seal " .
+
+policy:thirdPartyApproved a rdf:Property ;
+    rdfs:label "Third Party Approval Status" ;
+    rdfs:domain odrl:Request, odrl:Offer ;
+    rdfs:range policy:Status .
+
+policy:memberApproved a rdf:Property ;
+    rdfs:label "Member Approval Status" ;
+    rdfs:domain odrl:Request, odrl:Offer ;
+    rdfs:range policy:Status .
+
+policy:adminApproved a rdf:Property ;
+    rdfs:label "Admin Approval Status" ;
+    rdfs:domain odrl:Request, odrl:Offer ;
+    rdfs:range policy:Status .
+
+policy:Status a rdfs:Class ;
+    rdfs:label "Approval Status" ;
+    owl:oneOf (policy:Approved policy:Rejected policy:Pending) .
 
 policy:Approved a policy:status ;
     rdfs:label "Approved" .
@@ -12,9 +31,5 @@ policy:Rejected a policy:status ;
     rdfs:label "Rejected" .
 policy:Pending a policy:status ;
     rdfs:label "Pending" .
-policy:Draft a policy:status ;
-    rdfs:label "Draft" .
-
-policy:hasStatus a rdf:Property ;
-    rdfs:domain odrl:Request, odrl:Offer ;
-    rdfs:range policy:status .
+policy:Blocked a policy:status ;
+    rdfs:label "Blocked" .

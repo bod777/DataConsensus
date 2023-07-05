@@ -7,62 +7,18 @@
 @prefix dpvpd: <https://w3id.org/dpv/dpv-pd#> .
 @prefix oac: <https://w3id.org/oac/> .
 @prefix project: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/projects#> .
-@prefix pod: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/offers#> .
+@prefix offer: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/offers#> .
 
-pod:1 a odrl:Offer ;
-    dct:creator <https://id.inrupt.com/DataConsensus> ;
-    dct:issued "2022-11-08T17:26:35"^^xsd:dateTime ;
-    dct:isPartOf project:1 ;
-    policy:hasStatus policy:Approved ;
-    odrl:uid pod:1 ;
-    odrl:profile oac: ;
-    odrl:permission [
-        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
-        odrl:assignee <https://id.inrupt.com/DrJohnSmith> ;
-        odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform;
-        odrl:target dpvpd:MedicalHealth;
-        odrl:constraint [
-            odrl:and [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:AcademicResearch
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isNoneOf ;
-                odrl:rightOperand dpv:CommercialResearch, dpv:SellInsightsFromData, dpv:SellDataToThirdParties
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Organisation   ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:AcademicScientificOrganisation
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
-                odrl:operator odrl:isAllOf ;
-                odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:ComplianceMonitoring, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Recipient  ;
-                odrl:operator odrl:isAnyOf ;
-                odrl:rightOperand <https://id.inrupt.com/DrJohnSmith>, <https://id.inrupt.com/DataConsensus>, dpv:AcademicScientificOrganisation
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand dpv:UntilTimeDuration ;
-                odrl:operator odrl:eq ;
-                odrl:rightOperand "2023-12-31"^^xsd:date 
-            ]
-        ]
-    ] .
+offer:rejection a odrl:Offer .
 
-
-pod:2 a odrl:Offer ;
+offer:1 a odrl:Offer ;
     dct:creator <https://id.inrupt.com/janedoe> ;
     dct:issued "2022-11-08T17:26:35"^^xsd:dateTime ;
     dct:isPartOf project:3 ;
-    policy:hasStatus policy:Approved;
-    odrl:uid pod:2 ;
+    policy:thirdPartyApproved policy:Approved;
+    policy:memberApproved policy:Approved;
+    policy:adminApproved policy:Approved;
+    odrl:uid offer:1 ;
     odrl:profile oac: ;
     odrl:permission [
         odrl:assigner <https://id.inrupt.com/DataConsensus> ;

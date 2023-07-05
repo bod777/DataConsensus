@@ -9,11 +9,6 @@
 comment:Comment a rdfs:Class ;
     rdfs:label "Comment" .
 
-comment:id a rdf:Property ;
-    rdfs:label "ID" ;
-    rdfs:range xsd:string ;
-    rdfs:domain comment:Comment .
-
 dct:created a rdf:Property ;
     rdfs:label "Created Timestamp" ;
     rdfs:range xsd:dateTime ;
