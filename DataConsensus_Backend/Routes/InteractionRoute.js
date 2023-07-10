@@ -1,15 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const {
-    getSessionFromStorage,
-    getSessionIdFromStorageAll,
-    Session
-} = require("@inrupt/solid-client-authn-node");
-const service = require("./CRUDService.js");
+const router = require("express").Router();
+const { appSession } = require('../Index.js');
+const service = require("../CRUDService.js");
 
 /* VOTING ENDPOINTS */
 
-app.post("/addPreferenceVotes", async (req, res) => {
+router.post("/addPreferenceVotes", async (req, res) => {
     const { rankedVotes, voter } = req.body; // votes should be an array of objects { policyURL: "url", voteRank: "rank" }
 
     const promises = rankedVotes.map(async vote => {
@@ -20,7 +15,7 @@ app.post("/addPreferenceVotes", async (req, res) => {
         };
 
         try {
-            await service.addVote(voteDetails, applicationSession.sessionId);
+            await service.addVote(voteDetails, appSession.sessionId);
         } catch (error) {
             console.error(`Error in adding vote for policy ${vote.policyURL}:`, error);
             return { policyURL: vote.policyURL, error: error.message };
@@ -39,7 +34,7 @@ app.post("/addPreferenceVotes", async (req, res) => {
     }
 });
 
-app.post("/upvote", async (req, res) => {
+router.post("/upvote", async (req, res) => {
     const { voter, policyURL } = req.body;
 
     const vote = {
@@ -49,7 +44,7 @@ app.post("/upvote", async (req, res) => {
     };
 
     try {
-        await service.addVote(vote, applicationSession.sessionId);
+        await service.addVote(vote, appSession.sessionId);
         res.send({ message: "Vote added successfully." });
     }
     catch (error) {
@@ -57,7 +52,7 @@ app.post("/upvote", async (req, res) => {
         res.status(500).send({ message: "Error in adding vote.", error: error.message });
     }
 });
-app.post("/downvote", async (req, res) => {
+router.post("/downvote", async (req, res) => {
     const { voter, policyURL } = req.body;
 
     const vote = {
@@ -67,7 +62,7 @@ app.post("/downvote", async (req, res) => {
     };
 
     try {
-        await service.addVote(vote, applicationSession.sessionId);
+        await service.addVote(vote, appSession.sessionId);
         res.send({ message: "Vote added successfully." });
     }
     catch (error) {
@@ -76,7 +71,7 @@ app.post("/downvote", async (req, res) => {
     }
 });
 
-app.get("/getRequestResult", async (req, res) => {
+router.get("/getRequestResult", async (req, res) => {
     const policyURL = req.body.policyURL; // get the policy URL from the query parameters
 
     if (!policyURL) {
@@ -87,12 +82,12 @@ app.get("/getRequestResult", async (req, res) => {
     try {
         const upvotes = await service.countVotesByRankPolicy(
             { policyURL: policyURL, rank: 1 },
-            applicationSession.sessionId);
+            appSession.sessionId);
         const downvotes = await service.countVotesByRankPolicy(
             { policyURL: policyURL, rank: 2 },
-            applicationSession.sessionId);
-        const membersNumber = await service.getNumberOfMembers(applicationSession.sessionId);
-        const threshold = await service.getThreshold(policyURL, applicationSession.sessionId);
+            appSession.sessionId);
+        const membersNumber = await service.getNumberOfMembers(appSession.sessionId);
+        const threshold = await service.getThreshold(policyURL, appSession.sessionId);
         let result = false;
         if (upvotes > (membersNumber * threshold)) {
             result = true;
@@ -107,7 +102,7 @@ app.get("/getRequestResult", async (req, res) => {
     }
 });
 
-app.get("/getRequestResult", async (req, res) => {
+router.get("/getRequestResult", async (req, res) => {
     const policyURL = req.body.policyURL; // get the policy URL from the query parameters
 
     if (!policyURL) {
@@ -119,12 +114,12 @@ app.get("/getRequestResult", async (req, res) => {
 
         const upvotes = await service.countVotesByRankPolicy(
             { policyURL: policyURL, rank: 1 },
-            applicationSession.sessionId);
+            appSession.sessionId);
         const downvotes = await service.countVotesByRankPolicy(
             { policyURL: policyURL, rank: 2 },
-            applicationSession.sessionId);
-        const membersNumber = await service.getNumberOfMembers(applicationSession.sessionId);
-        const threshold = await service.getThreshold(policyURL, applicationSession.sessionId);
+            appSession.sessionId);
+        const membersNumber = await service.getNumberOfMembers(appSession.sessionId);
+        const threshold = await service.getThreshold(policyURL, appSession.sessionId);
         let result = false;
         if (upvotes > (membersNumber * threshold)) {
             result = true;
@@ -139,22 +134,22 @@ app.get("/getRequestResult", async (req, res) => {
     }
 });
 
-app.get("/getOfferResult", async (req, res) => {
+router.get("/getOfferResult", async (req, res) => {
     const projectURL = req.body.projectId;
     try {
-        const offerList = service.getOffersByProject(projectURL, applicationSession.sessionId);
-        const membersNumber = await service.getNumberOfMembers(applicationSession.sessionId);
-        const threshold = await service.getThreshold(offer.policyURL, applicationSession.sessionId);
+        const offerList = service.getOffersByProject(projectURL, appSession.sessionId);
+        const membersNumber = await service.getNumberOfMembers(appSession.sessionId);
+        const threshold = await service.getThreshold(offer.policyURL, appSession.sessionId);
         const cutoff = membersNumber * threshold
         let results = [];
         let winner = `${process.env.OFFERS}#rejection`;
         for (const offer of offerList) {
             const firstPreference = await service.countVotesByRankPolicy(
                 { policyUrl: offer.url, rank: 1 },
-                applicationSession.sessionId);
+                appSession.sessionId);
             results.push({ policyUrl: offer.url, count: firstPreference });
         }
-        const rejectVote = await service.countVotesByRankPolicy({ offerId: 0, rank: 1 }, applicationSession.sessionId);
+        const rejectVote = await service.countVotesByRankPolicy({ offerId: 0, rank: 1 }, appSession.sessionId);
         results.push({ policyUrl: `${process.env.OFFERS}#rejection`, count: rejectVote });
         const sortedResults = results.sort((a, b) => b.count - a.count);
         if (sorted[0].count > cutoff) {
@@ -170,7 +165,7 @@ app.get("/getOfferResult", async (req, res) => {
 
 /* COMMENT ENDPOINTS */
 
-app.post("/addComment", async (req, res) => {
+router.post("/addComment", async (req, res) => {
     const {
         URL, user, text
     } = req.body;
@@ -181,7 +176,7 @@ app.post("/addComment", async (req, res) => {
         comment: text
     };
     try {
-        await service.submitPolicy(comment, applicationSession.sessionId);
+        await service.submitPolicy(comment, appSession.sessionId);
         res.send({ message: "Offer submitted successfully." });
     }
     catch (error) {
@@ -190,7 +185,7 @@ app.post("/addComment", async (req, res) => {
     }
 });
 
-app.get("/getCommentsByPolicy", async (req, res) => {
+router.get("/getCommentsByPolicy", async (req, res) => {
     const policyURL = req.body.policyURL; // get the policy URL from the query parameters
 
     if (!policyURL) {
@@ -199,7 +194,7 @@ app.get("/getCommentsByPolicy", async (req, res) => {
     }
 
     try {
-        const comments = await service.getCommentsByPolicy(policyURL, applicationSession.sessionId);
+        const comments = await service.getCommentsByPolicy(policyURL, appSession.sessionId);
         res.send({ comments });
     }
     catch (error) {
@@ -208,7 +203,7 @@ app.get("/getCommentsByPolicy", async (req, res) => {
     }
 });
 
-app.post("/moderateComment", async (req, res) => {
+router.post("/moderateComment", async (req, res) => {
     const { commentID, moderator } = req.body;
 
     if (!commentID || !moderator) {
@@ -217,7 +212,7 @@ app.post("/moderateComment", async (req, res) => {
     }
 
     try {
-        await service.moderateComment({ commentID, moderator }, applicationSession.sessionId);
+        await service.moderateComment({ commentID, moderator }, appSession.sessionId);
         res.send({ message: "Comment moderated successfully." });
     } catch (error) {
         console.error(error);
@@ -225,7 +220,7 @@ app.post("/moderateComment", async (req, res) => {
     }
 });
 
-app.delete("/removeComment", async (req, res) => {
+router.delete("/removeComment", async (req, res) => {
     const { commentID } = req.body;
 
     if (!commentID) {
@@ -234,7 +229,7 @@ app.delete("/removeComment", async (req, res) => {
     }
 
     try {
-        await service.removeComment({ commentID }, applicationSession.sessionId);
+        await service.removeComment({ commentID }, appSession.sessionId);
         res.send({ message: "Comment removed successfully." });
     } catch (error) {
         console.error(error);

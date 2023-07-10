@@ -6,7 +6,7 @@
 
 <https://id.inrupt.com/DrJohnSmith> a app:User ;
   foaf:name "Trinity College Dublin" ;
+  foaf:email "research@tcd.ie" ;
   user:hasUserType user:ThirdParty ;
   dpv:Organisation dpv:AcademicScientificOrganisation;
-  dct:description "I'm a third party user" ;
-  foaf:email "research@tcd.ie" .
+  dct:description "I'm a third party user" .

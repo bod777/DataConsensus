@@ -4,4 +4,5 @@
 
 <https://id.inrupt.com/odonneb4> a user:User ;
   foaf:name "Bríd O'Donnell" ;
+  foaf:email "bridodonnell@duck.com" ;
   user:hasUserType user:Admin .

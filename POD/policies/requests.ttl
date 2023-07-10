@@ -19,59 +19,46 @@ request:1 a odrl:Request;
     policy:adminApproved policy:Approved;
     odrl:uid request:1;
     odrl:profile oac: ;
-    odrl:permission request:1_permission:1 .
+    odrl:permission request:1_permission .
 
-request:1_permission:1 a odrl:Permission;
+request:1_permission a odrl:Permission;
     odrl:assigner <https://id.inrupt.com/DataConsensus> ;
     odrl:assignee <https://id.inrupt.com/DrJohnSmith> ;
     odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
     odrl:target dpvpd:MedicalHealth;
-    odrl:constraint request:1_permission:1_constraint:1, request:1_permission:1_constraint:2, request:1_permission:1_constraint:3, request:1_permission:1_constraint:4, request:1_permission:1_constraint:5, request:1_permission:1_constraint:6 .
+    odrl:constraint request:1_purposeConstraint, request:1_sellingDataConstraint, request:1_sellingInsightsConstraint, request:1_organisationConstraint, request:1_techOrgMeasureConstraint, request:1_recipientConstraint, request:1_durationConstraint .
         
-request:1_permission:1_constraint:1 a odrl:Constraint ;
-    odrl:and request:1_permission:1_constraint:1_and:1 .
-        
-request:1_permission:1_constraint:1_and:1 a odrl:And ;
+request:1_purposeConstraint a odrl:Constraint ;
     odrl:leftOperand oac:Purpose ;
     odrl:operator odrl:isA ;
     odrl:rightOperand dpv:AcademicResearch .
 
-request:1_permission:1_constraint:2 a odrl:Constraint ;
-    odrl:and request:1_permission:1_constraint:2_and:2 .
-        
-request:1_permission:1_constraint:2_and:2 a odrl:And ;
+request:1_sellingDataConstraint a odrl:Constraint ;
     odrl:leftOperand oac:Purpose ;
-    odrl:operator odrl:isNoneOf ;
-    odrl:rightOperand dpv:CommercialResearch, dpv:SellInsightsFromData, dpv:SellDataToThirdParties .
+    odrl:operator odrl:isNotA ;
+    odrl:rightOperand dpv:SellDataToThirdParties .
 
-request:1_permission:1_constraint:3 a odrl:Constraint ;
-    odrl:and request:1_permission:1_constraint:3_and:3 .
-        
-request:1_permission:1_constraint:3_and:3 a odrl:And ;
+request:1_sellingInsightsConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isNotA ;
+    odrl:rightOperand dpv:SellInsightsFromData .
+
+request:1_organisationConstraint a odrl:Constraint ;
     odrl:leftOperand oac:Organisation   ;
     odrl:operator odrl:isA ;
     odrl:rightOperand dpv:AcademicScientificOrganisation .
 
-request:1_permission:1_constraint:4 a odrl:Constraint ;
-    odrl:and request:1_permission:1_constraint:4_and:4 .
-        
-request:1_permission:1_constraint:4_and:4 a odrl:And ;
+request:1_techOrgMeasureConstraint a odrl:Constraint ;
     odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
     odrl:operator odrl:isAllOf ;
     odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:ComplianceMonitoring, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest .
 
-request:1_permission:1_constraint:5 a odrl:Constraint ;
-    odrl:and request:1_permission:1_constraint:5_and:5 .
-        
-request:1_permission:1_constraint:5_and:5 a odrl:And ;
+request:1_recipientConstraint a odrl:Constraint ;
     odrl:leftOperand oac:Recipient  ;
     odrl:operator odrl:isAnyOf ;
     odrl:rightOperand <https://id.inrupt.com/DrJohnSmith>, <https://id.inrupt.com/DataConsensus>, dpv:AcademicScientificOrganisation .
 
-request:1_permission:1_constraint:6 a odrl:Constraint ;
-    odrl:and request:1_permission:1_constraint:6_and:6 .
-        
-request:1_permission:1_constraint:6_and:6 a odrl:And ;
+request:1_durationConstraint a odrl:Constraint ;
     odrl:leftOperand dpv:UntilTimeDuration ;
     odrl:operator odrl:eq ;
     odrl:rightOperand "2023-12-31"^^xsd:date .
@@ -86,45 +73,49 @@ request:2 a odrl:Request;
     policy:adminApproved policy:Blocked;
     odrl:uid request:2;
     odrl:profile oac: ;
-    odrl:permission [
-        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
-        odrl:assignee <https://id.inrupt.com/AIG> ;
-        odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
-        odrl:target dpvpd:MedicalHealth;
-        odrl:constraint [
-            odrl:and [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:CommercialResearch
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isNoneOf ;
-                odrl:rightOperand dpv:SellDataToThirdParties
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Organisation   ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:ForProfitOrganisation
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
-                odrl:operator odrl:isAllOf ;
-                odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining,  dpv:CybersecurityTraining, dpv:NDA, dpv:ConsultationWithDPO, dpv:CertificationSeal, dpv:IncidentReportingCommunication, dpv:IncidentManagementProcedures, dpv:ComplianceMonitoring, dpv:LoggingPolicies, dpv:MultiFactorAuthentication, dpv:PhysicalAssessControlMethod, dpv:NeworkSecurityProtocols, dpv:EncryptionInTransfer, dpv:EncryptionAtRest, dpv:CryptographicMethods
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Recipient  ;
-                odrl:operator odrl:isAnyOf ;
-                odrl:rightOperand <https://id.inrupt.com/AIB>, <https://id.inrupt.com/DataConsensus>, dpv:AcademicScientificOrganisation
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand dpv:UntilTimeDuration ;
-                odrl:operator odrl:eq ;
-                odrl:rightOperand "2024-12-31"^^xsd:date 
-            ] 
-        ]
-    ] .
+    odrl:permission request:2_permission .
+
+request:2_permission a odrl:Permission;
+    odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+    odrl:assignee <https://id.inrupt.com/AIG> ;
+    odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
+    odrl:target dpvpd:MedicalHealth;
+    odrl:constraint request:2_purposeConstraint, request:2_sellingDataConstraint, request:2_sellingInsightsConstraint, request:2_organisationConstraint, request:2_techOrgMeasureConstraint, request:2_recipientConstraint, request:2_durationConstraint .
+        
+request:2_purposeConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:CommercialResearch .
+
+request:2_sellingDataConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isNotA ;
+    odrl:rightOperand dpv:SellDataToThirdParties .
+
+request:2_sellingInsightsConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose   ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:SellInsightsToThirdParties .
+
+request:2_organisationConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Organisation   ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:ForProfitOrganisation .
+
+request:2_techOrgMeasureConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
+    odrl:operator odrl:isAllOf ;
+    odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining,  dpv:CybersecurityTraining, dpv:NDA, dpv:ConsultationWithDPO, dpv:CertificationSeal, dpv:IncidentReportingCommunication, dpv:IncidentManagementProcedures, dpv:ComplianceMonitoring, dpv:LoggingPolicies, dpv:MultiFactorAuthentication, dpv:PhysicalAssessControlMethod, dpv:NeworkSecurityProtocols, dpv:EncryptionInTransfer, dpv:EncryptionAtRest, dpv:CryptographicMethods .
+
+request:2_recipientConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Recipient  ;
+    odrl:operator odrl:isAnyOf ;
+    odrl:rightOperand <https://id.inrupt.com/AIB>, <https://id.inrupt.com/DataConsensus>, dpv:AcademicScientificOrganisation .
+
+request:2_durationConstraint a odrl:Constraint ;
+    odrl:leftOperand dpv:UntilTimeDuration ;
+    odrl:operator odrl:eq ;
+    odrl:rightOperand "2024-12-31"^^xsd:date .
 
 
 request:3 a odrl:Request;
@@ -136,37 +127,46 @@ request:3 a odrl:Request;
     policy:adminApproved policy:Blocked;
     odrl:uid request:3;
     odrl:profile oac: ;
-    odrl:permission [
-        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
-        odrl:assignee <https://id.inrupt.com/FightDiabetesDublin>;
-        odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
-        odrl:target dpvpd:MedicalHealth;
-        odrl:constraint [
-            odrl:and [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:NonCommercialResearch
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isNoneOf ;
-                odrl:rightOperand dpv:SellDataToThirdParties
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Organisation   ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:NonProfitOrganisation
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
-                odrl:operator odrl:isAllOf ;
-                odrl:rightOperand dpv:PasswordAuthentication, dpv:OperatingSystemSecurity, dpv:EncryptionInTransfer 
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand dpv:UntilTimeDuration ;
-                odrl:operator odrl:eq ;
-                odrl:rightOperand "2044-12-31"^^xsd:date 
-            ] 
-        ]
-    ] .
+    odrl:permission request:3_permission .
+
+request:3_permission a odrl:Permission;
+    odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+    odrl:assignee <https://id.inrupt.com/FightDiabetesDublin>;
+    odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform ;
+    odrl:target dpvpd:MedicalHealth;
+    odrl:constraint request:3_purposeConstraint, request:3_sellingDataConstraint, request:3_sellingInsightsConstraint, request:3_organisationConstraint, request:3_techOrgMeasureConstraint, request:3_recipientConstraint, request:3_durationConstraint .
+        
+request:3_purposeConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:NonCommercialResearch .
+
+request:3_sellingDataConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isNotA ;
+    odrl:rightOperand dpv:SellDataToThirdParties .
+
+request:3_sellingInsightsConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:SellInsightsFromData .
+
+request:3_organisationConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Organisation   ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:NonProfitOrganisation .
+
+request:3_techOrgMeasureConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
+    odrl:operator odrl:isAllOf ;
+    odrl:rightOperand dpv:PasswordAuthentication, dpv:OperatingSystemSecurity, dpv:EncryptionInTransfer .
+
+request:3_recipientConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Recipient  ;
+    odrl:operator odrl:isAnyOf ;
+    odrl:rightOperand <https://id.inrupt.com/AIB>, <https://id.inrupt.com/DataConsensus>, dpv:AcademicScientificOrganisation .
+
+request:3_durationConstraint a odrl:Constraint ;
+    odrl:leftOperand dpv:UntilTimeDuration ;
+    odrl:operator odrl:eq ;
+    odrl:rightOperand "2044-12-31"^^xsd:date .

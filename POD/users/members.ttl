@@ -4,5 +4,6 @@
 
 <https://id.inrupt.com/johndoe> a user:User ;
   foaf:name "John Doe" ;
+  foaf:email "johndoe@example.com" ;
   user:hasUserType user:Member ;
   user:dataSource <http://example.com/pods/johndoe> .

@@ -1,19 +1,15 @@
 require("dotenv").config();
-const express = require('express');
-const router = express.Router();
-const {
-    getSessionFromStorage,
-    getSessionIdFromStorageAll,
-    Session
-} = require("@inrupt/solid-client-authn-node");
-const service = require("./CRUDService.js");
-import { grantAccess } from "./AccessControl.js";
+const router = require("express").Router();
+const service = require("../CRUDService.js");
+const { grantAccess } = require("../AccessControl.js");
+const { appSession } = require('../Index.js');
+const { Policy, Agreement, Proposal } = require("../Models/Policy.js");
 
 const resourceURL = process.env.RESOURCE_URL;
 
 /* SUBMISSION */
 
-app.post("/submitRequest", async function (req, res) {
+router.post("/submitRequest", async function (req, res) {
     const {
         title, description, user, organisation, purpose, sellingData, sellingInsights, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration
     } = req.body;
@@ -23,7 +19,7 @@ app.post("/submitRequest", async function (req, res) {
         title, description, creator: user, organisation
     };
     try {
-        const projectID = await service.createProject(project, applicationSession.sessionId);
+        const projectID = await service.createProject(project, appSession.sessionId);
         const policy = {
             type: "Request",
             project: projectID,
@@ -43,7 +39,7 @@ app.post("/submitRequest", async function (req, res) {
             adminApproved: "Pending"
         };
         try {
-            await service.createPolicy(policy, applicationSession.sessionId);
+            await service.createPolicy(policy, appSession.sessionId);
             res.send({ message: "Request submitted successfully." });
         }
         catch (error) {
@@ -57,7 +53,7 @@ app.post("/submitRequest", async function (req, res) {
     }
 });
 
-app.post("/submitOffer", async (req, res) => {
+router.post("/submitOffer", async (req, res) => {
     const {
         project, user, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration
     } = req.body;
@@ -81,7 +77,7 @@ app.post("/submitOffer", async (req, res) => {
         adminApproved: "Pending"
     };
     try {
-        await service.createPolicy(policy, applicationSession.sessionId);
+        await service.createPolicy(policy, appSession.sessionId);
         res.send({ message: "Offer submitted successfully." });
     }
     catch (error) {
@@ -91,7 +87,7 @@ app.post("/submitOffer", async (req, res) => {
 });
 
 /* APPROVAL */
-app.put("/approveRequest", async (req, res) => {
+router.put("/approveRequest", async (req, res) => {
     const { URL, status } = req.body;
 
     if (!URL) {
@@ -100,7 +96,7 @@ app.put("/approveRequest", async (req, res) => {
     }
 
     try {
-        await service.updatePolicyStatus({ policyURL: URL, actor: 'thirdPartyApproved', newStatus: status }, applicationSession.sessionId);
+        await service.updatePolicyStatus({ policyURL: URL, actor: 'thirdPartyApproved', newStatus: status }, appSession.sessionId);
         res.send({ message: "Request approved by third party successfully." });
     } catch (error) {
         console.error(error);
@@ -108,7 +104,7 @@ app.put("/approveRequest", async (req, res) => {
     }
 });
 
-app.put("/approvePolicy", async (req, res) => {
+router.put("/approvePolicy", async (req, res) => {
     const { URL, status } = req.body;
 
     if (!URL) {
@@ -117,10 +113,25 @@ app.put("/approvePolicy", async (req, res) => {
     }
 
     try {
-        await service.updatePolicyStatus({ policyURL: URL, actor: 'adminApproved', newStatus: status }, applicationSession.sessionId);
-        await service.updateProject({ projectURL: URL, agreememt: true }, applicationSession.sessionId);
-        const policy = await service.getPolicy(URL, applicationSession.sessionId)
-        await service.createPolicy()
+        await service.updatePolicyStatus({ policyURL: URL, actor: 'adminApproved', newStatus: status }, appSession.sessionId);
+        await service.updateProject({ projectURL: URL, agreememt: true }, appSession.sessionId);
+        const policy = await proposal.fetchPolicy(URL, appSession.sessionId);
+        const agreement = {
+            type: "Agreement",
+            project: policy.partOf,
+            creator: policy.creator,
+            references: URL,
+            assigner: policy.assigner,
+            assignee: policy.assignee,
+            purpose: policy.purpose,
+            sellingData: policy.sellingData,
+            sellingInsights: policy.sellingInsights,
+            organisation: policy.organisation,
+            orgTechMeasures: policy.techOrgMeasures,
+            recipients: policy.recipients,
+            untilTimeDuration: policy.untilTimeDuration
+        };
+        await service.createPolicy(agreement, appSession.sessionId)
         const thirdParty = policy.assignee;
         grantAccess(resourceURL, thirdParty);
         res.send({ message: "Policy approved by admin successfully." });
@@ -130,7 +141,7 @@ app.put("/approvePolicy", async (req, res) => {
     }
 });
 
-app.put("/updateProject", async (req, res) => {
+router.put("/updateProject", async (req, res) => {
     const {
         projectURL, title, description, requestTime, offerTime, threshold, agreement
     } = req.body;
@@ -154,7 +165,7 @@ app.put("/updateProject", async (req, res) => {
         if (agreement) projectToUpdate.agreement = agreement;
 
         // Call the updateProject function
-        await service.updateProject(projectToUpdate, applicationSession.sessionId);
+        await service.updateProject(projectToUpdate, appSession.sessionId);
 
         res.send({ message: "Project updated successfully." });
     } catch (error) {
@@ -165,9 +176,9 @@ app.put("/updateProject", async (req, res) => {
 
 /* FETCHING */
 
-app.get("/allRequests", async function (req, res) {
+router.get("/allRequests", async function (req, res) {
     try {
-        const requests = await service.getPolicies("Request", applicationSession.sessionId);
+        const requests = await service.getPolicies("Request", appSession.sessionId);
         res.send({ data: requests });
     } catch (error) {
         console.error(error); // log the error for debugging
@@ -175,9 +186,9 @@ app.get("/allRequests", async function (req, res) {
     }
 });
 
-app.get("/allOffers", async (req, res) => {
+router.get("/allOffers", async (req, res) => {
     try {
-        const offers = await service.getPolicies("Offer", applicationSession.sessionId);
+        const offers = await service.getPolicies("Offer", appSession.sessionId);
         res.send({ data: offers });
     } catch (error) {
         console.error(error); // log the error for debugging
@@ -185,9 +196,9 @@ app.get("/allOffers", async (req, res) => {
     }
 });
 
-app.get("/allAgreements", async (req, res) => {
+router.get("/allAgreements", async (req, res) => {
     try {
-        const agreements = await service.getPolicies("Agreement", applicationSession.sessionId);
+        const agreements = await service.getPolicies("Agreement", appSession.sessionId);
         res.send({ data: agreements });
     } catch (error) {
         console.error(error); // log the error for debugging
@@ -195,9 +206,9 @@ app.get("/allAgreements", async (req, res) => {
     }
 });
 
-app.get("/getPolicy", async function (req, res) {
+router.get("/getPolicy", async function (req, res) {
     try {
-        const policy = await service.getPolicy(req.body.url, applicationSession.sessionId);
+        const policy = await service.getPolicy(req.body.url, appSession.sessionId);
         res.send({ data: policy });
     } catch (error) {
         console.error(error); // log the error for debugging
@@ -207,9 +218,9 @@ app.get("/getPolicy", async function (req, res) {
 
 /* REMOVAL */
 
-app.delete("/removeOffer", async (req, res) => {
+router.delete("/removeOffer", async (req, res) => {
     try {
-        await service.removePolicy("Offer", req.body.id, applicationSession.sessionId);
+        await service.removePolicy("Offer", req.body.id, routerlicationSession.sessionId);
         res.send({ message: "Offer removed successfully" });
     } catch (error) {
         console.error(error); // log the error for debugging
@@ -217,9 +228,9 @@ app.delete("/removeOffer", async (req, res) => {
     }
 });
 
-app.delete("/removeRequest", async (req, res) => {
+router.delete("/removeRequest", async (req, res) => {
     try {
-        await service.removePolicy("Request", req.body.id, applicationSession.sessionId);
+        await service.removePolicy("Request", req.body.id, appSession.sessionId);
         res.send({ message: "Request removed successfully" });
     } catch (error) {
         console.error(error); // log the error for debugging
@@ -227,12 +238,14 @@ app.delete("/removeRequest", async (req, res) => {
     }
 });
 
-app.delete("/removeAgreement", async (req, res) => {
+router.delete("/removeAgreement", async (req, res) => {
     try {
-        await service.removePolicy("Agreement", req.body.id, applicationSession.sessionId);
+        await service.removePolicy("Agreement", req.body.id, appSession.sessionId);
         res.send({ message: "Agreement removed successfully" });
     } catch (error) {
         console.error(error); // log the error for debugging
         res.status(500).send({ message: "Error in removing agreement", error: error.message });
     }
 });
+
+module.exports = router;

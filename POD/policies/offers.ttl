@@ -19,48 +19,48 @@ offer:1 a odrl:Offer ;
     policy:memberApproved policy:Approved;
     policy:adminApproved policy:Approved;
     odrl:uid offer:1 ;
-    odrl:profile oac: ;
-    odrl:permission [
-        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
-        odrl:assignee <https://id.inrupt.com/FightDiabetesDublin>;
-        odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform;
-        odrl:target dpvpd:MedicalHealth;
-        odrl:constraint [
-            odrl:and [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:NonCommercialResearch
-            ],
-            [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isNoneOf ;
-                odrl:rightOperand dpv:CommercialResearch, dpv:SellInsightsFromData, dpv:SellDataToThirdParties
-            ],
-            [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Organisation   ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:NonProfitOrganisation
-            ],
-            [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
-                odrl:operator odrl:isAllOf ;
-                odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:OperatingSystemSecurity, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest
-            ],
-            [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Recipient  ;
-                odrl:operator odrl:isAnyOf ;
-                odrl:rightOperand <https://id.inrupt.com/FightDiabetesDublin>, <https://id.inrupt.com/DataConsensus>
-            ],
-            [
-                a odrl:Constraint ;
-                odrl:leftOperand dpv:UntilTimeDuration ;
-                odrl:operator odrl:eq ;
-                odrl:rightOperand "2024-06-31"^^xsd:date
-            ]
-        ]
-    ] .
+    odrl:profile oac: ;        
+    odrl:permission offer:1_permission .
+
+offer:1_permission a odrl:Permission;
+    odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+    odrl:assignee <https://id.inrupt.com/FightDiabetesDublin>;
+    odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform;
+    odrl:target dpvpd:MedicalHealth;
+    odrl:constraint offer:1_purposeConstraint, offer:1_sellingDataConstraint, offer:1_sellingInsightsConstraint, offer:1_organisationConstraint, offer:1_techOrgMeasureConstraint, offer:1_recipientConstraint, offer:1_durationConstraint .
+        
+offer:1_purposeConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:NonCommercialResearch .
+
+offer:1_sellingDataConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isNotA ;
+    odrl:rightOperand dpv:SellDataToThirdParties .
+
+offer:1_sellingInsightsConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isNotA ;
+    odrl:rightOperand dpv:SellInsightsFromData .
+
+offer:1_organisationConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Organisation   ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:NonProfitOrganisation .
+
+offer:1_techOrgMeasureConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
+    odrl:operator odrl:isAllOf ;
+    odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:OperatingSystemSecurity, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest .
+
+offer:1_recipientConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Recipient  ;
+    odrl:operator odrl:isAnyOf ;
+    odrl:rightOperand <https://id.inrupt.com/FightDiabetesDublin>, <https://id.inrupt.com/DataConsensus> .
+
+offer:1_durationConstraint a odrl:Constraint ;
+    odrl:leftOperand dpv:UntilTimeDuration ;
+    odrl:operator odrl:eq ;
+    odrl:rightOperand "2024-06-31"^^xsd:date .
+

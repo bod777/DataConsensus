@@ -3,19 +3,19 @@ const {
     addUrl,
     addStringNoLocale,
     buildThing,
-    createSolidDataset,
     createThing,
     setThing,
     saveSolidDatasetAt,
     getThing,
     getSolidDataset,
+    getFile,
+    isRawData,
+    getContentType,
+    getSourceUrl
 } = require("@inrupt/solid-client");
 const { getSessionFromStorage } = require("@inrupt/solid-client-authn-node");
-const { SCHEMA_INRUPT, RDF, FOAF, DCTERMS } = require("@inrupt/vocab-common-rdf");
-const csvtojson = require("csvtojson"); // To convert CSV to JSON
-const N3 = require('n3'); // To convert JSON to Turtle format
-
-const { addMemberData } = require(".logic/MemberLogic.js");
+const { FOAF, DCTERMS } = require("@inrupt/vocab-common-rdf");
+const Transformer = require('./Logic/Transformer');
 
 const user = process.env.USER;
 const policy = process.env.POLICY;
@@ -65,11 +65,12 @@ function generateID(solidDataset) {
     return ID;
 }
 
+
 module.exports = {
 
     /* USER RELATED FUNCTIONS */
 
-    checkUser: async function (req, sessionID) {
+    checkUserByType: async function (req, sessionID) {
         session = await getSessionFromStorage(sessionID);
 
         let datasetURL = memberURL;
@@ -92,6 +93,22 @@ module.exports = {
         return false;
     },
 
+    checkUser: async function (req, sessionID) {
+        session = await getSessionFromStorage(sessionID);
+
+        let datasetURLs = [memberURL, thirdPartyURL, adminURL];
+        for (const datasetURL of datasetURLs) {
+            const solidDataset = await (this.getGivenSolidDataset(datasetURL, session));
+            const user = getThing(solidDataset, datasetURL + "#" + req.webId);
+            if (user) {
+                return datasetURL;
+            }
+        }
+        if (!user) {
+            return false;
+        }
+    },
+
     addMember: async function (req, sessionID) {
         session = await getSessionFromStorage(sessionID);
 
@@ -100,15 +117,12 @@ module.exports = {
         //building user details as thing
         const newMember = buildThing(createThing({ name: req.webId }))
             .addUrl(rdf.type, `${user}#User`)
-            .addStringNoLocale(foaf.name, req.name)
+            .addStringNoLocale(FOAF.name, req.name)
             .addUrl(`${user}#hasUserType`, `${user}#Member`) // specifying USER TYPE (Member, ThirdParty, Admin)
-            .addUrl(`${user}#dataSource`, req.DataSource) // specifying datasource
+            .addUrl(`${user}#dataSource`, req.dataSource) // specifying datasource
             .build();
 
-        addMemberData();
-
         solidDataset = setThing(solidDataset, newMember);
-        //saving user details
         this.saveGivenSolidDataset(memberURL, solidDataset, session);
     },
 
@@ -119,16 +133,48 @@ module.exports = {
 
         const newThirdParty = buildThing(createThing({ name: req.webId }))
             .addUrl(rdf.type, `${user}#User`)
-            .addStringNoLocale(foaf.email, "research@tcd.ie")
-            .addStringNoLocale(foaf.name, "Trinity College Dublin")
+            .addStringNoLocale(FOAF.email, req.email)
+            .addStringNoLocale(FOAF.name, req.name)
             .addUrl(`${user}#hasUserType`, `${user}#ThirdParty`)
             .addUrl("https://w3id.org/dpv#Organisation", `https://w3id.org/dpv#${req.org}`)
             .addStringNoLocale(DCTERMS.description, req.description)
             .build();
 
         solidDataset = setThing(solidDataset, newThirdParty);
-        //saving user details
         this.saveGivenSolidDataset(memberURL, solidDataset, session);
+    },
+
+    getUser: async function (req, sessionID) {
+        session = await getSessionFromStorage(sessionID);
+        let datasetURL = req.userType;
+        const solidDataset = await (this.getGivenSolidDataset(datasetURL, session));
+        const user = getThing(solidDataset, datasetURL + "#" + req.webId);
+        return user;
+    },
+
+    updateUser: async function (req, sessionID) {
+        session = await getSessionFromStorage(sessionID);
+        let solidDataset = await (this.getGivenSolidDataset(req.datasetURL, session));
+        let projectToUpdate = getThing(solidDataset, req.webID);
+
+        if (req.name) {
+            projectToUpdate = setStringNoLocale(projectToUpdate, FOAF.name, req.title);
+        }
+        if (req.email) {
+            projectToUpdate = setStringNoLocale(projectToUpdate, FOAF.email, req.description);
+        }
+        if (req.org) {
+            projectToUpdate = setUrl(projectToUpdate, `https://w3id.org/dpv#Organisation`, `https://w3id.org/dpv#${req.org}`);
+        }
+        if (req.dataSource) {
+            projectToUpdate = setUrl(projectToUpdate, `${user}#dataSource`, req.dataSource);
+        }
+        if (req.description) {
+            projectToUpdate = setStringNoLocale(projectToUpdate, DCTERMS.description, req.description);
+        }
+
+        solidDataset = setThing(solidDataset, projectToUpdate);
+        this.saveGivenSolidDataset(req.datasetURL, solidDataset, session);
     },
 
     getMemberCount: async function (sessionID) {
@@ -155,20 +201,6 @@ module.exports = {
 
     /* POLICY RELATED FUNCTIONS */
 
-    getPolicy: async function (policyURL, sessionID) {
-        session = await getSessionFromStorage(sessionID);
-
-        let datasetURL = getDatasetUrl(getPolicyType(policyURL));
-
-        const solidDataset = await (this.getGivenSolidDataset(datasetURL, session));
-        const policy = await getThing(solidDataset, policyURL);
-
-        if (policy) {
-            return policy;
-        }
-        return null;
-    },
-
     getPolicies: async function (req, sessionID) {
         session = await getSessionFromStorage(sessionID);
 
@@ -188,13 +220,6 @@ module.exports = {
         session = await getSessionFromStorage(sessionID);
 
         let datasetURL = getDatasetUrl(req.type);
-        let date_ob = new Date();
-        let date = ("0" + date_ob.getDate()).slice(-2);
-        // current month
-        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-        // current year
-        let year = date_ob.getFullYear();
-        let currentDate = year + "-" + month + "-" + date;
 
         let creator = req.creator;
         let assigner = req.assigner;
@@ -203,22 +228,13 @@ module.exports = {
         let sellingData = req.sellingData;
         let sellingInsights = req.sellingInsights;
         let organisation = req.organisation;
-        let technicalMeasures = req.technicalMeasures;
-        let organisationalMeasures = req.organisationalMeasures;
+        let techOrgMeasures = req.techOrgMeasures;
         let recipients = req.recipients;
         let untilTimeDuration = req.untilTimeDuration;
-        let thirdPartyApproved = req.thirdPartyApproved;
-        let memberApproved = req.memberApproved;
-        let adminApproved = req.adminApproved;
         let project = req.project;
 
         let measuresArray = [];
-        technicalMeasures.forEach(function (value) {
-            if (value.completed) {
-                measuresArray.push(value.name);
-            }
-        });
-        organisationalMeasures.forEach(function (value) {
+        techOrgMeasures.forEach(function (value) {
             if (value.completed) {
                 measuresArray.push(value.name);
             }
@@ -233,30 +249,29 @@ module.exports = {
         let solidDataset = await (this.getGivenSolidDataset(datasetURL, session));
         let policyID = generateID(solidDataset);
 
-        const organisationConstraint = buildThing(createThing())
+        const organisationConstraint = buildThing(createThing({ name: `${datasetURL}#${policyID}_organisationConstraint` }))
             .addUrl(`${odrl}#leftOperand`, `${oac}#Organisation`)
             .addUrl(`${odrl}#operator`, `${odrl}#isA`)
             .addUrl(`${odrl}#rightOperand`, `${dpv}#${organisation}`)
             .build();
 
-        const durationConstraint = buildThing(createThing())
+        const durationConstraint = buildThing(createThing({ name: `${datasetURL}#${policyID}_durationConstraint` }))
             .addUrl(`${odrl}#leftOperand`, `${dpv}#UntilTimeDuration`)
             .addUrl(`${odrl}#operator`, `${odrl}#eq`)
             .addUrl(`${odrl}#rightOperand`, `${dpv}#${untilTimeDuration}`)
             .build();
 
-        let newConstraint = buildThing(createThing())
-            .addUrl(`${odrl}#and`, purposeConstraint)
-            .addUrl(`${odrl}#and`, organisationConstraint)
-            .addUrl(`${odrl}#and`, durationConstraint);
-
-        const purposeConstraint = buildThing(createThing())
+        const purposeConstraint = buildThing(createThing({ name: `${datasetURL}#${policyID}_purposeConstraint` }))
             .addUrl(`${odrl}#leftOperand`, `${oac}#Purpose`)
             .addUrl(`${odrl}#operator`, `${odrl}#isA`)
             .addUrl(`${odrl}#rightOperand`, `${dpv}#${purpose}`)
             .build();
 
-        let sellingDataConstraint = buildThing(createThing())
+        solidDataset = setThing(solidDataset, organisationConstraint);
+        solidDataset = setThing(solidDataset, durationConstraint);
+        solidDataset = setThing(solidDataset, purposeConstraint);
+
+        let sellingDataConstraint = buildThing(createThing({ name: `${datasetURL}#${policyID}_sellingDataConstraint` }))
         if (sellingData) {
             sellingDataConstraint = sellingDataConstraint
                 .addUrl(`${odrl}#leftOperand`, `${oac}#Purpose`)
@@ -270,9 +285,9 @@ module.exports = {
                 .addUrl(`${odrl}#rightOperand`, `${dpv}#SellDataToThirdParties`);
         }
         sellingDataConstraint = sellingDataConstraint.build();
-        newConstraint = newConstraint.addUrl(`${odrl}#and`, sellingDataConstraint);
+        solidDataset = setThing(solidDataset, sellingDataConstraint);
 
-        let sellingInsightsConstraint = buildThing(createThing())
+        let sellingInsightsConstraint = buildThing(createThing({ name: `${datasetURL}#${policyID}_sellingInsightsConstraint` }))
         if (sellingInsights) {
             sellingInsightsConstraint = sellingInsightsConstraint
                 .addUrl(`${odrl}#leftOperand`, `${oac}#Purpose`)
@@ -286,10 +301,10 @@ module.exports = {
                 .addUrl(`${odrl}#rightOperand`, `${dpv}#SellInsightsFromData`);
         }
         sellingInsightsConstraint = sellingInsightsConstraint.build();
-        newConstraint = newConstraint.addUrl(`${odrl}#and`, sellingInsightsConstraint);
+        solidDataset = setThing(solidDataset, sellingInsightsConstraint);
 
         if (measuresArray.length > 0) {
-            let techOrgMeasureConstraint = buildThing(createThing())
+            let techOrgMeasureConstraint = buildThing(createThing({ name: `${datasetURL}#${policyID}_techOrgMeasureConstraint` }))
                 .addUrl(`${odrl}#leftOperand`, `${oac}#TechnicalOrganisationalMeasure`)
                 .addUrl(`${odrl}#operator`, `${odrl}#isAllOf`)
                 .addUrl(`${odrl}#rightOperand`, organisation)
@@ -299,10 +314,10 @@ module.exports = {
             });
 
             techOrgMeasureConstraint = techOrgMeasureConstraint.build();
-            newConstraint = newConstraint.addUrl(`${odrl}#and`, techOrgMeasureConstraint);
+            solidDataset = setThing(solidDataset, techOrgMeasureConstraint);
         }
         if (recipientsArray.length > 0) {
-            let recipientConstraint = buildThing(createThing())
+            let recipientConstraint = buildThing(createThing({ name: `${datasetURL}#${policyID}_recipientConstraint` }))
                 .addUrl(`${odrl}#leftOperand`, `${oac}#Recipient`)
                 .addUrl(`${odrl}#operator`, `${odrl}#isAllOf`)
                 .addUrl(`${odrl}#rightOperand`, recipientsArray)
@@ -310,13 +325,11 @@ module.exports = {
             recipientsArray.forEach((item) => {
                 recipientConstraint = recipientConstraint.addUrl(`${odrl}#rightOperand`, item);
             });
-
             recipientConstraint = recipientConstraint.build();
-            newConstraint = newConstraint.addUrl(`${odrl}#and`, recipientConstraint);
+            solidDataset = setThing(solidDataset, recipientConstraint);
         }
-        newConstraint = newConstraint.build();
 
-        const newPermission = buildThing(createThing())
+        const newPermission = buildThing(createThing({ name: `${datasetURL}#${policyID}_permission` }))
             .addUrl(`${odrl}#assigner`, assigner)
             .addUrl(`${odrl}#assignee`, assignee)
             .addUrl(`${odrl}#action`, `${dpv}#Use`)
@@ -325,25 +338,38 @@ module.exports = {
             .addUrl(`${odrl}#action`, `${dpv}#Store`)
             .addUrl(`${odrl}#action`, `${dpv}#Remove`)
             .addUrl(`${odrl}#target`, `https://w3id.org/dpv/dpv-pd#MedicalHealth`)
-            .addUrl(`${odrl}#permission`, newConstraint)
+            .addUrl(`${odrl}#constraint`,
+                `${datasetURL}#${policyID}_organisationConstraint`,
+                `${datasetURL}#${policyID}_durationConstraint`,
+                `${datasetURL}#${policyID}_purposeConstraint`,
+                `${datasetURL}#${policyID}_sellingDataConstraint`,
+                `${datasetURL}#${policyID}_sellingInsightsConstraint`,
+                `${datasetURL}#${policyID}_techOrgMeasureConstraint`,
+                `${datasetURL}#${policyID}_recipientConstraint`)
             .build();
+
+        solidDataset = setThing(solidDataset, newPermission);
 
         let newPolicy = buildThing(createThing({ name: `${datasetURL}#${policyID}` }))
             .addUrl(rdf_type, `${odrl}#${req.type}`)
             .addUrl(DCTERMS.creator, creator)
-            .addStringNoLocale(DCTERMS.issued, currentDate)
+            .addStringNoLocale(DCTERMS.issued, new Date())
             .addUrl(DCTERMS.isPartOf, `${projectsURL}#${project}`)
             .addUrl(`${odrl}#uid`, `${datasetURL}#${policyID}`)
             .addUrl(`${odrl}#profile`, `${oac}`)
-            .addUrl(`${odrl}#permission`, newPermission);
+            .addUrl(`${odrl}#permission`, `${datasetURL}#${policyID}_permission`);
 
         if (req.type == "Request" || req.type == "Offer") {
+            let thirdPartyApproved = req.thirdPartyApproved;
+            let memberApproved = req.memberApproved;
+            let adminApproved = req.adminApproved;
             newPolicy = newPolicy
                 .addUrl(`${policy}#thirdPartyApproved`, `${policy}#${thirdPartyApproved}`)
                 .addUrl(`${policy}#memberApproved`, `${policy}#${memberApproved}`)
                 .addUrl(`${policy}#adminApproved`, `${policy}#${adminApproved}`);
         }
         else {
+            let references = req.references;
             newPolicy = newPolicy
                 .addUrl(DCTERMS.references, references)
                 .addUrl(`${dpv}#hasDataSubject`, `${dpv}#${req.assigner}`)
@@ -609,27 +635,81 @@ module.exports = {
 
     /* RESOURCE FUNCTION */
 
-    createResource: async function (csv, sessionID) {
-        session = await getSessionFromStorage(sessionID);
+    addNewData: async function (fileURL, appSessionID, userSessionID) {
+        try {
+            const userSession = await getSessionFromStorage(userSessionID);
+            const appSession = await getSessionFromStorage(appSessionID);
 
-        const jsonArray = await csvtojson().fromString(csv);
-        const writer = new N3.Writer({ prefixes: { dbpedia: 'http://dbpedia.org/ontology/' } });
-        jsonArray.forEach((item) => {
-            writer.addQuad(
-                writer.blankNode(),
-                writer.iri('http://dbpedia.org/ontology/' + item.property),
-                writer.literal(item.value, 'http://www.w3.org/2001/XMLSchema#string')
-            );
-        });
-        let turtleDocument;
-        writer.end((error, result) => { turtleDocument = result; });
+            const file = await getFile(fileURL, userSession.fetch);
 
-        const newResource = createSolidDataset();
-        newResource.add(turtleDocument);
-        this.saveGivenSolidDataset(resourceURL, solidDataset, session);
-        return savedDataset;
+            console.log(`Fetched a ${getContentType(file)} file from ${getSourceUrl(file)}.`);
+            console.log(`The file is ${isRawData(file) ? "not " : ""}a dataset.`);
+
+            const fileHash = await Transformer.hashFileURL(fileURL);
+            const arrayBuffer = await file.arrayBuffer();
+            const data = new Uint8Array(arrayBuffer);
+            const csvText = new TextDecoder().decode(data);
+            const updatedCsvText = Transformer.addColumnToCSV(csvText, "identifier", fileHash);
+
+            // Append the updated data to the existing CSV file in the SOLID pod
+            const existingFile = await getFile(resourceURL, appSession.fetch);
+            const existingArrayBuffer = await existingFile.arrayBuffer();
+            const existingData = new Uint8Array(existingArrayBuffer);
+            const existingCsvText = new TextDecoder().decode(existingData);
+
+            const appendedCsvText = existingCsvText + '\n' + updatedCsvText;
+            const appendedData = new TextEncoder().encode(appendedCsvText);
+
+            const updatedFile = new File([appendedData], resourceURL, { type: 'text/csv' });
+            await saveFileToPod(updatedFile, resourceURL);
+
+            console.log(`Appended CSV data has been saved to ${resourceURL}.`);
+
+        } catch (error) {
+            console.log(error);
+        }
     },
 
+    removeData: async function (fileURL, fetch) {
+        try {
+            const fileHash = await Transformer.hashFileURL(fileURL);
+
+            const file = await getFile(
+                resourceURL,
+                { fetch: fetch }
+            );
+            const arrayBuffer = await file.arrayBuffer();
+            const data = new Uint8Array(arrayBuffer);
+            const csvText = new TextDecoder().decode(data);
+
+            const rows = csvText.split('\n');
+            const matchingRowIndices = [];
+
+            for (let i = 0; i < rows.length; i++) {
+                const columns = rows[i].split(',');
+                const identifier = columns[2];
+                if (identifier === fileHash) {
+                    matchingRowIndices.push(i);
+                }
+            }
+
+            if (matchingRowIndices.length > 0) {
+                for (let i = matchingRowIndices.length - 1; i >= 0; i--) {
+                    const matchingRowIndex = matchingRowIndices[i];
+                    rows.splice(matchingRowIndex, 1);
+                }
+                const updatedCsvText = rows.join('\n');
+                const updatedData = new TextEncoder().encode(updatedCsvText);
+                const updatedFile = new File([updatedData], resourceURL, { type: 'text/csv' });
+                await saveFileToPod(updatedFile, resourceURL);
+            } else {
+                console.log(`No data found for the hashed identifier: ${hashedIdentifier}`);
+                return null;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    },
     /* HELPER FUNCTIONS */
 
     getGivenSolidDataset: async function (datasetURL, session) {
@@ -642,6 +722,6 @@ module.exports = {
             courseSolidDataset,      // fetch from authenticated Session
             { fetch: session.fetch }
         );
-    },
+    }
 }
 

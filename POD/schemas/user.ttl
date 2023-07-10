@@ -45,5 +45,5 @@ dct:description a rdf:Property ;
     rdfs:range xsd:string .
 
 dpv:email a rdf:Property ;
-    rdfs:domain user:ThirdParty ;
+    rdfs:domain user:User ;
     rdfs:range xsd:string .

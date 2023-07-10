@@ -11,60 +11,62 @@
 @prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/requests#> .
 @prefix agreement: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/agreements#> .
 
-agreement:1 a odrl:Agreement ;
-    odrl:profile oac: ;  
-    dct:description "To use CGM data to explore how glucose levels vary throughout the day" ;
+agreement:1 a odrl:Agreement ; 
     dct:creator <https://id.inrupt.com/odonneb4> ;
     dct:issued "2023-06-08T18:13:37"^^xsd:dateTime ;
     dct:isPartOf project:1 ;
     odrl:uid agreement:1 ;
+    odrl:profile oac: ; 
     dct:references request:1 ;
     dpv:hasDataSubject <https://id.inrupt.com/DataConsensus> ;
     dpv:hasJointDataController <https://id.inrupt.com/DataConsensus>, <https://id.inrupt.com/DrJohnSmith> ;
     dpv:hasLegalBasis dpv:Consent ;
-    odrl:permission [
-        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
-        odrl:assignee <https://id.inrupt.com/DrJohnSmith> ;
-        odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform;
-        odrl:target dpvpd:MedicalHealth;
-        odrl:constraint [
-            odrl:and [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:AcademicResearch
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isNoneOf ;
-                odrl:rightOperand dpv:CommercialResearch, dpv:SellInsightsFromData, dpv:SellDataToThirdParties
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Organisation ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:AcademicScientificOrganisation
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:TechnicalOrganisationalMeasure ;
-                odrl:operator odrl:isAllOf ;
-                odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:ComplianceMonitoring, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Recipient ;
-                odrl:operator odrl:isAnyOf ;
-                odrl:rightOperand <https://id.inrupt.com/DrJohnSmith>, <https://id.inrupt.com/DataConsensus>, dpv:AcademicScientificOrganisation
-            ] , [
-                a odrl:Constraint ;
-                odrl:leftOperand dpv:UntilTimeDuration ;
-                odrl:operator odrl:eq ;
-                odrl:rightOperand "2023-12-31"^^xsd:date
-            ]
-        ]
-    ] .
+    odrl:permission agreement:1_permission .
+
+agreement:1_permission a odrl:Permission ;
+    odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+    odrl:assignee <https://id.inrupt.com/DrJohnSmith> ;
+    odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform;
+    odrl:target dpvpd:MedicalHealth;
+    odrl:constraint agreement:1_purposeConstraint, agreement:1_sellingDataConstraint, agreement:1_sellingInsightsConstraint, agreement:1_organisationConstraint, agreement:1_techOrgMeasureConstraint, agreement:1_recipientConstraint, agreement:1_durationConstraint .
+
+agreement:1_purposeConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:AcademicResearch .
+
+agreement:1_sellingDataConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isNotA ;
+    odrl:rightOperand dpv:SellDataToThirdParties .
+
+agreement:1_sellingInsightsConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isNotA ;
+    odrl:rightOperand dpv:SellInsightsFromData .
+
+agreement:1_organisationConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Organisation   ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:AcademicScientificOrganisation .
+
+agreement:1_techOrgMeasureConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
+    odrl:operator odrl:isAllOf ;
+    odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:ComplianceMonitoring, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest .
+
+agreement:1_recipientConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Recipient  ;
+    odrl:operator odrl:isAnyOf ;
+    odrl:rightOperand <https://id.inrupt.com/DrJohnSmith>, <https://id.inrupt.com/DataConsensus>, dpv:AcademicScientificOrganisation .
+
+agreement:1_durationConstraint a odrl:Constraint ;
+    odrl:leftOperand dpv:UntilTimeDuration ;
+    odrl:operator odrl:eq ;
+    odrl:rightOperand "2023-12-31"^^xsd:date .
 
 agreement:2 a odrl:Agreement ;
     odrl:profile oac: ;  
-    dct:description "To use CGM data to explore how glucose levels vary throughout the day" ;
     dct:creator <https://id.inrupt.com/odonneb4> ;
     dct:issued "2023-06-08T18:13:37"^^xsd:dateTime ;
     dct:isPartOf project:3 ;
@@ -73,47 +75,47 @@ agreement:2 a odrl:Agreement ;
     dpv:hasDataSubject <https://id.inrupt.com/DataConsensus> ;
     dpv:hasJointDataController <https://id.inrupt.com/DataConsensus>, <https://id.inrupt.com/FightDiabetesDublin> ;
     dpv:hasLegalBasis dpv:Consent ;
-    odrl:permission [
-        odrl:assigner <https://id.inrupt.com/DataConsensus> ;
-        odrl:assignee <https://id.inrupt.com/FightDiabetesDublin> ;
-        odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform;
-        odrl:target dpvpd:MedicalHealth;
-        odrl:constraint [
-            odrl:and [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:NonCommercialResearch
-            ],
-            [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Purpose ;
-                odrl:operator odrl:isNoneOf ;
-                odrl:rightOperand dpv:CommercialResearch, dpv:SellInsightsFromData, dpv:SellDataToThirdParties
-            ],
-            [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Organisation   ;
-                odrl:operator odrl:isA ;
-                odrl:rightOperand dpv:NonProfitOrganisation
-            ],
-            [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
-                odrl:operator odrl:isAllOf ;
-                odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:OperatingSystemSecurity, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest
-            ],
-            [
-                a odrl:Constraint ;
-                odrl:leftOperand oac:Recipient  ;
-                odrl:operator odrl:isAnyOf ;
-                odrl:rightOperand <https://id.inrupt.com/FightDiabetesDublin>, <https://id.inrupt.com/DataConsensus>
-            ],
-            [
-                a odrl:Constraint ;
-                odrl:leftOperand dpv:UntilTimeDuration ;
-                odrl:operator odrl:eq ;
-                odrl:rightOperand "2024-06-31"^^xsd:date
-            ]
-        ]
-    ] .
+    odrl:permission agreement:2_permission .
+
+agreement:2_permission a odrl:Permission ;
+    odrl:assigner <https://id.inrupt.com/DataConsensus> ;
+    odrl:assignee <https://id.inrupt.com/FightDiabetesDublin> ;
+    odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform;
+    odrl:target dpvpd:MedicalHealth;
+    odrl:constraint agreement:2_purposeConstraint, agreement:2_sellingDataConstraint, agreement:2_sellingInsightsConstraint, agreement:2_organisationConstraint, agreement:2_techOrgMeasureConstraint, agreement:2_recipientConstraint, agreement:2_durationConstraint .
+
+agreement:2_purposeConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:NonCommercialResearch .
+
+agreement:2_sellingDataConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isNotA ;
+    odrl:rightOperand dpv:SellDataToThirdParties .
+
+agreement:2_sellingInsightsConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Purpose ;
+    odrl:operator odrl:isNotA ;
+    odrl:rightOperand dpv:SellInsightsFromData .
+
+agreement:2_organisationConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Organisation   ;
+    odrl:operator odrl:isA ;
+    odrl:rightOperand dpv:AcademicScientificOrganisation .
+
+agreement:2_techOrgMeasureConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
+    odrl:operator odrl:isAllOf ;
+    odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:OperatingSystemSecurity, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest .
+
+agreement:2_recipientConstraint a odrl:Constraint ;
+    odrl:leftOperand oac:Recipient  ;
+    odrl:operator odrl:isAnyOf ;
+    odrl:rightOperand <https://id.inrupt.com/FightDiabetesDublin>, <https://id.inrupt.com/DataConsensus> .
+
+agreement:2_durationConstraint a odrl:Constraint ;
+    odrl:leftOperand dpv:UntilTimeDuration ;
+    odrl:operator odrl:eq ;
+    odrl:rightOperand "2024-06-31"^^xsd:date .
+
