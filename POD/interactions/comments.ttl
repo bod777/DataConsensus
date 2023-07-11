@@ -7,7 +7,7 @@
 @prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/requests#> .
 @prefix pod: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/comments#> .
 
-pod:Comment1 a comment:Comment ;
+pod:1 a comment:Comment ;
     dct:created "2023-06-23T12:34:56Z"^^xsd:dateTime ;
     dct:references  offer:1;
     dct:creator <https://id.inrupt.com/JohnDoe> ;
@@ -15,11 +15,52 @@ pod:Comment1 a comment:Comment ;
     dct:modified "2023-06-23T12:34:56Z"^^xsd:dateTime ;
     comment:wasModerated "false"^^xsd:boolean .
 
-pod:Comment2 a comment:Comment ;
+pod:2 a comment:Comment ;
     dct:created "2023-06-24T14:35:56Z"^^xsd:dateTime ;
-    dct:references request:1 ;
+    dct:references offer:1 ;
     dct:creator <https://id.inrupt.com/JohnDoe> ;
     dct:Text "I agree with the previous comment." ;
     dct:modified "2023-06-24T14:35:56Z"^^xsd:dateTime ;
+    comment:wasModerated "false"^^xsd:boolean .
+
+pod:3 a comment:Comment ;
+    dct:created "2023-06-25T15:36:56Z"^^xsd:dateTime ;
+    dct:references offer:1 ;
+    dct:creator <https://id.inrupt.com/JaneDoe> ;
+    dct:Text "I have some concerns about this policy." ;
+    dct:modified "2023-06-25T15:36:56Z"^^xsd:dateTime ;
+    comment:wasModerated "false"^^xsd:boolean .
+
+pod:4 a comment:Comment ;
+    dct:created "2023-06-26T16:37:56Z"^^xsd:dateTime ;
+    dct:references request:2 ;
+    dct:creator <https://id.inrupt.com/JaneDoe> ;
+    dct:Text "Can someone clarify this request?" ;
+    dct:modified "2023-06-26T16:37:56Z"^^xsd:dateTime ;
+    comment:wasModerated "false"^^xsd:boolean  .
+
+pod:5 a comment:Comment ;
+    dct:created "2023-06-27T17:38:56Z"^^xsd:dateTime ;
+    dct:references offer:2 ;
+    dct:creator <https://id.inrupt.com/JohnDoe> ;
+    dct:Text "This offer seems fair to me." ;
+    dct:modified "2023-06-27T17:38:56Z"^^xsd:dateTime ;
+    comment:wasModerated "false"^^xsd:boolean .
+
+pod:6 a comment:Comment ;
+    dct:created "2023-06-28T18:39:56Z"^^xsd:dateTime ;
+    dct:references request:2 ;
+    dct:creator <https://id.inrupt.com/JaneDoe> ;
+    dct:Text "THIS IS A STUPID REQUEST AND THE PERSON WHO SUGGESTED IT SHOULD BE SHAMED." ;
+    dct:modified "2023-06-28T18:55:51Z"^^xsd:dateTime ;
+    comment:wasModerated "true"^^xsd:boolean ;
+    comment:hasModerator <https://id.inrupt.com/odonneb4> .
+
+pod:7 a comment:Comment ;
+    dct:created "2023-06-29T11:40:15Z"^^xsd:dateTime ;
+    dct:references request:2 ;
+    dct:creator <https://id.inrupt.com/CryptoBro> ;
+    dct:Text "BUY BITCOIN TODAY!" ;
+    dct:modified "2023-06-29T12:12:56Z"^^xsd:dateTime ;
     comment:wasModerated "true"^^xsd:boolean ;
     comment:hasModerator <https://id.inrupt.com/odonneb4> .
