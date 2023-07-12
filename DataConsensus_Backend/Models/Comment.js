@@ -1,4 +1,4 @@
-const interactionService = require("../CRUDService/InteractionService.js");
+const commentService = require("../CRUDService/CommentService.js");
 
 class Comment {
     constructor(id, timeCreated, policyID, author, content, timeModerated, moderated, moderatorID) {
@@ -13,7 +13,7 @@ class Comment {
     }
 
     async fetchComment(id, session) {
-        const solidThing = await interactionService.getComment(id, session);
+        const solidThing = await commentService.getComment(id, session);
         this.id = id;
         this.timeCreated = solidThing.predicates["http://purl.org/dc/terms/created"]["literals"]["http://www.w3.org/2001/XMLSchema#dateTime"][0];
         this.policyID = solidThing.predicates[`http://purl.org/dc/terms/references`]["namedNodes"][0];
