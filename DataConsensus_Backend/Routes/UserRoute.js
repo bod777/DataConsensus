@@ -6,11 +6,12 @@ const { Member, ThirdParty, Admin } = require("../Models/User.js");
 module.exports = function (appSession) {
     router.get("/", (req, res) => {
         console.log(JSON.stringify(appSession.info));
-        res.send({ message: `App Session WebID: ${appSession.info.webId}` });
+        res.send({ message: `Hello App Session WebID: ${appSession.info.webId}` });
     });
 
-    // FIX THIS TO INCLUDE THE USER MODEL
     router.post("/registerMember", async function (req, res) {
+        console.log("registerMember");
+        console.log(req.body);
         const { webID, email, name, dataSource } = req.body;
         if (!webID || !email || !name || !dataSource) {
             res.status(400).send({ message: "All fields are required." });
@@ -20,7 +21,7 @@ module.exports = function (appSession) {
             await userService.checkUserByType({ webID: webID, type: "MEMBER" }, appSession);
             try {
                 await userService.addMember(req, appSession);
-                await userService.addNewData(dataSource, appSession, sessionId); // FIX THIS AND HOW THE SESSION ID IS PASSED
+                // await userService.addNewData(dataSource, appSession, sessionId); // FIX THIS AND HOW THE SESSION ID IS PASSED
                 res.send({ message: "Member registered successfully." });
             }
             catch (error) {

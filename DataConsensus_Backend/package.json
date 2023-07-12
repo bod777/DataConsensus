@@ -14,9 +14,12 @@
     "@inrupt/solid-client": "^1.29.0",
     "@inrupt/solid-client-authn-node": "^1.16.0",
     "@inrupt/vocab-common-rdf": "^1.0.5",
+    "@rdfjs/data-model": "^2.0.1",
+    "@rdfjs/namespace": "^2.0.0",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "rdfjs": "^0.0.1"
   }
 }

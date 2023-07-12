@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { Comment } = require("../Models/Comment.js");
-const interactionService = require("../CRUDService/InteractionService.js");
+const commentService = require("../CRUDService/CommentService.js");
 
 module.exports = function (appSession) {
     // Use appSession in your routes
@@ -20,7 +20,7 @@ module.exports = function (appSession) {
             comment: text
         };
         try {
-            await interactionService.addComment(comment, appSession);
+            await commentService.addComment(comment, appSession);
             res.send({ message: "Offer submitted successfully." });
         }
         catch (error) {
@@ -37,7 +37,7 @@ module.exports = function (appSession) {
         }
         else {
             try {
-                const commentURLs = await interactionService.getCommentsByPolicy(policyURL, appSession);
+                const commentURLs = await commentService.getCommentsByPolicy(policyURL, appSession);
                 let comments = [];
                 for (const commentURL of commentURLs) {
                     const fetchedComment = new Comment();
@@ -61,7 +61,7 @@ module.exports = function (appSession) {
         }
 
         try {
-            await interactionService.moderateComment({ commentID, moderator }, appSession);
+            await commentService.moderateComment({ commentID, moderator }, appSession);
             res.send({ message: "Comment moderated successfully." });
         } catch (error) {
             console.error(error);
@@ -78,7 +78,7 @@ module.exports = function (appSession) {
         }
 
         try {
-            await interactionService.removeComment({ commentID }, appSession);
+            await commentService.removeComment({ commentID }, appSession);
             res.send({ message: "Comment removed successfully." });
         } catch (error) {
             console.error(error);

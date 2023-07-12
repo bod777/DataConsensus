@@ -10,7 +10,8 @@ const {
     Session
 } = require("@inrupt/solid-client-authn-node");
 
-const InteractionRoute = require("./Routes/InteractionRoute.js");
+const CommentRoute = require("./Routes/CommentRoute.js");
+const VoteRoute = require("./Routes/VoteRoute.js");
 const UserRoute = require("./Routes/UserRoute.js");
 const PolicyRoute = require("./Routes/PolicyRoute.js");
 const api = process.env.API_URI;
@@ -109,32 +110,32 @@ app.get("/fetch-app-resource", async (req, res, next) => {
     }
 });
 
-// app.get("/delete-app", async (req, res, next) => {
-//     uploadFile('C:/myProjects/MSc Programming/CS7CS5_Dissertation/DataConsensus/POD/users/thirdparties.ttl', "text/plain", `https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/users/thirdparties.ttl`, appSession.fetch);
-//     res.send("<p>Performed overwriting.</p>");
-// });
+app.get("/delete-app", async (req, res, next) => {
+    uploadFile('C:/myProjects/MSc Programming/CS7CS5_Dissertation/DataConsensus/POD/schema/policy.ttl', "text/plain", `https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/policy.ttl`, appSession.fetch);
+    res.send("<p>Performed overwriting.</p>");
+});
 
-// async function uploadFile(filepath, mimetype, targetURL, fetch) {
-//     try {
-//         const data = await readFile(filepath);
-//         writeFileToPod(data, mimetype, targetURL, fetch);
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
+async function uploadFile(filepath, mimetype, targetURL, fetch) {
+    try {
+        const data = await readFile(filepath);
+        writeFileToPod(data, mimetype, targetURL, fetch);
+    } catch (err) {
+        console.log(err);
+    }
+}
 
-// async function writeFileToPod(filedata, mimetype, targetFileURL, fetch) {
-//     try {
-//         const savedFile = await overwriteFile(
-//             targetFileURL,                   // URL for the file.
-//             filedata,                        // Buffer containing file data
-//             { contentType: mimetype, fetch: fetch } // mimetype if known, fetch from the authenticated session
-//         );
-//         console.log(`File saved at ${getSourceUrl(savedFile)}`);
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
+async function writeFileToPod(filedata, mimetype, targetFileURL, fetch) {
+    try {
+        const savedFile = await overwriteFile(
+            targetFileURL,                   // URL for the file.
+            filedata,                        // Buffer containing file data
+            { contentType: mimetype, fetch: fetch } // mimetype if known, fetch from the authenticated session
+        );
+        console.log(`File saved at ${getSourceUrl(savedFile)}`);
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 app.get("/logout", async (req, res, next) => {
     const userSession = await getSessionFromStorage(req.userSession.sessionId);
@@ -149,13 +150,10 @@ app.get("/", async (req, res, next) => {
     );
 });
 
-// app.use(`${api}/user`, UserRoute);
-// app.use(`${api}/policy`, PolicyRoute);
-// app.use(`${api}/interaction`, InteractionRoute);
-
-app.use(`${api}/user`, UserRoute(appSession)); // Pass appSession as a parameter
-app.use(`${api}/policy`, PolicyRoute(appSession)); // Pass appSession as a parameter
-app.use(`${api}/interaction`, InteractionRoute(appSession)); // Pass appSession as a parameter
+app.use(`${api}/user`, UserRoute(appSession));
+app.use(`${api}/policy`, PolicyRoute(appSession));
+app.use(`${api}/vote`, VoteRoute(appSession));
+app.use(`${api}/comment`, CommentRoute(appSession));
 
 app.listen(port, () => {
     console.log(

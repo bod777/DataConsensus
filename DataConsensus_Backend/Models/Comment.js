@@ -1,4 +1,4 @@
-const interactionService = require("../CRUDService/InteractionService.js");
+const interactionService = require("../CRUDService/VoteService.js");
 
 class Comment {
     constructor(id, timeCreated, policyID, author, content, timeModerated, moderated, moderatorID) {

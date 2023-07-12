@@ -1,17 +1,13 @@
 const router = require("express").Router();
-const { Comment } = require("../Models/Comment.js");
-const interactionService = require("../CRUDService/InteractionService.js");
+const voteService = require("../CRUDService/VoteService.js");
 const policyService = require("../CRUDService/PolicyService.js");
 const userService = require("../CRUDService/UserService.js");
 
 module.exports = function (appSession) {
-    // Use appSession in your routes
     router.get("/", (req, res) => {
         console.log(appSession.info.webId);
         res.send({ message: `App Session WebID: ${appSession.info.webId}` });
     });
-
-    /* VOTING ENDPOINTS */
 
     router.post("/addPreferenceVotes", async (req, res) => {
         const { rankedVotes, voter } = req.body;
@@ -24,7 +20,7 @@ module.exports = function (appSession) {
             };
 
             try {
-                await interactionService.addVote(voteDetails, appSession);
+                await voteService.addVote(voteDetails, appSession);
             } catch (error) {
                 console.error(`Error in adding vote for policy ${vote.policyURL}:`, error);
                 return { policyURL: vote.policyURL, error: error.message };
@@ -53,7 +49,7 @@ module.exports = function (appSession) {
         };
 
         try {
-            await interactionService.addVote(vote, appSession);
+            await voteService.addVote(vote, appSession);
             res.send({ message: "Vote added successfully." });
         }
         catch (error) {
@@ -71,7 +67,7 @@ module.exports = function (appSession) {
         };
 
         try {
-            await interactionService.addVote(vote, appSession);
+            await voteService.addVote(vote, appSession);
             res.send({ message: "Vote added successfully." });
         }
         catch (error) {
@@ -89,10 +85,10 @@ module.exports = function (appSession) {
         }
 
         try {
-            const upvotes = await interactionService.countVotesByRankPolicy(
+            const upvotes = await voteService.countVotesByRankPolicy(
                 { policyURL: policyURL, rank: 1 },
                 appSession);
-            const downvotes = await interactionService.countVotesByRankPolicy(
+            const downvotes = await voteService.countVotesByRankPolicy(
                 { policyURL: policyURL, rank: 2 },
                 appSession);
             const membersNumber = await userService.getMemberCount(appSession);
@@ -120,10 +116,10 @@ module.exports = function (appSession) {
 
         try {
 
-            const upvotes = await interactionService.countVotesByRankPolicy(
+            const upvotes = await voteService.countVotesByRankPolicy(
                 { policyURL: policyURL, rank: 1 },
                 appSession);
-            const downvotes = await interactionService.countVotesByRankPolicy(
+            const downvotes = await voteService.countVotesByRankPolicy(
                 { policyURL: policyURL, rank: 2 },
                 appSession);
             const membersNumber = await userService.getMemberCount(appSession);
@@ -152,12 +148,12 @@ module.exports = function (appSession) {
             let results = [];
             let winner = `${process.env.OFFERS}#rejection`;
             for (const offer of offerList) {
-                const firstPreference = await interactionService.countVotesByRankPolicy(
+                const firstPreference = await voteService.countVotesByRankPolicy(
                     { policyUrl: offer.url, rank: 1 },
                     appSession);
                 results.push({ policyUrl: offer.url, count: firstPreference });
             }
-            const rejectVote = await interactionService.countVotesByRankPolicy({ offerId: 0, rank: 1 }, appSession);
+            const rejectVote = await voteService.countVotesByRankPolicy({ offerId: 0, rank: 1 }, appSession);
             results.push({ policyUrl: `${process.env.OFFERS}#rejection`, count: rejectVote });
             const sortedResults = results.sort((a, b) => b.count - a.count);
             if (sorted[0].count > cutoff) {
@@ -168,85 +164,6 @@ module.exports = function (appSession) {
         catch (error) {
             console.error(error);
             res.status(500).send({ message: "Error in retrieving result.", error: error.message });
-        }
-    });
-
-    /* COMMENT ENDPOINTS */
-
-    router.post("/addComment", async (req, res) => {
-        const {
-            URL, user, text
-        } = req.body;
-
-        const comment = {
-            policyURL: URL,
-            creator: user,
-            comment: text
-        };
-        try {
-            await interactionService.addComment(comment, appSession);
-            res.send({ message: "Offer submitted successfully." });
-        }
-        catch (error) {
-            console.error(error);
-            res.status(500).send({ message: "Error in submitting offer.", error: error.message });
-        }
-    });
-
-    router.get("/getComments", async (req, res) => {
-        const policyURL = req.body.policyURL;
-        if (!policyURL) {
-            res.status(400).send({ message: "Policy URL is required." });
-            return;
-        }
-        else {
-            try {
-                const commentURLs = await interactionService.getCommentsByPolicy(policyURL, appSession);
-                let comments = [];
-                for (const commentURL of commentURLs) {
-                    const fetchedComment = new Comment();
-                    const request = await fetchedComment.fetchComment(commentURL, appSession);
-                    comments.push(fetchedComment.toJson());
-                }
-                res.send({ data: comments });
-            } catch (error) {
-                console.error(error);
-                res.status(500).send({ message: "Error in getting comments", error: error.message });
-            }
-        }
-    });
-
-    router.post("/moderateComment", async (req, res) => {
-        const { commentID, moderator } = req.body;
-
-        if (!commentID || !moderator) {
-            res.status(400).send({ message: "Both commentID and moderator are required." });
-            return;
-        }
-
-        try {
-            await interactionService.moderateComment({ commentID, moderator }, appSession);
-            res.send({ message: "Comment moderated successfully." });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: "Error in moderating the comment.", error: error.message });
-        }
-    });
-
-    router.delete("/removeComment", async (req, res) => {
-        const { commentID } = req.body;
-
-        if (!commentID) {
-            res.status(400).send({ message: "commentID is required." });
-            return;
-        }
-
-        try {
-            await interactionService.removeComment({ commentID }, appSession);
-            res.send({ message: "Comment removed successfully." });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: "Error in removing the comment.", error: error.message });
         }
     });
 
