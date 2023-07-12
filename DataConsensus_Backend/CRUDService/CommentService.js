@@ -88,4 +88,3 @@ module.exports = {
         return comment;
     }
 }
-

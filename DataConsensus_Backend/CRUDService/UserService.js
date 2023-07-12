@@ -51,8 +51,6 @@ function getDatasetUrl(userType) {
     return datasetURL;
 }
 
-const userPrefix = namespace("https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/user#");
-
 module.exports = {
 
     /* USER RELATED FUNCTIONS */
@@ -70,17 +68,15 @@ module.exports = {
     },
 
     addMember: async function (req, session) {
-        console.log(userPrefix('type'));
+
         let solidDataset = await getGivenSolidDataset(memberURL, session);
-        console.log(req.body.webID);
+
         //building user details as thing
         const newMember = buildThing(createThing({ url: req.body.webID }))
-            // .addUrl("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", `${user}#User`)
-            .addUrl(rdf.type, userPrefix('User'))
-            .addStringNoLocale("http://xmlns.com/foaf/0.1/name", req.body.name)
-            .addStringNoLocale("http://xmlns.com/foaf/0.1/email", req.body.email)
-            .addUrl(userPrefix("hasUserType"), userPrefix("Member")) // specifying USER TYPE (Member, ThirdParty, Admin)
-            .addUrl(`https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/user#dataSource`, req.body.dataSource) // specifying datasource
+            .addUrl(rdf.type, `${user}#User`)
+            .addStringNoLocale(FOAF.name, req.body.name)
+            .addUrl(`${user}#hasUserType`, `${user}#Member`) // specifying USER TYPE (Member, ThirdParty, Admin)
+            .addUrl(`${user}#dataSource`, req.body.dataSource) // specifying datasource
             .build();
 
         solidDataset = setThing(solidDataset, newMember);
@@ -91,13 +87,13 @@ module.exports = {
 
         let solidDataset = await getGivenSolidDataset(thirdPartyURL, session);
 
-        const newThirdParty = buildThing(createThing({ name: req.webId }))
+        const newThirdParty = buildThing(createThing({ url: req.body.webID }))
             .addUrl(rdf.type, `${user}#User`)
-            .addStringNoLocale("http://xmlns.com/foaf/0.1/email", req.email)
-            .addStringNoLocale("http://xmlns.com/foaf/0.1/name", req.name)
+            .addStringNoLocale(FOAF.email, req.body.email)
+            .addStringNoLocale(FOAF.name, req.body.name)
             .addUrl(`${user}#hasUserType`, `${user}#ThirdParty`)
-            .addUrl("https://w3id.org/dpv#Organisation", `https://w3id.org/dpv#${req.org}`)
-            .addStringNoLocale(DCTERMS.description, req.description)
+            .addUrl("https://w3id.org/dpv#Organisation", `https://w3id.org/dpv#${req.body.org}`)
+            .addStringNoLocale(DCTERMS.description, req.body.description)
             .build();
 
         solidDataset = setThing(solidDataset, newThirdParty);
@@ -227,4 +223,3 @@ module.exports = {
         }
     },
 }
-
