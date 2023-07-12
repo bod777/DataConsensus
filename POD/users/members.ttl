@@ -7,15 +7,3 @@
   foaf:email "johndoe@example.com" ;
   user:hasUserType user:Member ;
   user:dataSource <http://example.com/pods/johndoe> .
-
-<https://id.inrupt.com/janedoe> a user:User ;
-  foaf:name "Jane Doe" ;
-  foaf:email "janedoe@example.com" ;
-  user:hasUserType user:Member ;
-  user:dataSource <http://example.com/pods/janedoe> .
-
-<https://id.inrupt.com/jimdoe> a user:User ;
-  foaf:name "Jim Doe" ;
-  foaf:email "jimdoe@example.com" ;
-  user:hasUserType user:Member ;
-  user:dataSource <http://example.com/pods/jimdoe> .

@@ -1,4 +1,4 @@
-const policyService = require("../CRUDService/PolicyService.js");
+const service = require("../CRUDService.js");
 const { DCTERMS } = require("@inrupt/vocab-common-rdf");
 
 const policy = process.env.POLICY;
@@ -47,163 +47,93 @@ class Policy {
 class Agreement extends Policy {
     constructor(id, creator, issued, partOf, references, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration) {
         super(id, creator, issued, partOf, references, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration);
-        this.references = references;
+        this.references = references; // Only for agreements
     }
 
-    async fetchPolicy(URL, session) {
-        const solidThing = await policyService.getPolicy({ policyURL: `${URL}`, type: "Agreement" }, session);
-        const permissionThing = await policyService.getPolicy({ policyURL: `${URL}_permission`, type: "Agreement" }, session);
-        const purposeConstraint = await policyService.getPolicy({ policyURL: `${URL}_purposeConstraint`, type: "Agreement" }, session);
-        const sellingDataConstraint = await policyService.getPolicy({ policyURL: `${URL}_sellingDataConstraint`, type: "Agreement" }, session);
-        const sellingInsightsConstraint = await policyService.getPolicy({ policyURL: `${URL}_sellingInsightsConstraint`, type: "Agreement" }, session);
-        const organisationConstraint = await policyService.getPolicy({ policyURL: `${URL}_organisationConstraint`, type: "Agreement" }, session);
-        const techOrgMeasureConstraint = await policyService.getPolicy({ policyURL: `${URL}_techOrgMeasureConstraint`, type: "Agreement" }, session);
-        const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint`, type: "Agreement" }, session);
-        const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint`, type: "Agreement" }, session);
+    fetchPolicy(URL) {
+        const solidThing = service.getPolicy(`${URL}`);
+        const permissionThing = service.getPolicy(`${URL}_permission`);
+        const purposeConstraint = service.getPolicy(`${URL}_purposeConstraint`);
+        const sellingDataConstraint = service.getPolicy(`${URL}_sellingDataConstraint`);
+        const sellingInsightsConstraint = service.getPolicy(`${URL}_sellingInsightsConstraint`);
+        const organisationConstraint = service.getPolicy(`${URL}_organisationConstraint`);
+        const techOrgMeasureConstraint = service.getPolicy(`${URL}_techOrgMeasureConstraint`);
+        const recipientConstraint = service.getPolicy(`${URL}_recipientConstraint`);
+        const durationConstraint = service.getPolicy(`${URL}_durationConstraint`);
 
-        this.uid = solidThing.predicates[`${odrl}/uid`]["namedNodes"][0];
-        this.creator = solidThing.predicates[`http://purl.org/dc/terms/creator`]["namedNodes"][0];
-        this.issued = solidThing.predicates[`http://purl.org/dc/terms/issued`]["literals"]["http://www.w3.org/2001/XMLSchema#dateTime"][0];
-        this.isPartOf = solidThing.predicates[`http://purl.org/dc/terms/isPartOf`]["namedNodes"][0];
-        this.assigner = permissionThing.predicates[`http://purl.org/dc/terms/assigner`]["namedNodes"][0];
-        this.assignee = permissionThing.predicates[`http://purl.org/dc/terms/assignee`]["namedNodes"][0];
-        this.references = solidThing.predicates[`http://purl.org/dc/terms/references`]["namedNodes"][0];
+        this.uid = solidThing.predicates[`${odrl}/uid`].namedNodes[0];
+        this.creator = solidThing.predicates[DCTERMS.creator].namedNodes[0];
+        this.issued = solidThing.predicates[DCTERMS.issued].literals["http://www.w3.org/2001/XMLSchema#dateTime"][0];
+        this.isPartOf = solidThing.predicates[DCTERMS.isPartOf].namedNodes[0];
+        this.assigner = permissionThing.predicates[DCTERMS.assigner].namedNodes[0];
+        this.assignee = permissionThing.predicates[DCTERMS.assignee].namedNodes[0];
+        this.references = solidThing.predicates[DCTERMS.references].namedNodes[0];
 
-        this.purpose = purposeConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        if (sellingDataConstraint.predicates[`${odrl}/operator`]["namedNodes"].length == isNotA) {
+        this.purpose = purposeConstraint.predicates[`${odrl}/rightOperand`].namedNodes[0];
+        if (sellingDataConstraint.predicates[`${odrl}/operator`].namedNodes.length == isNotA) {
             this.sellingData = false;
         } else {
             this.sellingData = true;
         }
-        if (sellingInsightsConstraint.predicates[`${odrl}/operator`]["namedNodes"].length == isNotA) {
-            this.sellingData = false;
-        } else {
-            this.sellingData = true;
-        }
-        this.sellingInsights = sellingInsights;
-        this.organisation = organisationConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        this.techOrgMeasures = techOrgMeasureConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        this.recipients = recipientConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        this.untilTimeDuration = durationConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-    }
-}
-
-class Offer extends Policy {
-    constructor(id, creator, issued, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus) {
-        super(id, creator, issued, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus);
-        this.thirdPartyApproved = thirdPartyStatus;
-        this.memberApproved = memberStatus;
-        this.adminApproved = adminStatus;
-    }
-
-    async fetchPolicy(URL, session) {
-        const solidThing = await policyService.getPolicy({ policyURL: `${URL}`, type: "Offer" }, session);
-        const permissionThing = await policyService.getPolicy({ policyURL: `${URL}_permission`, type: "Offer" }, session);
-        const purposeConstraint = await policyService.getPolicy({ policyURL: `${URL}_purposeConstraint`, type: "Offer" }, session);
-        const sellingDataConstraint = await policyService.getPolicy({ policyURL: `${URL}_sellingDataConstraint`, type: "Offer" }, session);
-        const sellingInsightsConstraint = await policyService.getPolicy({ policyURL: `${URL}_sellingInsightsConstraint`, type: "Offer" }, session);
-        const organisationConstraint = await policyService.getPolicy({ policyURL: `${URL}_organisationConstraint`, type: "Offer" }, session);
-        const techOrgMeasureConstraint = await policyService.getPolicy({ policyURL: `${URL}_techOrgMeasureConstraint`, type: "Offer" }, session);
-        const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint`, type: "Offer" }, session);
-        const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint`, type: "Offer" }, session);
-
-        this.uid = solidThing.predicates[`${odrl}/uid`]["namedNodes"][0];
-        this.creator = solidThing.predicates[`http://purl.org/dc/terms/creator`]["namedNodes"][0];
-        this.issued = solidThing.predicates[`http://purl.org/dc/terms/issued`]["literals"]["http://www.w3.org/2001/XMLSchema#dateTime"][0];
-        this.isPartOf = solidThing.predicates[`http://purl.org/dc/terms/isPartOf`]["namedNodes"][0];
-        this.assigner = permissionThing.predicates[`http://purl.org/dc/terms/assigner`]["namedNodes"][0];
-        this.assignee = permissionThing.predicates[`http://purl.org/dc/terms/assignee`]["namedNodes"][0];
-        this.adminApproved = solidThing.predicates[`${policy}/adminApproved`]["namedNodes"][0];
-        this.memberApproved = solidThing.predicates[`${policy}/memberApproved`]["namedNodes"][0];
-        this.thirdPartyApproved = solidThing.predicates[`${policy}/thirdPartyApproved`]["namedNodes"][0];
-
-        this.purpose = purposeConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        if (sellingDataConstraint.predicates[`${odrl}/operator`]["namedNodes"].length == isNotA) {
-            this.sellingData = false;
-        } else {
-            this.sellingData = true;
-        }
-        if (sellingInsightsConstraint.predicates[`${odrl}/operator`]["namedNodes"].length == isNotA) {
+        if (sellingInsightsConstraint.predicates[`${odrl}/operator`].namedNodes.length == isNotA) {
             this.sellingData = false;
         } else {
             this.sellingData = true;
         }
         this.sellingInsights = sellingInsights;
-        this.organisation = organisationConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        this.techOrgMeasures = techOrgMeasureConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"];
-        this.recipients = recipientConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"];
-        this.untilTimeDuration = durationConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
+        this.organisation = organisationConstraint.predicates[`${odrl}/rightOperand`].namedNodes[0];
+        this.techOrgMeasures = techOrgMeasureConstraint.predicates[`${odrl}/rightOperand`].namedNodes;
+        this.recipients = recipientConstraint.predicates[`${odrl}/rightOperand`].namedNodes;
+        this.untilTimeDuration = durationConstraint.predicates[`${odrl}/rightOperand`].namedNodes[0];
     }
 }
 
-
-class Request extends Policy {
+class Proposal extends Policy {
     constructor(id, creator, issued, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus) {
         super(id, creator, issued, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus);
-        this.thirdPartyApproved = thirdPartyStatus;
-        this.memberApproved = memberStatus;
-        this.adminApproved = adminStatus;
+        this.thirdPartyApproved = thirdPartyStatus; // Only for offers or requests
+        this.memberApproved = memberStatus; // Only for offers or requests
+        this.adminApproved = adminStatus; // Only for offers or requests
     }
 
-    async fetchPolicy(URL, session) {
-        const solidThing = await policyService.getPolicy({ policyURL: `${URL}`, type: "Request" }, session);
-        const permissionThing = await policyService.getPolicy({ policyURL: `${URL}_permission`, type: "Request" }, session);
-        const purposeConstraint = await policyService.getPolicy({ policyURL: `${URL}_purposeConstraint`, type: "Request" }, session);
-        const sellingDataConstraint = await policyService.getPolicy({ policyURL: `${URL}_sellingDataConstraint`, type: "Request" }, session);
-        const sellingInsightsConstraint = await policyService.getPolicy({ policyURL: `${URL}_sellingInsightsConstraint`, type: "Request" }, session);
-        const organisationConstraint = await policyService.getPolicy({ policyURL: `${URL}_organisationConstraint`, type: "Request" }, session);
-        const techOrgMeasureConstraint = await policyService.getPolicy({ policyURL: `${URL}_techOrgMeasureConstraint`, type: "Request" }, session);
-        const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint`, type: "Request" }, session);
-        const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint`, type: "Request" }, session);
+    fetchPolicy(URL) {
+        const solidThing = service.getPolicy(`${URL}`);
+        const permissionThing = service.getPolicy(`${URL}_permission`);
+        const purposeConstraint = service.getPolicy(`${URL}_purposeConstraint`);
+        const sellingDataConstraint = service.getPolicy(`${URL}_sellingDataConstraint`);
+        const sellingInsightsConstraint = service.getPolicy(`${URL}_sellingInsightsConstraint`);
+        const organisationConstraint = service.getPolicy(`${URL}_organisationConstraint`);
+        const techOrgMeasureConstraint = service.getPolicy(`${URL}_techOrgMeasureConstraint`);
+        const recipientConstraint = service.getPolicy(`${URL}_recipientConstraint`);
+        const durationConstraint = service.getPolicy(`${URL}_durationConstraint`);
 
-        this.uid = solidThing.predicates[`http://www.w3.org/ns/odrl/2/uid`]["namedNodes"][0];
-        this.creator = solidThing.predicates[`http://purl.org/dc/terms/creator`]["namedNodes"][0];
-        this.issued = solidThing.predicates[`http://purl.org/dc/terms/issued`]["literals"]["http://www.w3.org/2001/XMLSchema#dateTime"][0];
-        this.isPartOf = solidThing.predicates[`http://purl.org/dc/terms/isPartOf`]["namedNodes"][0];
-        this.assigner = permissionThing.predicates[`http://www.w3.org/ns/odrl/2/assigner`]["namedNodes"][0];
-        this.assignee = permissionThing.predicates[`http://www.w3.org/ns/odrl/2/assignee`]["namedNodes"][0];
-        this.adminApproved = solidThing.predicates[`https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy#adminApproved`]["namedNodes"][0];
-        this.memberApproved = solidThing.predicates[`https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy#memberApproved`]["namedNodes"][0];
-        this.thirdPartyApproved = solidThing.predicates[`https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy#thirdPartyApproved`]["namedNodes"][0];
+        this.uid = solidThing.predicates[`${odrl}/uid`].namedNodes[0];
+        this.creator = solidThing.predicates[DCTERMS.creator].namedNodes[0];
+        this.issued = solidThing.predicates[DCTERMS.issued].literals["http://www.w3.org/2001/XMLSchema#dateTime"][0];
+        this.isPartOf = solidThing.predicates[DCTERMS.isPartOf].namedNodes[0];
+        this.assigner = permissionThing.predicates[DCTERMS.assigner].namedNodes[0];
+        this.assignee = permissionThing.predicates[DCTERMS.assignee].namedNodes[0];
+        this.adminApproved = solidThing.predicates[`${policy}/adminApproved`].namedNodes[0];
+        this.memberApproved = solidThing.predicates[`${policy}/memberApproved`].namedNodes[0];
+        this.thirdPartyApproved = solidThing.predicates[`${policy}/thirdPartyApproved`].namedNodes[0];
 
-        this.purpose = purposeConstraint.predicates[`http://www.w3.org/ns/odrl/2/rightOperand`]["namedNodes"][0];
-        if (sellingDataConstraint.predicates[`http://www.w3.org/ns/odrl/2/operator`]["namedNodes"][0] == "isNotA") {
+        this.purpose = purposeConstraint.predicates[`${odrl}/rightOperand`].namedNodes[0];
+        if (sellingDataConstraint.predicates[`${odrl}/operator`].namedNodes.length == isNotA) {
             this.sellingData = false;
         } else {
             this.sellingData = true;
         }
-        if (sellingInsightsConstraint.predicates[`http://www.w3.org/ns/odrl/2/operator`]["namedNodes"][0] == "isNotA") {
-            this.sellingInsights = false;
+        if (sellingInsightsConstraint.predicates[`${odrl}/operator`].namedNodes.length == isNotA) {
+            this.sellingData = false;
         } else {
-            this.sellingInsights = true;
+            this.sellingData = true;
         }
-        this.organisation = organisationConstraint.predicates[`http://www.w3.org/ns/odrl/2/rightOperand`]["namedNodes"][0];
-        this.techOrgMeasures = techOrgMeasureConstraint.predicates[`http://www.w3.org/ns/odrl/2/rightOperand`]["namedNodes"];
-        this.recipients = recipientConstraint.predicates[`http://www.w3.org/ns/odrl/2/rightOperand`]["namedNodes"];
-        this.untilTimeDuration = durationConstraint.predicates[`http://www.w3.org/ns/odrl/2/rightOperand`]["literals"]["http://www.w3.org/2001/XMLSchema#date"][0];
-    }
-
-    toJson() {
-        return {
-            uid: this.uid,
-            creator: this.creator,
-            issued: this.issued,
-            isPartOf: this.isPartOf,
-            assigner: this.assigner,
-            assignee: this.assignee,
-            adminApproved: this.adminApproved,
-            memberApproved: this.memberApproved,
-            thirdPartyApproved: this.thirdPartyApproved,
-            purpose: this.purpose,
-            sellingData: this.sellingData,
-            sellingInsights: this.sellingInsights,
-            organisation: this.organisation,
-            techOrgMeasures: this.techOrgMeasures,
-            recipients: this.recipients,
-            untilTimeDuration: this.untilTimeDuration
-        };
+        this.sellingInsights = sellingInsights;
+        this.organisation = organisationConstraint.predicates[`${odrl}/rightOperand`].namedNodes[0];
+        this.techOrgMeasures = techOrgMeasureConstraint.predicates[`${odrl}/rightOperand`].namedNodes;
+        this.recipients = recipientConstraint.predicates[`${odrl}/rightOperand`].namedNodes;
+        this.untilTimeDuration = durationConstraint.predicates[`${odrl}/rightOperand`].namedNodes[0];
     }
 }
 
-
-module.exports = { Policy, Agreement, Request, Offer };
+module.exports = { Policy, Agreement, Proposal };
