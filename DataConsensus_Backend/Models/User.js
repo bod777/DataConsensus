@@ -1,4 +1,7 @@
 const userService = require("../CRUDService/UserService.js");
+const { FOAF, DCTERMS, XSD } = require("@inrupt/vocab-common-rdf");
+
+const user = process.env.USER;
 
 class User {
     constructor(webID, name, email) {
@@ -34,9 +37,9 @@ class Member extends User {
     async fetchUser(webID, session) {
         const solidThing = await userService.getUser({ webID, type: "MEMBER" }, session);
         this.webID = webID;
-        this.name = solidThing.predicates["http://xmlns.com/foaf/0.1/email"]["literals"]["http://www.w3.org/2001/XMLSchema#string"][0];
-        this.email = solidThing.predicates["http://xmlns.com/foaf/0.1/name"]["literals"]["http://www.w3.org/2001/XMLSchema#string"][0];
-        this.dataSource = solidThing.predicates[`https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/user#dataSource`]["namedNodes"][0];
+        this.name = solidThing.predicates[FOAF.name]["literals"][XSD.string][0];
+        this.email = solidThing.predicates[FOAF.mbox]["literals"][XSD.string][0];
+        this.dataSource = solidThing.predicates[`${user}#dataSource`]["namedNodes"][0];
     }
 
     toJson() {
@@ -58,11 +61,12 @@ class ThirdParty extends User {
 
     async fetchUser(webID, session) {
         const solidThing = await userService.getUser({ webID, type: "THIRDPARTY" }, session);
+        console.log(JSON.stringify(solidThing));
         this.webID = webID;
-        this.name = solidThing.predicates["http://xmlns.com/foaf/0.1/name"]["literals"]["http://www.w3.org/2001/XMLSchema#string"][0];
-        this.email = solidThing.predicates["http://xmlns.com/foaf/0.1/email"]["literals"]["http://www.w3.org/2001/XMLSchema#string"][0];
-        this.description = solidThing.predicates[`http://purl.org/dc/terms/description`]["namedNodes"][0];
-        this.orgType = solidThing.predicates[`https://w3id.org/dpv#organisation`]["namedNodes"][0];
+        this.name = solidThing.predicates[FOAF.name]["literals"][XSD.string][0];
+        this.email = solidThing.predicates[FOAF.mbox]["literals"][XSD.string][0];
+        this.description = solidThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
+        this.orgType = solidThing.predicates[DCTERMS.Organisation]["namedNodes"][0];
     }
 
     toJson() {
@@ -84,8 +88,8 @@ class Admin extends User {
     async fetchUser(webID, session) {
         const solidThing = await userService.getUser({ webID, type: "ADMIN" }, session);
         this.webID = webID;
-        this.name = solidThing.predicates["http://xmlns.com/foaf/0.1/name"]["literals"]["http://www.w3.org/2001/XMLSchema#string"][0];
-        this.email = solidThing.predicates["http://xmlns.com/foaf/0.1/email"]["literals"]["http://www.w3.org/2001/XMLSchema#string"][0];
+        this.name = solidThing.predicates[FOAF.name]["literals"][XSD.string][0];
+        this.email = solidThing.predicates[FOAF.mbox]["literals"][XSD.string][0];
     }
 }
 

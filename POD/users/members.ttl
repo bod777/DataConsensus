@@ -1,9 +1,46 @@
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
-@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix user: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/user#> .
 
-<https://id.inrupt.com/johndoe> a user:User ;
-  foaf:name "John Doe" ;
-  foaf:email "johndoe@example.com" ;
-  user:hasUserType user:Member ;
-  user:dataSource <http://example.com/pods/johndoe> .
+<https://id.inrupt.com/jimdoe>
+        rdf:type          user:User ;
+        foaf:email        "jimdoe@example.com" ;
+        foaf:name         "Jim Doe" ;
+        user:dataSource   <http://example.com/pods/jimdoe> ;
+        user:hasUserType  user:Member .
+
+<https://id.inrupt.com/janedoe>
+        rdf:type          user:User ;
+        foaf:email        "janedoe@example.com" ;
+        foaf:name         "Jane Doe" ;
+        user:dataSource   <http://example.com/pods/janedoe> ;
+        user:hasUserType  user:Member .
+
+<https://id.inrupt.com/johndoe>
+        rdf:type          user:User ;
+        foaf:email        "johndoe@example.com" ;
+        foaf:name         "John Doe" ;
+        user:dataSource   <http://example.com/pods/johndoe> ;
+        user:hasUserType  user:Member .
+
+<https://id.inrupt.com/troybarnes>
+        rdf:type    user:User ;
+        foaf:email  "tball@greendale.com" ;
+        foaf:name   "Troy Barns" ;
+        user:dataSource <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/sampleData> ;
+        user:hasUserType user:Member .
+
+<https://id.inrupt.com/jeffwinger>
+        foaf:email        "winger@greendale.com" ;
+        foaf:name         "Jeff Winger" ;
+        rdf:type          user:User ;
+        user:dataSource   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/sampleData> ;
+        user:hasUserType  user:Member .
+
+<https://id.inrupt.com/brittaperry>
+        rdf:type    user:User ;
+        foaf:email  "bperry@greendale.com" ;
+        foaf:name   "Britta Perry" ;
+        user:dataSource
+                <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/sampleData> ;
+        user:hasUserType user:Member .

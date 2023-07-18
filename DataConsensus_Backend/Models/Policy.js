@@ -1,14 +1,17 @@
 const policyService = require("../CRUDService/PolicyService.js");
-const { DCTERMS } = require("@inrupt/vocab-common-rdf");
+const { ODRL, DCTERMS, XSD } = require("@inrupt/vocab-common-rdf");
+const { extractTerm } = require("../HelperFunctions.js");
 
 const policy = process.env.POLICY;
-const odrl = "http://www.w3.org/ns/odrl/2/"
+const project = process.env.PROJECT;
+const odrl = process.env.ODRL;
+const oac = process.env.OAC;
 
 class Policy {
-    constructor(id, creator, issued, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration) {
+    constructor(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType) {
         this.id = id;
         this.creator = creator;
-        this.issued = issued;
+        this.policyCreationTime = policyCreationTime;
         this.partOf = partOf;
         this.assigner = assigner;
         this.assignee = assignee;
@@ -20,16 +23,26 @@ class Policy {
         this.organisationalMeasures = organisationalMeasures;
         this.recipients = recipients;
         this.untilTimeDuration = untilTimeDuration;
+        this.title = title;
+        this.description = description;
+        this.projectStatus = projectStatus;
+        this.hasAgreement = hasAgreement;
+        this.projectCreationTime = projectCreationTime;
+        this.deliberationStartTime = deliberationStartTime;
+        this.requestTime = requestTime;
+        this.offerTime = offerTime;
+        this.threshold = threshold;
+        this.thresholdType = thresholdType;
     }
 
     getPolicy() {
         return this;
     }
 
-    setPolicy(id, creator, issued, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration) {
+    setPolicy(id, creator, policyCreationTime, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType) {
         this.id = id;
         this.creator = creator;
-        this.issued = issued;
+        this.policyCreationTime = policyCreationTime;
         this.partOf = partOf;
         this.assigner = assigner;
         this.assignee = assignee;
@@ -41,12 +54,22 @@ class Policy {
         this.organisationalMeasures = organisationalMeasures;
         this.recipients = recipients;
         this.untilTimeDuration = untilTimeDuration;
+        this.title = title;
+        this.description = description;
+        this.projectStatus = projectStatus;
+        this.hasAgreement = hasAgreement;
+        this.projectCreationTime = projectCreationTime;
+        this.deliberationStartTime = deliberationStartTime;
+        this.requestTime = requestTime;
+        this.offerTime = offerTime;
+        this.threshold = threshold;
+        this.thresholdType = thresholdType;
     }
 }
 
 class Agreement extends Policy {
-    constructor(id, creator, issued, partOf, references, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration) {
-        super(id, creator, issued, partOf, references, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration);
+    constructor(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, references, thresholdType) {
+        super(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType);
         this.references = references;
     }
 
@@ -61,36 +84,78 @@ class Agreement extends Policy {
         const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint`, type: "Agreement" }, session);
         const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint`, type: "Agreement" }, session);
 
-        this.uid = solidThing.predicates[`${odrl}/uid`]["namedNodes"][0];
-        this.creator = solidThing.predicates[`http://purl.org/dc/terms/creator`]["namedNodes"][0];
-        this.issued = solidThing.predicates[`http://purl.org/dc/terms/issued`]["literals"]["http://www.w3.org/2001/XMLSchema#dateTime"][0];
-        this.isPartOf = solidThing.predicates[`http://purl.org/dc/terms/isPartOf`]["namedNodes"][0];
-        this.assigner = permissionThing.predicates[`http://purl.org/dc/terms/assigner`]["namedNodes"][0];
-        this.assignee = permissionThing.predicates[`http://purl.org/dc/terms/assignee`]["namedNodes"][0];
-        this.references = solidThing.predicates[`http://purl.org/dc/terms/references`]["namedNodes"][0];
+        this.uid = extractTerm(solidThing.predicates[ODRL.uid]["namedNodes"][0]);
+        this.creator = extractTerm(solidThing.predicates[DCTERMS.creator]["namedNodes"][0]);
+        this.policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
+        this.isPartOf = extractTerm(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0]);
+        this.assigner = extractTerm(permissionThing.predicates[ODRL.assigner]["namedNodes"][0]);
+        this.assignee = extractTerm(permissionThing.predicates[ODRL.assignee]["namedNodes"][0]);
+        this.references = extractTerm(solidThing.predicates[DCTERMS.references]["namedNodes"][0]);
 
-        this.purpose = purposeConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        if (sellingDataConstraint.predicates[`${odrl}/operator`]["namedNodes"].length == isNotA) {
+        this.purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
+        if (sellingDataConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
             this.sellingData = false;
         } else {
             this.sellingData = true;
         }
-        if (sellingInsightsConstraint.predicates[`${odrl}/operator`]["namedNodes"].length == isNotA) {
-            this.sellingData = false;
+        if (sellingInsightsConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
+            this.sellingInsights = false;
         } else {
-            this.sellingData = true;
+            this.sellingInsights = true;
         }
-        this.sellingInsights = sellingInsights;
-        this.organisation = organisationConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        this.techOrgMeasures = techOrgMeasureConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        this.recipients = recipientConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        this.untilTimeDuration = durationConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
+        const measuresArray = techOrgMeasureConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        this.techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
+        const recipientsArray = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        this.recipients = recipientsArray.map((recipient) => extractTerm(recipient));
+        this.recipients = extractTerm(recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"]);
+        this.untilTimeDuration = extractTerm(durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0]);
+
+        const projectThing = await policyService.getProject(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0], session);
+        this.title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
+        this.description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
+        this.projectStatus = extractTerm(projectThing.predicates[`${project}#hasProjectStatus`]["namedNodes"][0]);
+        this.hasAgreement = projectThing.predicates[`${project}#deliberationStartTime`]["literals"][XSD.boolean][0];
+        this.projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
+        this.deliberationStartTime = projectThing.predicates[`${project}#deliberationStartTime`]["literals"][XSD.dateTime][0];
+        this.requestTime = projectThing.predicates[`${project}#requestTime`]["literals"][XSD.integer][0];
+        this.offerTime = projectThing.predicates[`${project}#offerTime`]["literals"][XSD.integer][0];
+        this.threshold = projectThing.predicates[`${project}#threshold`]["literals"][XSD.decimal][0];
+        this.thresholdType = extractTerm(projectThing.predicates[`${project}#thresholdType`]["namedNodes"][0]);
+    }
+
+    toJson() {
+        return {
+            uid: this.uid,
+            creator: this.creator,
+            policyCreationTime: this.policyCreationTime,
+            isPartOf: this.isPartOf,
+            assigner: this.assigner,
+            assignee: this.assignee,
+            references: this.assignee,
+            purpose: this.purpose,
+            sellingData: this.sellingData,
+            sellingInsights: this.sellingInsights,
+            organisation: this.organisation,
+            techOrgMeasures: this.techOrgMeasures,
+            recipients: this.recipients,
+            untilTimeDuration: this.untilTimeDuration,
+            title: this.title,
+            description: this.description,
+            projectStatus: this.projectStatus,
+            hasAgreement: this.hasAgreement,
+            projectCreationTime: this.projectCreationTime,
+            deliberationStartTime: this.deliberationStartTime,
+            requestTime: this.requestTime,
+            offerTime: this.offerTime,
+            threshold: this.threshold,
+            thresholdType: this.thresholdType
+        };
     }
 }
 
 class Offer extends Policy {
-    constructor(id, creator, issued, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus) {
-        super(id, creator, issued, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus);
+    constructor(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType) {
+        super(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType);
         this.thirdPartyApproved = thirdPartyStatus;
         this.memberApproved = memberStatus;
         this.adminApproved = adminStatus;
@@ -107,39 +172,83 @@ class Offer extends Policy {
         const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint`, type: "Offer" }, session);
         const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint`, type: "Offer" }, session);
 
-        this.uid = solidThing.predicates[`${odrl}/uid`]["namedNodes"][0];
-        this.creator = solidThing.predicates[`http://purl.org/dc/terms/creator`]["namedNodes"][0];
-        this.issued = solidThing.predicates[`http://purl.org/dc/terms/issued`]["literals"]["http://www.w3.org/2001/XMLSchema#dateTime"][0];
-        this.isPartOf = solidThing.predicates[`http://purl.org/dc/terms/isPartOf`]["namedNodes"][0];
-        this.assigner = permissionThing.predicates[`http://purl.org/dc/terms/assigner`]["namedNodes"][0];
-        this.assignee = permissionThing.predicates[`http://purl.org/dc/terms/assignee`]["namedNodes"][0];
-        this.adminApproved = solidThing.predicates[`${policy}/adminApproved`]["namedNodes"][0];
-        this.memberApproved = solidThing.predicates[`${policy}/memberApproved`]["namedNodes"][0];
-        this.thirdPartyApproved = solidThing.predicates[`${policy}/thirdPartyApproved`]["namedNodes"][0];
+        this.uid = extractTerm(solidThing.predicates[ODRL.uid]["namedNodes"][0]);
+        this.creator = extractTerm(solidThing.predicates[DCTERMS.creator]["namedNodes"][0]);
+        this.policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
+        this.isPartOf = extractTerm(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0]);
+        this.assigner = extractTerm(permissionThing.predicates[ODRL.assigner]["namedNodes"][0]);
+        this.assignee = extractTerm(permissionThing.predicates[ODRL.assignee]["namedNodes"][0]);
+        this.adminApproved = extractTerm(solidThing.predicates[`${policy}#adminApproved`]["namedNodes"][0]);
+        this.memberApproved = extractTerm(solidThing.predicates[`${policy}#memberApproved`]["namedNodes"][0]);
+        this.thirdPartyApproved = extractTerm(solidThing.predicates[`${policy}#thirdPartyApproved`]["namedNodes"][0]);
 
-        this.purpose = purposeConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        if (sellingDataConstraint.predicates[`${odrl}/operator`]["namedNodes"].length == isNotA) {
+        this.purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
+        if (sellingDataConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
             this.sellingData = false;
         } else {
             this.sellingData = true;
         }
-        if (sellingInsightsConstraint.predicates[`${odrl}/operator`]["namedNodes"].length == isNotA) {
-            this.sellingData = false;
+        if (sellingInsightsConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
+            this.sellingInsights = false;
         } else {
-            this.sellingData = true;
+            this.sellingInsights = true;
         }
-        this.sellingInsights = sellingInsights;
-        this.organisation = organisationConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
-        this.techOrgMeasures = techOrgMeasureConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"];
-        this.recipients = recipientConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"];
-        this.untilTimeDuration = durationConstraint.predicates[`${odrl}/rightOperand`]["namedNodes"][0];
+        this.organisation = extractTerm(organisationConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
+        const measuresArray = techOrgMeasureConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        this.techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
+        const recipientsArray = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        this.recipients = recipientsArray.map((recipient) => extractTerm(recipient));
+        this.untilTimeDuration = extractTerm(durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0]);
+
+        const projectThing = await policyService.getProject(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0], session);
+        this.title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
+        this.description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
+        this.projectStatus = extractTerm(projectThing.predicates[`${project}#hasProjectStatus`]["namedNodes"][0]);
+        this.hasAgreement = projectThing.predicates[`${project}#hasAgreement`]["literals"][XSD.boolean][0];
+        this.projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
+        this.deliberationStartTime = projectThing.predicates[`${project}#deliberationStartTime`]["literals"][XSD.dateTime][0];
+        this.requestTime = projectThing.predicates[`${project}#requestTime`]["literals"][XSD.integer][0];
+        this.offerTime = projectThing.predicates[`${project}#offerTime`]["literals"][XSD.integer][0];
+        this.threshold = projectThing.predicates[`${project}#threshold`]["literals"][XSD.decimal][0];
+        this.thresholdType = extractTerm(projectThing.predicates[`${project}#thresholdType`]["namedNodes"][0]);
+    }
+
+    toJson() {
+        return {
+            uid: this.uid,
+            creator: this.creator,
+            policyCreationTime: this.policyCreationTime,
+            isPartOf: this.isPartOf,
+            assigner: this.assigner,
+            assignee: this.assignee,
+            adminApproved: this.adminApproved,
+            memberApproved: this.memberApproved,
+            thirdPartyApproved: this.thirdPartyApproved,
+            purpose: this.purpose,
+            sellingData: this.sellingData,
+            sellingInsights: this.sellingInsights,
+            organisation: this.organisation,
+            techOrgMeasures: this.techOrgMeasures,
+            recipients: this.recipients,
+            untilTimeDuration: this.untilTimeDuration,
+            title: this.title,
+            description: this.description,
+            projectStatus: this.projectStatus,
+            hasAgreement: this.hasAgreement,
+            projectCreationTime: this.projectCreationTime,
+            deliberationStartTime: this.deliberationStartTime,
+            requestTime: this.requestTime,
+            offerTime: this.offerTime,
+            threshold: this.threshold,
+            thresholdType: this.thresholdType
+        };
     }
 }
 
 
 class Request extends Policy {
-    constructor(id, creator, issued, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus) {
-        super(id, creator, issued, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus);
+    constructor(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType) {
+        super(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType);
         this.thirdPartyApproved = thirdPartyStatus;
         this.memberApproved = memberStatus;
         this.adminApproved = adminStatus;
@@ -156,38 +265,52 @@ class Request extends Policy {
         const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint`, type: "Request" }, session);
         const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint`, type: "Request" }, session);
 
-        this.uid = solidThing.predicates[`http://www.w3.org/ns/odrl/2/uid`]["namedNodes"][0];
-        this.creator = solidThing.predicates[`http://purl.org/dc/terms/creator`]["namedNodes"][0];
-        this.issued = solidThing.predicates[`http://purl.org/dc/terms/issued`]["literals"]["http://www.w3.org/2001/XMLSchema#dateTime"][0];
-        this.isPartOf = solidThing.predicates[`http://purl.org/dc/terms/isPartOf`]["namedNodes"][0];
-        this.assigner = permissionThing.predicates[`http://www.w3.org/ns/odrl/2/assigner`]["namedNodes"][0];
-        this.assignee = permissionThing.predicates[`http://www.w3.org/ns/odrl/2/assignee`]["namedNodes"][0];
-        this.adminApproved = solidThing.predicates[`https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy#adminApproved`]["namedNodes"][0];
-        this.memberApproved = solidThing.predicates[`https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy#memberApproved`]["namedNodes"][0];
-        this.thirdPartyApproved = solidThing.predicates[`https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy#thirdPartyApproved`]["namedNodes"][0];
-
-        this.purpose = purposeConstraint.predicates[`http://www.w3.org/ns/odrl/2/rightOperand`]["namedNodes"][0];
-        if (sellingDataConstraint.predicates[`http://www.w3.org/ns/odrl/2/operator`]["namedNodes"][0] == "isNotA") {
+        this.uid = extractTerm(solidThing.predicates[ODRL.uid]["namedNodes"][0]);
+        this.creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
+        this.policyCreationTime = solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
+        this.isPartOf = extractTerm(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0]);
+        this.assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
+        this.assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
+        this.adminApproved = extractTerm(solidThing.predicates[`${policy}#adminApproved`]["namedNodes"][0]);
+        this.memberApproved = extractTerm(solidThing.predicates[`${policy}#memberApproved`]["namedNodes"][0]);
+        this.thirdPartyApproved = extractTerm(solidThing.predicates[`${policy}#thirdPartyApproved`]["namedNodes"][0]);
+        this.purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
+        if (sellingDataConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
             this.sellingData = false;
         } else {
             this.sellingData = true;
         }
-        if (sellingInsightsConstraint.predicates[`http://www.w3.org/ns/odrl/2/operator`]["namedNodes"][0] == "isNotA") {
+        if (sellingInsightsConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
             this.sellingInsights = false;
         } else {
             this.sellingInsights = true;
         }
-        this.organisation = organisationConstraint.predicates[`http://www.w3.org/ns/odrl/2/rightOperand`]["namedNodes"][0];
-        this.techOrgMeasures = techOrgMeasureConstraint.predicates[`http://www.w3.org/ns/odrl/2/rightOperand`]["namedNodes"];
-        this.recipients = recipientConstraint.predicates[`http://www.w3.org/ns/odrl/2/rightOperand`]["namedNodes"];
-        this.untilTimeDuration = durationConstraint.predicates[`http://www.w3.org/ns/odrl/2/rightOperand`]["literals"]["http://www.w3.org/2001/XMLSchema#date"][0];
+        this.organisation = extractTerm(organisationConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
+        const measuresArray = techOrgMeasureConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        this.techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
+        const recipientsArray = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        this.recipients = recipientsArray.map((recipient) => extractTerm(recipient));
+        this.untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
+
+        const projectThing = await policyService.getProject(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0], session);
+        console.log(projectThing);
+        this.title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
+        this.description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
+        this.projectStatus = extractTerm(projectThing.predicates[`${project}#hasProjectStatus`]["namedNodes"][0]);
+        this.hasAgreement = projectThing.predicates[`${project}#hasAgreement`]["literals"][XSD.boolean][0];
+        this.projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
+        this.deliberationStartTime = projectThing.predicates[`${project}#deliberationStartTime`]["literals"][XSD.dateTime][0];
+        this.requestTime = projectThing.predicates[`${project}#requestTime`]["literals"][XSD.integer][0];
+        this.offerTime = projectThing.predicates[`${project}#offerTime`]["literals"][XSD.integer][0];
+        this.threshold = projectThing.predicates[`${project}#threshold`]["literals"][XSD.decimal][0];
+        this.thresholdType = extractTerm(projectThing.predicates[`${project}#thresholdType`]["namedNodes"][0]);
     }
 
     toJson() {
-        return {
+        const json = {
             uid: this.uid,
             creator: this.creator,
-            issued: this.issued,
+            policyCreationTime: this.policyCreationTime,
             isPartOf: this.isPartOf,
             assigner: this.assigner,
             assignee: this.assignee,
@@ -200,8 +323,19 @@ class Request extends Policy {
             organisation: this.organisation,
             techOrgMeasures: this.techOrgMeasures,
             recipients: this.recipients,
-            untilTimeDuration: this.untilTimeDuration
+            untilTimeDuration: this.untilTimeDuration,
+            title: this.title,
+            description: this.description,
+            projectStatus: this.projectStatus,
+            hasAgreement: this.hasAgreement,
+            projectCreationTime: this.projectCreationTime,
+            deliberationStartTime: this.deliberationStartTime,
+            requestTime: this.requestTime,
+            offerTime: this.offerTime,
+            threshold: this.threshold,
+            thresholdType: this.thresholdType
         };
+        return json;
     }
 }
 

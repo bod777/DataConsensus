@@ -4,37 +4,36 @@ require("dotenv").config();
 
 const { universalAccess } = require("@inrupt/solid-client");
 
+const resourceURL = process.env.RESOURCE_URL;
 
-const resoureURL = process.env.RESOURCE_URL;
-
-async function grantAccess(thirdParty) {
+async function grantAccess(thirdParty, session) {
     universalAccess.setAgentAccess(
-        resoureURL,
+        resourceURL,
         thirdParty,
         { read: true, write: false, },          // Access object
-        { fetch: fetch }                         // fetch function from authenticated session
+        { fetch: session.fetch }                         // fetch function from authenticated session
     ).then((newAccess) => {
-        console.log(`For resource::: ${resource}`);
+        console.log(`For resource::: ${resourceURL}`);
         if (newAccess === null) {
-            console.log(`Could not load ${agent}'s access details.`);
+            console.log(`Could not load ${thirdParty}'s access details.`);
         } else {
-            console.log(`${agent}'s Access:: ${JSON.stringify(newAccess)}`);
+            console.log(`${thirdParty}'s Access:: ${JSON.stringify(newAccess)}`);
         }
     });
 }
 
-async function removeAccess(thirdParty) {
+async function removeAccess(thirdParty, session) {
     universalAccess.setAgentAccess(
-        resoureURL,
+        resourceURL,
         thirdParty,
         { read: false, write: false, },          // Access object
-        { fetch: fetch }                         // fetch function from authenticated session
+        { fetch: session.fetch }                         // fetch function from authenticated session
     ).then((newAccess) => {
-        console.log(`For resource::: ${resource}`);
+        console.log(`For resource::: ${resourceURL}`);
         if (newAccess === null) {
-            console.log(`Could not load ${agent}'s access details.`);
+            console.log(`Could not load ${thirdParty}'s access details.`);
         } else {
-            console.log(`${agent}'s Access:: ${JSON.stringify(newAccess)}`);
+            console.log(`${thirdParty}'s Access:: ${JSON.stringify(newAccess)}`);
         }
     });
 }

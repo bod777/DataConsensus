@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require('cors');
 const cookieSession = require("cookie-session");
 const { readFile } = require('fs/promises');
-const { overwriteFile, getSourceUrl } = require("@inrupt/solid-client");
+const { overwriteFile, getSourceUrl, universalAccess } = require("@inrupt/solid-client");
 const {
     getSessionFromStorage,
     getSessionIdFromStorageAll,
@@ -14,6 +14,8 @@ const VoteRoute = require("./Routes/VoteRoute.js");
 const CommentRoute = require("./Routes/CommentRoute.js");
 const UserRoute = require("./Routes/UserRoute.js");
 const PolicyRoute = require("./Routes/PolicyRoute.js");
+const { removeAccess, grantAccess } = require("./AccessControl.js");
+
 const api = process.env.API_URI;
 const port = process.env.PORT || 3000;
 
@@ -23,20 +25,28 @@ app.use(express.urlencoded());
 app.use(express.json());
 
 const appSession = new Session();
-appSession.login({
-    clientId: process.env.APP_CLIENT_ID,
-    clientSecret: process.env.APP_CLIENT_SECRET,
-    oidcIssuer: process.env.APP_OIDC_ISSUER
-}).then(() => {
-    if (appSession.info.isLoggedIn) {
-        appSession
-            .fetch(appSession.info.webId)
-            .then((response) => {
-                return response.text();
-            })
-            .then(console.log(`appSession: ${JSON.stringify(appSession.info)}`));
+
+function checkAndRenewSession() {
+    if (!appSession.info.isLoggedIn) {
+        appSession.login({
+            clientId: process.env.APP_CLIENT_ID,
+            clientSecret: process.env.APP_CLIENT_SECRET,
+            oidcIssuer: process.env.APP_OIDC_ISSUER
+        }).then(() => {
+            if (appSession.info.isLoggedIn) {
+                appSession
+                    .fetch(appSession.info.webId)
+                    .then((response) => {
+                        return response.text();
+                    })
+                    .then(console.log(`appSession: ${JSON.stringify(appSession.info)}`));
+            }
+        });
     }
-});
+}
+
+checkAndRenewSession();
+setInterval(checkAndRenewSession, 240000);
 
 app.use(
     cookieSession({
@@ -79,11 +89,13 @@ app.get("/login/callback", async (req, res) => {
 
     if (session.info.isLoggedIn) {
         console.log(`callback userSession ${JSON.stringify(session.info)}`);
-        return res.send(`<p>Logged in with the WebID ${session.info.webId}.</p>`)
+        return res.send(`<p>Logged in with the WebID ${session.info.sessionId}.</p>`)
     }
 });
 
 app.get("/fetch-user-resource", async (req, res, next) => {
+    console.log(req.session);
+    console.log(req.session.sessionId);
     if (typeof req.query["resource"] === "undefined") {
         res.send(
             "<p>Please pass the (encoded) URL of the Resource you want to fetch using `?resource=&lt;resource URL&gt;`.</p>"
@@ -105,37 +117,48 @@ app.get("/fetch-app-resource", async (req, res, next) => {
         );
     }
     else {
-        console.log(await (await appSession.fetch(req.query["resource"])).text());
-        res.send("<p>Performed authenticated fetch.</p>");
+        const resource = await (await appSession.fetch(req.query["resource"])).text();
+        console.log(resource);
+        // console.log(await (await appSession.fetch(req.query["resource"])).text());
+        // const response = await fetch(req.query["resource"]);
+        // const contentType = response.headers.get('content-type');
+        // console.log('Resource Type:', contentType);
+        res.send(resource);
     }
 });
 
-// app.get("/delete-app", async (req, res, next) => {
-//     uploadFile('C:/myProjects/MSc Programming/CS7CS5_Dissertation/DataConsensus/POD/users/thirdparties.ttl', "text/plain", `https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/users/thirdparties.ttl`, appSession.fetch);
-//     res.send("<p>Performed overwriting.</p>");
-// });
+app.get("/delete-app", async (req, res, next) => {
+    uploadFile('C:/myProjects/MSc Programming/CS7CS5_Dissertation/DataConsensus/POD/schemas/project.ttl', "text/turtle", `https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/project.ttl`, appSession.fetch);
+    res.send("<p>Performed overwriting.</p>");
+});
 
-// async function uploadFile(filepath, mimetype, targetURL, fetch) {
-//     try {
-//         const data = await readFile(filepath);
-//         writeFileToPod(data, mimetype, targetURL, fetch);
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
+async function uploadFile(filepath, mimetype, targetURL, fetch) {
+    try {
+        const data = await readFile(filepath);
+        writeFileToPod(data, mimetype, targetURL, fetch);
+    } catch (err) {
+        console.log(err);
+    }
+}
 
-// async function writeFileToPod(filedata, mimetype, targetFileURL, fetch) {
-//     try {
-//         const savedFile = await overwriteFile(
-//             targetFileURL,                   // URL for the file.
-//             filedata,                        // Buffer containing file data
-//             { contentType: mimetype, fetch: fetch } // mimetype if known, fetch from the authenticated session
-//         );
-//         console.log(`File saved at ${getSourceUrl(savedFile)}`);
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
+async function writeFileToPod(filedata, mimetype, targetFileURL, fetch) {
+    try {
+        const savedFile = await overwriteFile(
+            targetFileURL,                   // URL for the file.
+            filedata,                        // Buffer containing file data
+            { contentType: mimetype, fetch: fetch } // mimetype if known, fetch from the authenticated session
+        );
+        console.log(`File saved at ${getSourceUrl(savedFile)}`);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+app.get("/grant-access", async (req, res, next) => {
+    const thirdparty = "https://id.inrupt.com/odonneb4";
+    grantAccess(thirdparty, appSession);
+    res.send(`SUCCESS`);
+});
 
 app.get("/logout", async (req, res, next) => {
     const userSession = await getSessionFromStorage(req.userSession.sessionId);

@@ -3,53 +3,26 @@ const {
     buildThing,
     createThing,
     setThing,
-    saveSolidDatasetAt,
+    setStringNoLocale,
+    setUrl,
     getUrl,
     getThing,
     getThingAll,
-    getSolidDataset,
     getFile,
     isRawData,
     getContentType,
     getSourceUrl
 } = require("@inrupt/solid-client");
-const { getSessionFromStorage, getSessionIdFromStorageAll } = require("@inrupt/solid-client-authn-node");
-const { FOAF, DCTERMS } = require("@inrupt/vocab-common-rdf");
+const { getSessionFromStorage } = require("@inrupt/solid-client-authn-node");
+const { RDF, FOAF, DCTERMS } = require("@inrupt/vocab-common-rdf");
 const Transformer = require("../Logic/Transformer.js");
+const { getGivenSolidDataset, saveGivenSolidDataset, getDatasetUrl } = require("../HelperFunctions.js");
 
 const user = process.env.USER;
-const memberURL = process.env.MEMBER_LIST;
-const thirdPartyURL = process.env.THIRDPARTY_LIST;
-const adminURL = process.env.ADMIN_LIST;
+const membersURL = process.env.MEMBER_LIST;
+const thirdPartiesURL = process.env.THIRDPARTY_LIST;
+const adminsURL = process.env.ADMIN_LIST;
 const resourceURL = process.env.RESOURCE_URL;
-
-async function getGivenSolidDataset(datasetURL, session) {
-    return await getSolidDataset(datasetURL, { fetch: session.fetch });
-}
-
-async function saveGivenSolidDataset(datasetURL, courseSolidDataset, session) {
-    const savedSolidDataset = await saveSolidDatasetAt(
-        datasetURL,
-        courseSolidDataset,      // fetch from authenticated Session
-        { fetch: session.fetch }
-    );
-}
-
-function getDatasetUrl(userType) {
-    let datasetURL;
-    switch (userType) {
-        case 'MEMBER':
-            datasetURL = memberURL;
-            break;
-        case 'THIRDPARTY':
-            datasetURL = thirdPartyURL;
-            break;
-        default:
-            datasetURL = adminURL;
-            break;
-    }
-    return datasetURL;
-}
 
 module.exports = {
 
@@ -69,27 +42,26 @@ module.exports = {
 
     addMember: async function (req, session) {
 
-        let solidDataset = await getGivenSolidDataset(memberURL, session);
+        let solidDataset = await getGivenSolidDataset(membersURL, session);
 
-        //building user details as thing
         const newMember = buildThing(createThing({ url: req.body.webID }))
-            .addUrl(rdf.type, `${user}#User`)
+            .addUrl(RDF.type, `${user}#User`)
             .addStringNoLocale(FOAF.name, req.body.name)
-            .addUrl(`${user}#hasUserType`, `${user}#Member`) // specifying USER TYPE (Member, ThirdParty, Admin)
-            .addUrl(`${user}#dataSource`, req.body.dataSource) // specifying datasource
+            .addStringNoLocale(FOAF.mbox, req.body.email)
+            .addUrl(`${user}#hasUserType`, `${user}#Member`)
+            .addUrl(`${user}#dataSource`, req.body.dataSource)
             .build();
 
         solidDataset = setThing(solidDataset, newMember);
-        await saveGivenSolidDataset(memberURL, solidDataset, session);
+        await saveGivenSolidDataset(membersURL, solidDataset, session);
     },
 
     addThirdParty: async function (req, session) {
 
-        let solidDataset = await getGivenSolidDataset(thirdPartyURL, session);
-
+        let solidDataset = await getGivenSolidDataset(thirdPartiesURL, session);
         const newThirdParty = buildThing(createThing({ url: req.body.webID }))
-            .addUrl(rdf.type, `${user}#User`)
-            .addStringNoLocale(FOAF.email, req.body.email)
+            .addUrl(RDF.type, `${user}#User`)
+            .addStringNoLocale(FOAF.mbox, req.body.email)
             .addStringNoLocale(FOAF.name, req.body.name)
             .addUrl(`${user}#hasUserType`, `${user}#ThirdParty`)
             .addUrl("https://w3id.org/dpv#Organisation", `https://w3id.org/dpv#${req.body.org}`)
@@ -97,7 +69,21 @@ module.exports = {
             .build();
 
         solidDataset = setThing(solidDataset, newThirdParty);
-        await saveGivenSolidDataset(memberURL, solidDataset, session);
+        await saveGivenSolidDataset(thirdPartiesURL, solidDataset, session);
+    },
+
+    addAdmin: async function (req, session) {
+
+        let solidDataset = await getGivenSolidDataset(adminsURL, session);
+        const newAdmin = buildThing(createThing({ url: req.body.webID }))
+            .addUrl(RDF.type, `${user}#User`)
+            .addStringNoLocale(FOAF.mbox, req.body.email)
+            .addStringNoLocale(FOAF.name, req.body.name)
+            .addUrl(`${user}#hasUserType`, `${user}#Admin`)
+            .build();
+
+        solidDataset = setThing(solidDataset, newAdmin);
+        await saveGivenSolidDataset(adminsURL, solidDataset, session);
     },
 
     getUser: async function (req, session) {
@@ -108,45 +94,41 @@ module.exports = {
     },
 
     updateUser: async function (req, session) {
-        let solidDataset = await getGivenSolidDataset(req.datasetURL, session);
-        let projectToUpdate = getThing(solidDataset, req.webID);
-
-        if (req.name) {
-            projectToUpdate = setStringNoLocale(projectToUpdate, FOAF.name, req.title);
+        const datasetURL = getDatasetUrl(req.body.datasetURL);
+        let solidDataset = await getGivenSolidDataset(datasetURL, session);
+        let projectToUpdate = getThing(solidDataset, req.body.webID);
+        if (req.body.name) {
+            console.log(req.body.name);
+            projectToUpdate = setStringNoLocale(projectToUpdate, FOAF.name, req.body.name);
         }
-        if (req.email) {
-            projectToUpdate = setStringNoLocale(projectToUpdate, FOAF.email, req.description);
+        if (req.body.email) {
+            console.log(req.body.email);
+            projectToUpdate = setStringNoLocale(projectToUpdate, FOAF.mbox, req.body.email);
         }
-        if (req.org) {
-            projectToUpdate = setUrl(projectToUpdate, `https://w3id.org/dpv#Organisation`, `https://w3id.org/dpv#${req.org}`);
+        if (req.body.org) {
+            console.log(req.body.org);
+            projectToUpdate = setUrl(projectToUpdate, `https://w3id.org/dpv#Organisation`, `https://w3id.org/dpv#${req.body.org}`);
         }
-        if (req.dataSource) {
-            projectToUpdate = setUrl(projectToUpdate, `${user}#dataSource`, req.dataSource);
+        if (req.body.dataSource) {
+            console.log(req.body.dataSource);
+            projectToUpdate = setUrl(projectToUpdate, `${user}#dataSource`, req.body.dataSource);
         }
-        if (req.description) {
+        if (req.body.description) {
+            console.log(req.body.description);
             projectToUpdate = setStringNoLocale(projectToUpdate, DCTERMS.description, req.description);
         }
 
         solidDataset = setThing(solidDataset, projectToUpdate);
-        await saveGivenSolidDataset(req.datasetURL, solidDataset, session);
+        await saveGivenSolidDataset(datasetURL, solidDataset, session);
     },
 
     getMemberCount: async function (session) {
-        const datasetUrl = memberURL;
+        const datasetUrl = membersURL;
         const solidDataset = await getGivenSolidDataset(datasetUrl, session);
 
         const users = getThingAll(solidDataset);
-        console.log(users.length);
-        let memberCount = 0;
-
-        for (const user of users) {
-            const userType = getUrl(user, "https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/user#hasUserType");
-            if (userType === "https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/user#Member") {
-                memberCount++;
-            }
-        }
-
-        return memberCount;
+        console.log("Member count: " + users.length);
+        return users.length;
     },
 
     addNewData: async function (fileURL, appSession, userSessionID) {

@@ -11,17 +11,20 @@ module.exports = function (appSession) {
 
     router.post("/addComment", async (req, res) => {
         const {
-            URL, user, text
+            policyURL, user, text
         } = req.body;
 
         const comment = {
-            policyURL: URL,
+            policyURL: policyURL,
             creator: user,
             comment: text
         };
         try {
-            await commentService.addComment(comment, appSession);
-            res.send({ message: "Offer submitted successfully." });
+            const commentURL = await commentService.addComment(comment, appSession);
+            const newComment = new Comment();
+            await newComment.fetchComment(commentURL, appSession);
+            console.log(newComment.toJson());
+            res.send({ data: newComment.toJson(), message: "Offer submitted successfully." });
         }
         catch (error) {
             console.error(error);
@@ -39,9 +42,9 @@ module.exports = function (appSession) {
             try {
                 const commentURLs = await commentService.getCommentsByPolicy(policyURL, appSession);
                 let comments = [];
-                for (const commentURL of commentURLs) {
+                for (const comment of commentURLs) {
                     const fetchedComment = new Comment();
-                    const request = await fetchedComment.fetchComment(commentURL, appSession);
+                    await fetchedComment.fetchComment(comment, appSession);
                     comments.push(fetchedComment.toJson());
                 }
                 res.send({ data: comments });
@@ -52,16 +55,16 @@ module.exports = function (appSession) {
         }
     });
 
-    router.post("/moderateComment", async (req, res) => {
-        const { commentID, moderator } = req.body;
+    router.put("/moderateComment", async (req, res) => {
+        const { commentURL, moderator } = req.body;
 
-        if (!commentID || !moderator) {
-            res.status(400).send({ message: "Both commentID and moderator are required." });
+        if (!commentURL || !moderator) {
+            res.status(400).send({ message: "Both commentURL and moderator are required." });
             return;
         }
 
         try {
-            await commentService.moderateComment({ commentID, moderator }, appSession);
+            await commentService.moderateComment({ commentURL, moderator }, appSession);
             res.send({ message: "Comment moderated successfully." });
         } catch (error) {
             console.error(error);
@@ -70,15 +73,14 @@ module.exports = function (appSession) {
     });
 
     router.delete("/removeComment", async (req, res) => {
-        const { commentID } = req.body;
-
-        if (!commentID) {
-            res.status(400).send({ message: "commentID is required." });
+        const { commentURL } = req.body;
+        if (!commentURL) {
+            res.status(400).send({ message: "commentURL is required." });
             return;
         }
 
         try {
-            await commentService.removeComment({ commentID }, appSession);
+            await commentService.removeComment(commentURL, appSession);
             res.send({ message: "Comment removed successfully." });
         } catch (error) {
             console.error(error);

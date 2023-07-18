@@ -24,14 +24,14 @@ dct:creator a rdf:Property ;
     rdfs:range user:User ;
     rdfs:domain comment:Comment .
 
-dct:Text a rdf:Property ;
-    rdfs:label "Content" ;
-    rdfs:range xsd:string ;
-    rdfs:domain comment:Comment .
-
 dct:modified  a rdf:Property ;
     rdfs:label "Modified Timestamp" ;
     rdfs:range xsd:dateTime ;
+    rdfs:domain comment:Comment .
+
+comment:text a rdf:Property ;
+    rdfs:label "Content" ;
+    rdfs:range xsd:string ;
     rdfs:domain comment:Comment .
 
 comment:wasModerated a rdf:Property ;

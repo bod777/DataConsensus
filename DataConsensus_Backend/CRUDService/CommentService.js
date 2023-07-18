@@ -1,70 +1,65 @@
 require("dotenv").config();
 const {
+    buildThing,
     createThing,
     setThing,
-    saveSolidDatasetAt,
+    setUrl,
+    setDatetime,
+    setBoolean,
     getThing,
     getThingAll,
     getUrl,
-    getSolidDataset
+    addBoolean,
+    addDatetime,
+    addStringNoLocale,
+    removeThing
 } = require("@inrupt/solid-client");
-const { DCTERMS } = require("@inrupt/vocab-common-rdf");
+const { v4: uuidv4 } = require('uuid');
+const { DCTERMS, RDF } = require("@inrupt/vocab-common-rdf");
+const { getGivenSolidDataset, saveGivenSolidDataset } = require("../HelperFunctions.js");
 
-const comment = process.env.COMMENT;
-const commentURL = process.env.COMMENTS
-
-function generateID(solidDataset) {
-    let array = getThingAll(solidDataset);
-    let ID = array.length + 2;
-    return ID;
-}
-
-async function getGivenSolidDataset(datasetURL, session) {
-    return await getSolidDataset(datasetURL, { fetch: session.fetch });
-}
-
-async function saveGivenSolidDataset(datasetURL, courseSolidDataset, session) {
-    const savedSolidDataset = await saveSolidDatasetAt(
-        datasetURL,
-        courseSolidDataset,
-        { fetch: session.fetch }
-    );
-}
+const commentSchema = process.env.COMMENT;
+const commentsList = process.env.COMMENTS;
 
 module.exports = {
     addComment: async function (req, session) {
-        let datasetURL = commentURL;
+        let datasetURL = commentsList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
-        let commentID = generateID(solidDataset);
-        const newComment = createThing({ name: commentID })
-            .addUrl(rdf.type, `${comment}#Comment`)
-            .addUrl(DCTERMS.created, new Date())
+        const commentID = uuidv4();
+        const commentURL = `${datasetURL}#${commentID}`;
+        const newComment = buildThing(createThing({ url: commentURL }))
+            .addUrl(RDF.type, `${commentSchema}#Comment`)
+            .addDatetime(DCTERMS.issued, new Date())
+            .addDatetime(DCTERMS.modified, new Date())
             .addUrl(DCTERMS.references, req.policyURL)
             .addUrl(DCTERMS.creator, req.creator)
-            .addStringNoLocale(DCTERMS.text, req.comment)
-            .addUrl(`${comment}#wasModerated `, false)
+            .addStringNoLocale(`${commentSchema}#text`, req.comment)
+            .addBoolean(`${commentSchema}#wasModerated`, false)
             .build();
 
         solidDataset = setThing(solidDataset, newComment);
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
+        return commentURL;
     },
     moderateComment: async function (req, session) {
-        let datasetURL = commentURL;
+        let datasetURL = commentsList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
 
-        let commentToUpdate = getThing(solidDataset, `${commentURL}#${req.commentID}`);
-        commentToUpdate = setUrl(commentToUpdate, `${comment}#wasModerated`, true);
-        commentToUpdate = setUrl(commentToUpdate, `${comment}#hasModerator`, req.moderator);
-        commentToUpdate = setUrl(commentToUpdate, DCTERMS.modified, new Date());
+        let commentToUpdate = getThing(solidDataset, `${req.commentURL}`);
+        commentToUpdate = buildThing(commentToUpdate)
+            .setBoolean(`${commentSchema}#wasModerated`, true)
+            .setUrl(`${commentSchema}#hasModerator`, req.moderator)
+            .setDatetime(DCTERMS.modified, new Date())
+            .build();
 
         solidDataset = setThing(solidDataset, commentToUpdate);
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
     },
-    removeComment: async function (req, session) {
-        let datasetURL = commentURL;
-        let solidDataset = await getGivenSolidDataset(datasetURL, session);
 
-        let commentToRemove = getThing(solidDataset, `${commentURL}#${req.commentID}`);
+    removeComment: async function (commentURL, session) {
+        let datasetURL = commentsList;
+        let solidDataset = await getGivenSolidDataset(datasetURL, session);
+        let commentToRemove = getThing(solidDataset, commentURL);
 
         solidDataset = removeThing(solidDataset, commentToRemove);
 
@@ -72,7 +67,7 @@ module.exports = {
     },
 
     getCommentsByPolicy: async function (policyURL, session) {
-        let datasetURL = commentURL;
+        let datasetURL = commentsList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         let thingList = await getThingAll(solidDataset);
         let comments = await thingList
@@ -81,10 +76,10 @@ module.exports = {
         return comments;
     },
 
-    getComment: async function (url, session) {
-        let datasetURL = commentURL;
+    getComment: async function (commentURL, session) {
+        let datasetURL = commentsList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
-        let comment = getThing(solidDataset, url);
+        let comment = getThing(solidDataset, commentURL);
         return comment;
     }
 }

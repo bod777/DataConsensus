@@ -1,25 +1,55 @@
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix dct: <http://purl.org/dc/terms/> .
-@prefix comment: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/comment#> .
-@prefix offer: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/offers#> .
-@prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/requests#> .
-@prefix pod: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/comments#> .
+@prefix comment: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/comment.ttl#> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix offer:   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/offers.ttl#> .
+@prefix pod:     <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/comments.ttl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/requests.ttl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
-pod:Comment1 a comment:Comment ;
-    dct:created "2023-06-23T12:34:56Z"^^xsd:dateTime ;
-    dct:references  offer:1;
-    dct:creator <https://id.inrupt.com/JohnDoe> ;
-    dct:Text "This is a great policy!" ;
-    dct:modified "2023-06-23T12:34:56Z"^^xsd:dateTime ;
-    comment:wasModerated "false"^^xsd:boolean .
+pod:e2115bd9-d138-40ff-ba58-192ddfb593bc
+        rdf:type              comment:Comment ;
+        dct:creator           <https://id.inrupt.com/brittaperry> ;
+        dct:issued            "2023-07-17T20:09:49.561Z"^^xsd:dateTime ;
+        dct:modified          "2023-07-17T20:09:49.561Z"^^xsd:dateTime ;
+        dct:references        request:72013827-a31e-4a27-a7cb-0b86fa9ddf15 ;
+        comment:text          "I lived in New York" ;
+        comment:wasModerated  false .
 
-pod:Comment2 a comment:Comment ;
-    dct:created "2023-06-24T14:35:56Z"^^xsd:dateTime ;
-    dct:references request:1 ;
-    dct:creator <https://id.inrupt.com/JohnDoe> ;
-    dct:Text "I agree with the previous comment." ;
-    dct:modified "2023-06-24T14:35:56Z"^^xsd:dateTime ;
-    comment:wasModerated "true"^^xsd:boolean ;
-    comment:hasModerator <https://id.inrupt.com/odonneb4> .
+pod:de0641d7-e807-494e-8df3-f2ff08241172
+        rdf:type              comment:Comment ;
+        dct:creator           <https://id.inrupt.com/TroyBarnes> ;
+        dct:issued            "2023-07-17T20:04:33.922Z"^^xsd:dateTime ;
+        dct:modified          "2023-07-17T20:04:33.922Z"^^xsd:dateTime ;
+        dct:references        request:72013827-a31e-4a27-a7cb-0b86fa9ddf15 ;
+        comment:text          "Sometimes I think I lost something really important to me, and it turns out I already ate it." ;
+        comment:wasModerated  false .
+
+pod:e0044c13-4e71-4091-bf51-d11117571405
+        rdf:type              comment:Comment ;
+        dct:creator           <https://id.inrupt.com/TroyBarnes> ;
+        dct:issued            "2023-07-17T19:58:33.642Z"^^xsd:dateTime ;
+        dct:modified          "2023-07-17T19:58:33.642Z"^^xsd:dateTime ;
+        dct:references        request:72013827-a31e-4a27-a7cb-0b86fa9ddf15 ;
+        comment:text          "Sixty dollars? Hello? Rich people? Troy’s joining you. Yes, I’ll hold." ;
+        comment:wasModerated  false .
+
+pod:fc278b4e-5b20-47e9-87b9-b3e52cb8f4ed
+        rdf:type              comment:Comment ;
+        dct:creator           <https://id.inrupt.com/TroyBarnes> ;
+        dct:issued            "2023-07-17T20:08:51.106Z"^^xsd:dateTime ;
+        dct:modified          "2023-07-18T14:28:00.600Z"^^xsd:dateTime ;
+        dct:references        request:72013827-a31e-4a27-a7cb-0b86fa9ddf15 ;
+        comment:hasModerator  <https://id.inrupt.com/odonneb4> ;
+        comment:text          "You are human tennis elbow. You are a pizza burn on the roof of the world's mouth. You are the opposite of Batman." ;
+        comment:wasModerated  true .
+
+pod:350ca22a-6a46-4b2b-a611-27f2ffe1d589
+        rdf:type              comment:Comment ;
+        dct:created           "2023-06-23T12:34:56Z"^^xsd:dateTime ;
+        dct:creator           <https://id.inrupt.com/JohnDoe> ;
+        dct:modified          "2023-06-24T14:35:56Z"^^xsd:dateTime ;
+        dct:references        offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
+        comment:hasModerator  <https://id.inrupt.com/odonneb4> ;
+        comment:text          "This is a great policy!" ;
+        comment:wasModerated  false .

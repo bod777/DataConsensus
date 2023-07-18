@@ -1,16 +1,21 @@
 const router = require("express").Router();
-// const { appSession } = require('../Index.js');
+const {
+    getSessionFromStorage,
+    getSessionIdFromStorageAll,
+    Session
+} = require("@inrupt/solid-client-authn-node");
 const userService = require("../CRUDService/UserService.js");
 const { Member, ThirdParty, Admin } = require("../Models/User.js");
 
 module.exports = function (appSession) {
     router.get("/", (req, res) => {
-        console.log(JSON.stringify(appSession.info));
-        res.send({ message: `App Session WebID: ${appSession.info.webId}` });
+        console.log(JSON.stringify(userSession.info));
+        res.send({ message: `userSession Session WebID: ${userSession.info.webId}` });
     });
 
-    // FIX THIS TO INCLUDE THE USER MODEL
     router.post("/registerMember", async function (req, res) {
+        // const userSession = await getSessionFromStorage(req.session.sessionId);
+        // console.log(req.session);
         const { webID, email, name, dataSource } = req.body;
         if (!webID || !email || !name || !dataSource) {
             res.status(400).send({ message: "All fields are required." });
@@ -20,7 +25,7 @@ module.exports = function (appSession) {
             await userService.checkUserByType({ webID: webID, type: "MEMBER" }, appSession);
             try {
                 await userService.addMember(req, appSession);
-                await userService.addNewData(dataSource, appSession, sessionId); // FIX THIS AND HOW THE SESSION ID IS PASSED
+                // await userService.addNewData(dataSource, appSession, userSession); // FIX THIS AND HOW THE SESSION ID IS PASSED
                 res.send({ message: "Member registered successfully." });
             }
             catch (error) {
@@ -122,21 +127,75 @@ module.exports = function (appSession) {
         }
     });
 
-    router.put("/updateUser", async (req, res, next) => {
-        const userType = await userService.checkUser({ webID: req.webID }, appSession);
-        req.datasetURL = userType;
-        if (userType) {
-            try {
-                const userData = await userService.updateUser(req, appSession);
-                res.send({ data: userData, message: "User updated successfully." });
-            }
-            catch (error) {
-                console.error(error);
-                res.status(500).send({ message: "Error in updating user.", error: error.message });
-            }
+    router.put("/updateMember", async (req, res, next) => {
+        if (!req.body.webID) {
+            res.status(400).send({ message: "WebID are required." });
         }
         else {
-            res.status(400).send({ message: "User not found." });
+            if (await userService.checkUserByType({ webID: req.body.webID, type: "MEMBER" }, appSession)) {
+                req.body.datasetURL = "MEMBER";
+                try {
+                    await userService.updateUser(req, appSession);
+                    const updatedUser = new Member();
+                    await updatedUser.fetchUser(req.body.webID, appSession);
+                    res.send({ data: updatedUser, message: "User updated successfully." });
+                }
+                catch (error) {
+                    console.error(error);
+                    res.status(500).send({ message: "Error in updating user.", error: error.message });
+                }
+            }
+            else {
+                res.status(400).send({ message: "Member not found." });
+            }
+        }
+    });
+
+    router.put("/updateThirdParty", async (req, res, next) => {
+        if (!req.body.webID) {
+            res.status(400).send({ message: "WebID are required." });
+        }
+        else {
+            if (await userService.checkUserByType({ webID: req.body.webID, type: "THIRDPARTY" }, appSession)) {
+                req.body.datasetURL = "THIRDPARTY";
+                try {
+                    await userService.updateUser(req, appSession);
+                    const updatedUser = new ThirdParty();
+                    await updatedUser.fetchUser(req.body.webID, appSession);
+                    res.send({ data: updatedUser, message: "User updated successfully." });
+                }
+                catch (error) {
+                    console.error(error);
+                    res.status(500).send({ message: "Error in updating user.", error: error.message });
+                }
+            }
+            else {
+                res.status(400).send({ message: "User not found." });
+            }
+        }
+    });
+
+    router.put("/updateAdmin", async (req, res, next) => {
+        if (!req.body.webID) {
+            res.status(400).send({ message: "WebID are required." });
+        }
+        else {
+            if (await userService.checkUserByType({ webID: req.body.webID, type: "ADMIN" }, appSession)) {
+                req.body.datasetURL = "ADMIN";
+                try {
+                    await userService.updateUser(req, appSession);
+                    const updatedUser = new Admin();
+                    await updatedUser.fetchUser(req.body.webID, appSession);
+                    res.send({ data: updatedUser, message: "User updated successfully." });
+                }
+                catch (error) {
+                    console.error(error);
+                    res.status(500).send({ message: "Error in updating user.", error: error.message });
+                }
+            }
+            else {
+                res.status(400).send({ message: "User not found." });
+            }
         }
     });
 

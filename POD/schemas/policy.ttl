@@ -1,7 +1,9 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
-@prefix policy: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy#> .
+@prefix dpv: <https://w3id.org/dpv#> .
+@prefix policy: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy.ttl#> .
 
 policy:Seal a dpv:CertificationSeal, odrl:LeftOperand ;
     rdfs:label "European Data Protection Seal " .
@@ -23,13 +25,20 @@ policy:adminApproved a rdf:Property ;
 
 policy:Status a rdfs:Class ;
     rdfs:label "Approval Status" ;
-    owl:oneOf (policy:Approved policy:Rejected policy:Pending) .
+    owl:oneOf (policy:Approved policy:Rejected policy:Pending policy:Blocked policy:Removed) .
 
 policy:Approved a policy:status ;
-    rdfs:label "Approved" .
+    rdfs:label "Approved" ;
+    rdfs:comment "The policy has been approved by this actor." .
 policy:Rejected a policy:status ;
-    rdfs:label "Rejected" .
+    rdfs:label "Rejected" ;
+    rdfs:comment "The policy has been rejected by this actor." .
 policy:Pending a policy:status ;
-    rdfs:label "Pending" .
+    rdfs:label "Pending" ;
+    rdfs:comment "The policy is currently pending approval or rejection.".
 policy:Blocked a policy:status ;
-    rdfs:label "Blocked" .
+    rdfs:label "Blocked" ;
+    rdfs:comment "Because of actions of other actor, the approval status for this actor is not needed.".
+policy:Removed a policy:status ;
+    rdfs:label "Removed" ;
+    rdfs:comment "The policy has been removed and is no longer in effect." .

@@ -1,66 +1,261 @@
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix dct: <http://purl.org/dc/terms/> .
-@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
-@prefix dpv: <https://w3id.org/dpv#> .
-@prefix dpvpd: <https://w3id.org/dpv/dpv-pd#> .
-@prefix oac: <https://w3id.org/oac/> .
-@prefix project: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/policies/projects#> .
-@prefix offer: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/offers#> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix dpv:     <https://w3id.org/dpv#> .
+@prefix dpvpd:   <https://w3id.org/dpv/dpv-pd#> .
+@prefix oac:     <https://w3id.org/oac#> .
+@prefix odrl:    <http://www.w3.org/ns/odrl/2/> .
+@prefix offer:   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/offers.ttl#> .
+@prefix policy:  <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy.ttl#> .
+@prefix project: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/projects/projects.ttl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
-offer:rejection a odrl:Offer .
+offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingDataConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellDataToThirdParties .
 
-offer:1 a odrl:Offer ;
-    dct:creator <https://id.inrupt.com/janedoe> ;
-    dct:issued "2022-11-08T17:26:35"^^xsd:dateTime ;
-    dct:isPartOf project:3 ;
-    policy:thirdPartyApproved policy:Approved;
-    policy:memberApproved policy:Approved;
-    policy:adminApproved policy:Approved;
-    odrl:uid offer:1 ;
-    odrl:profile oac: ;        
-    odrl:permission offer:1_permission .
+offer:ff284cf0-2c7b-4718-b261-698119c2408c
+        rdf:type                   odrl:Offer ;
+        dct:creator                <https://id.inrupt.com/janedoe> ;
+        dct:isPartOf               project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued                 "2022-11-08T17:26:35"^^xsd:dateTime ;
+        odrl:permission            offer:ff284cf0-2c7b-4718-b261-698119c2408c_permission ;
+        odrl:profile               oac: ;
+        odrl:uid                   offer:1 ;
+        policy:adminApproved       policy:Approved ;
+        policy:memberApproved      policy:Approved ;
+        policy:thirdPartyApproved  policy:Approved .
 
-offer:1_permission a odrl:Permission;
-    odrl:assigner <https://id.inrupt.com/DataConsensus> ;
-    odrl:assignee <https://id.inrupt.com/FightDiabetesDublin>;
-    odrl:action dpv:Use, dpv:Copy, dpv:Store, dpv:Remove, dpv:Transform;
-    odrl:target dpvpd:MedicalHealth;
-    odrl:constraint offer:1_purposeConstraint, offer:1_sellingDataConstraint, offer:1_sellingInsightsConstraint, offer:1_organisationConstraint, offer:1_techOrgMeasureConstraint, offer:1_recipientConstraint, offer:1_durationConstraint .
-        
-offer:1_purposeConstraint a odrl:Constraint ;
-    odrl:leftOperand oac:Purpose ;
-    odrl:operator odrl:isA ;
-    odrl:rightOperand dpv:NonCommercialResearch .
+offer:ff284cf0-2c7b-4718-b261-698119c2408c_permission
+        rdf:type         odrl:Permission ;
+        odrl:action      dpv:Remove , dpv:Copy , dpv:Store , dpv:Transform , dpv:Use ;
+        odrl:assignee    <https://id.inrupt.com/FightDiabetesDublin> ;
+        odrl:assigner    <https://id.inrupt.com/DataConsensus> ;
+        odrl:constraint  offer:ff284cf0-2c7b-4718-b261-698119c2408c_purposeConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_recipientConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_techOrgMeasureConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingDataConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_durationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_organisationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingInsightsConstraint ;
+        odrl:target      dpvpd:MedicalHealth .
 
-offer:1_sellingDataConstraint a odrl:Constraint ;
-    odrl:leftOperand oac:Purpose ;
-    odrl:operator odrl:isNotA ;
-    odrl:rightOperand dpv:SellDataToThirdParties .
+offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingInsightsConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellInsightsFromData .
 
-offer:1_sellingInsightsConstraint a odrl:Constraint ;
-    odrl:leftOperand oac:Purpose ;
-    odrl:operator odrl:isNotA ;
-    odrl:rightOperand dpv:SellInsightsFromData .
+offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_sellingDataConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellDataToThirdParties .
 
-offer:1_organisationConstraint a odrl:Constraint ;
-    odrl:leftOperand oac:Organisation   ;
-    odrl:operator odrl:isA ;
-    odrl:rightOperand dpv:NonProfitOrganisation .
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_organisationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Organisation ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:AcademicScientificOrganisation .
 
-offer:1_techOrgMeasureConstraint a odrl:Constraint ;
-    odrl:leftOperand oac:TechnicalOrganisationalMeasure   ;
-    odrl:operator odrl:isAllOf ;
-    odrl:rightOperand dpv:CodeOfConduct, dpv:DataProtectionTraining, dpv:ConsultationWithDPO, dpv:IncidentReportingCommunication, dpv:OperatingSystemSecurity, dpv:PasswordAuthentication, dpv:EncryptionInTransfer, dpv:EncryptionAtRest .
+offer:64555f2b-efee-485d-abef-3542ca867ebf_durationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   dpv:UntilTimeDuration ;
+        odrl:operator      odrl:eq ;
+        odrl:rightOperand  "2023-10-10T17:00:00.000Z"^^xsd:dateTime .
 
-offer:1_recipientConstraint a odrl:Constraint ;
-    odrl:leftOperand oac:Recipient  ;
-    odrl:operator odrl:isAnyOf ;
-    odrl:rightOperand <https://id.inrupt.com/FightDiabetesDublin>, <https://id.inrupt.com/DataConsensus> .
+offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_recipientConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Recipient ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  <https://id.inrupt.com/DrJohnSmith> .
 
-offer:1_durationConstraint a odrl:Constraint ;
-    odrl:leftOperand dpv:UntilTimeDuration ;
-    odrl:operator odrl:eq ;
-    odrl:rightOperand "2024-06-31"^^xsd:date .
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_techOrgMeasureConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  dpv:CybersecurityTraining , dpv:DataProtectionTraining , dpv:CodeOfConduct .
 
+offer:rejection  rdf:type  odrl:Offer .
+
+offer:64555f2b-efee-485d-abef-3542ca867ebf_sellingDataConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellDataToThirdParties .
+
+offer:64555f2b-efee-485d-abef-3542ca867ebf
+        rdf:type                   odrl:Offer ;
+        dct:creator                <https://id.inrupt.com/JeffWinger> ;
+        dct:isPartOf               project:03d24942-d50e-4602-8470-3b604947335c ;
+        dct:issued                 "2023-07-17T15:10:16.557Z"^^xsd:dateTime ;
+        odrl:permission            offer:64555f2b-efee-485d-abef-3542ca867ebf_permission ;
+        odrl:profile               oac: ;
+        odrl:uid                   offer:64555f2b-efee-485d-abef-3542ca867ebf ;
+        policy:adminApproved       policy:Pending ;
+        policy:memberApproved      policy:Pending ;
+        policy:thirdPartyApproved  policy:Pending .
+
+offer:64555f2b-efee-485d-abef-3542ca867ebf_organisationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Organisation ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:AcademicScientificOrganisation .
+
+offer:64555f2b-efee-485d-abef-3542ca867ebf_techOrgMeasureConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  dpv:MultiFactorAuthentication , dpv:CodeOfConduct , dpv:CybersecurityTraining , dpv:DataProtectionTraining , dpv:EncryptionInTransfer , dpv:ConsultationWithDPO , dpv:EncryptionAtRest .
+
+offer:4aaeb920-bdb4-48cc-9f41-644c6206433f
+        rdf:type                   odrl:Offer ;
+        dct:creator                <https://id.inrupt.com/BenChang> ;
+        dct:isPartOf               project:03d24942-d50e-4602-8470-3b604947335c ;
+        dct:issued                 "2023-07-17T15:10:29.871Z"^^xsd:dateTime ;
+        odrl:permission            offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_permission ;
+        odrl:profile               oac: ;
+        odrl:uid                   offer:4aaeb920-bdb4-48cc-9f41-644c6206433f ;
+        policy:adminApproved       policy:Approved ;
+        policy:memberApproved      policy:Approved ;
+        policy:thirdPartyApproved  policy:Approved .
+
+offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_purposeConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:CommercialResearch .
+
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_durationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   dpv:UntilTimeDuration ;
+        odrl:operator      odrl:eq ;
+        odrl:rightOperand  "2023-10-10T17:00:00.000Z"^^xsd:dateTime .
+
+offer:ff284cf0-2c7b-4718-b261-698119c2408c_durationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   dpv:UntilTimeDuration ;
+        odrl:operator      odrl:eq ;
+        odrl:rightOperand  "2024-11-08T17:26:35"^^xsd:dateTime .
+
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_purposeConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:CommercialResearch .
+
+offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_techOrgMeasureConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  dpv:CodeOfConduct , dpv:DataProtectionTraining , dpv:CybersecurityTraining , dpv:ConsultationWithDPO , dpv:MultiFactorAuthentication .
+
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingInsightsConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellInsightsFromData .
+
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_permission
+        rdf:type         odrl:Permission ;
+        odrl:action      dpv:Transform , dpv:Use , dpv:Store , dpv:Copy , dpv:Remove ;
+        odrl:assignee    <https://id.inrupt.com/DataConsensus> ;
+        odrl:assigner    <https://id.inrupt.com/DrJohnSmith> ;
+        odrl:constraint  offer:87c44b67-78f9-4e08-801f-9f098379bd04_purposeConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_durationConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_recipientConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingInsightsConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_techOrgMeasureConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingDataConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_organisationConstraint ;
+        odrl:target      dpvpd:MedicalHealth .
+
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingDataConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellDataToThirdParties .
+
+offer:ff284cf0-2c7b-4718-b261-698119c2408c_organisationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Organisation ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:NonProfitOrganisation .
+
+offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_sellingInsightsConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellInsightsFromData .
+
+offer:87c44b67-78f9-4e08-801f-9f098379bd04
+        rdf:type                   odrl:Offer ;
+        dct:creator                <https://id.inrupt.com/AnnieEddison> ;
+        dct:isPartOf               project:03d24942-d50e-4602-8470-3b604947335c ;
+        dct:issued                 "2023-07-17T15:11:19.640Z"^^xsd:dateTime ;
+        odrl:permission            offer:87c44b67-78f9-4e08-801f-9f098379bd04_permission ;
+        odrl:profile               oac: ;
+        odrl:uid                   offer:87c44b67-78f9-4e08-801f-9f098379bd04 ;
+        policy:adminApproved       policy:Pending ;
+        policy:memberApproved      policy:Pending ;
+        policy:thirdPartyApproved  policy:Pending .
+
+offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_permission
+        rdf:type         odrl:Permission ;
+        odrl:action      dpv:Store , dpv:Use , dpv:Transform , dpv:Remove , dpv:Copy ;
+        odrl:assignee    <https://id.inrupt.com/DataConsensus> ;
+        odrl:assigner    <https://id.inrupt.com/DrJohnSmith> ;
+        odrl:constraint  offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_sellingInsightsConstraint , offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_purposeConstraint , offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_sellingDataConstraint , offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_techOrgMeasureConstraint , offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_organisationConstraint , offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_recipientConstraint , offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_durationConstraint ;
+        odrl:target      dpvpd:MedicalHealth .
+
+offer:ff284cf0-2c7b-4718-b261-698119c2408c_techOrgMeasureConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  dpv:ConsultationWithDPO , dpv:OperatingSystemSecurity , dpv:PasswordAuthentication , dpv:CodeOfConduct , dpv:IncidentReportingCommunication , dpv:EncryptionAtRest , dpv:EncryptionInTransfer , dpv:DataProtectionTraining .
+
+offer:64555f2b-efee-485d-abef-3542ca867ebf_sellingInsightsConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellInsightsFromData .
+
+offer:64555f2b-efee-485d-abef-3542ca867ebf_permission
+        rdf:type         odrl:Permission ;
+        odrl:action      dpv:Use , dpv:Store , dpv:Remove , dpv:Transform , dpv:Copy ;
+        odrl:assignee    <https://id.inrupt.com/DataConsensus> ;
+        odrl:assigner    <https://id.inrupt.com/DrJohnSmith> ;
+        odrl:constraint  offer:64555f2b-efee-485d-abef-3542ca867ebf_organisationConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_durationConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_purposeConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_sellingDataConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_techOrgMeasureConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_sellingInsightsConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_recipientConstraint ;
+        odrl:target      dpvpd:MedicalHealth .
+
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_recipientConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Recipient ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  <https://id.inrupt.com/DataConsensus> , <https://id.inrupt.com/DrJohnSmith> .
+
+offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_organisationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Organisation ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:AcademicScientificOrganisation .
+
+offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_durationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   dpv:UntilTimeDuration ;
+        odrl:operator      odrl:eq ;
+        odrl:rightOperand  "2023-10-10T17:00:00.000Z"^^xsd:dateTime .
+
+offer:ff284cf0-2c7b-4718-b261-698119c2408c_purposeConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:NonCommercialResearch .
+
+offer:64555f2b-efee-485d-abef-3542ca867ebf_purposeConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:CommercialResearch .
+
+offer:64555f2b-efee-485d-abef-3542ca867ebf_recipientConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Recipient ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  <https://id.inrupt.com/DrJohnSmith> .
+
+offer:ff284cf0-2c7b-4718-b261-698119c2408c_recipientConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Recipient ;
+        odrl:operator      odrl:isAnyOf ;
+        odrl:rightOperand  <https://id.inrupt.com/DataConsensus> , <https://id.inrupt.com/FightDiabetesDublin> .

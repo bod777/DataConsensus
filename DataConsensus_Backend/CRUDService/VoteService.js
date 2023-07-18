@@ -1,5 +1,6 @@
 require("dotenv").config();
 const {
+    buildThing,
     createThing,
     setThing,
     saveSolidDatasetAt,
@@ -8,38 +9,23 @@ const {
     getUrl,
     getSolidDataset
 } = require("@inrupt/solid-client");
-const vote = process.env.VOTE;
-const votesURL = process.env.VOTES
-
-function generateID(solidDataset) {
-    let array = getThingAll(solidDataset);
-    let ID = array.length + 2;
-    return ID;
-}
-
-async function getGivenSolidDataset(datasetURL, session) {
-    return await getSolidDataset(datasetURL, { fetch: session.fetch });
-}
-
-async function saveGivenSolidDataset(datasetURL, courseSolidDataset, session) {
-    const savedSolidDataset = await saveSolidDatasetAt(
-        datasetURL,
-        courseSolidDataset,
-        { fetch: session.fetch }
-    );
-}
+const { RDF, XSD } = require("@inrupt/vocab-common-rdf");
+const { v4: uuidv4 } = require('uuid');
+const { getGivenSolidDataset, saveGivenSolidDataset } = require("../HelperFunctions.js");
+const voteSchema = process.env.VOTE;
+const votesList = process.env.VOTES
 
 module.exports = {
     addVote: async function (req, session) {
-        let datasetURL = votesURL;
+        let datasetURL = votesList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
 
         // Search for an existing vote from the same voter on the same policy.
         const existingVotes = getThingAll(solidDataset);
         let existingVote = null;
         for (const vote of existingVotes) {
-            const voter = getUrl(vote, `${vote}#hasVoter`);
-            const policy = getUrl(vote, `${vote}#hasPolicy`);
+            const voter = getUrl(vote, `${voteSchema}#hasVoter`);
+            const policy = getUrl(vote, `${voteSchema}#hasPolicy`);
             if (voter === req.voter && policy === req.policyURL) {
                 existingVote = vote;
                 break;
@@ -48,15 +34,17 @@ module.exports = {
 
         if (existingVote) {
             // Update the existing vote.
-            existingVote = setUrl(existingVote, `${vote}#voteRank`, req.voteRank);
+            existingVote = buildThing(existingVote).setInteger(`${voteSchema}#voteRank`, req.voteRank).build();
         } else {
             // Create a new vote.
-            let voteID = generateID(solidDataset);
-            existingVote = createThing({ name: voteID })
-                .addUrl(rdf.type, `${vote}#Vote`)
-                .addUrl(`${vote}#hasVoter`, req.voter)
-                .addUrl(`${vote}#hasPolicy`, req.policyURL)
-                .addInteger(`${vote}#voteRank`, req.voteRank)
+            const voteID = uuidv4();
+            const voteURI = `${datasetURL}#${voteID}`;
+
+            existingVote = buildThing(createThing({ url: voteURI }))
+                .addUrl(RDF.type, `${voteSchema}#Vote`)
+                .addUrl(`${voteSchema}#hasVoter`, req.voter)
+                .addUrl(`${voteSchema}#hasPolicy`, req.policyURL)
+                .addInteger(`${voteSchema}#voteRank`, req.voteRank)
                 .build();
         }
 
@@ -65,22 +53,17 @@ module.exports = {
     },
 
     countVotesByRankPolicy: async function (req, session) {
-        const datasetUrl = votesURL;
+        const datasetUrl = votesList;
         const solidDataset = await getSolidDataset(datasetUrl, { fetch: session.fetch });
 
         const things = getThingAll(solidDataset);
-        let count = 0;
-
-        for (let thing of things) {
-            const policy = getUrl(thing, `${vote}#hasDocument`);
-            if (policy !== req.policyUrl) {
-                continue;
-            }
-            const rank = getUrl(thing, `${vote}#voteRank`);
-            if (rank === req.rank) {
-                count++;
-            }
-        }
+        const policyVotes = things.filter(thing => getUrl(thing, `${voteSchema}#hasPolicy`) === req.policyURL);
+        const filteredPolicyVotes = policyVotes.filter(vote => {
+            const voteRankString = vote.predicates[`${voteSchema}#voteRank`].literals[XSD.integer][0];
+            const voteRank = Number(voteRankString);
+            return voteRank === 1;
+        });
+        const count = filteredPolicyVotes.length;
         return count;
     },
 }
