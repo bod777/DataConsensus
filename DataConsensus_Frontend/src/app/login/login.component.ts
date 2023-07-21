@@ -1,21 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Session } from "@inrupt/solid-client-authn-browser";
-import { AuthserviceService } from '../authservice.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-    getSolidDataset,
-    getThing,
-    setThing,
-    getStringNoLocale,
-    setStringNoLocale,
-    saveSolidDatasetAt
-} from "@inrupt/solid-client";
-import { Observable, windowWhen } from 'rxjs';
-import { FormControl } from '@angular/forms';
-import { User } from '../model/user-info';
-import { AjaxResult } from '../model/constants';
+import { login, getDefaultSession, handleIncomingRedirect, onSessionRestore } from "@inrupt/solid-client-authn-browser";
+import { UserService } from '../services/userservice.service';
 
 @Component({
     selector: 'app-login', // This is the CSS selector that Angular uses to identify this component in a template.
@@ -23,98 +9,99 @@ import { AjaxResult } from '../model/constants';
     styleUrls: ['./login.component.css']
 })
 
-export class LoginComponent implements OnInit, OnDestroy {
-    //    export class LoginComponent implements OnInit, OnDestroy { ... }: This is the LoginComponent class being defined. It implements OnInit and OnDestroy, which are lifecycle hooks in Angular. OnInit is called after Angular has initialized all data-bound properties of a directive, and OnDestroy is called just before Angular destroys the directive.
+export class LoginComponent implements OnInit {
 
-    constructor(private route: Router, private service: AuthserviceService, private _snackBar: MatSnackBar) {
-    } // This is the constructor of the LoginComponent class. It injects three services: Router, AuthserviceService, and MatSnackBar (to display information or text from bottom of the screen when performing any action ).
+    constructor(private route: Router, private userService: UserService) { }
 
-    // Adding properties of the LoginComponent class.
-    SOLID_IDENTITY_PROVIDER?: string = "https://login.inrupt.com"; // URL of the Solid identity provider
-    USER_SELECTION: string = "USER";
-    session = new Session();
+    loginInput?: string = "https://login.inrupt.com";
     validate: boolean = false;
+    isLoggingIn: boolean = false;
+    isSigningUp: boolean = false;
+    session = getDefaultSession();
 
-    // It sets some values in local storage and then calls the login method of the session with some options.
-    async login(): Promise<void> {
-        console.log("inside login")
-        console.log(this.session.info.sessionId);
-        localStorage.setItem("signup", "false");
-        localStorage.setItem("signupUser", this.USER_SELECTION);
-        await this.session.login({
-            oidcIssuer: this.SOLID_IDENTITY_PROVIDER,
-            clientName: "DataConsensus",
-            redirectUrl: window.location.href
-        });
+    async login() {
+        this.isLoggingIn = true;
+        this.isSigningUp = false;
     }
 
-    async signUP(): Promise<void> {
-        localStorage.setItem("signup", "true");
-        localStorage.setItem("signupUser", this.USER_SELECTION);
-        await this.session.login({
-            oidcIssuer: this.SOLID_IDENTITY_PROVIDER,
-            clientName: "DataConsensus",
-            redirectUrl: window.location.href
-        });
+    async signUp() {
+        this.isSigningUp = true;
+        this.isLoggingIn = false;
     }
 
-    // This is the ngOnInit method. It handles the incoming redirect from the Solid identity provider after login, checks if the user is logged in, and then either registers the user or checks the user based on whether the user is signing up or logging in.
-    async ngOnInit(): Promise<void> {
+    async confirmLogin() {
+        return login({
+            oidcIssuer: this.loginInput,
+            redirectUrl: window.location.href,
+            clientName: "Testing"
+        });
+        // this.authService.login().subscribe(data => {
+        //     console.log(data);
+        // });
+    }
 
-        //handle incoming redirect from solid identity provider after login
-        await this.session.handleIncomingRedirect({ url: window.location.href });
+    async ngOnInit() {
 
-        let webId = this.session.info.webId ? this.session.info.webId : "";
-        let userSelection = localStorage.getItem("signupUser");
-        let routerparam = userSelection == "USER" ? "/userDashboard" :
-            (userSelection == "ADMIN") ? "/adminDashboard" : "/companyDashboard";
+        // doesn't work at refresh
+        // await this.session.handleIncomingRedirect({ url: window.location.href });
+        // if (this.session.info.isLoggedIn) {
+        //     console.log("Logged in as " + this.session.info.webId);
+        //     this.route.navigate(['/home']);
+        // }
+        // onSessionRestore((url) => {
+        //     this.route.navigateByUrl(url);
+        // });
 
-        if (this.session.info.isLoggedIn) {
-            let myAppProfile = await getSolidDataset(this.session.info.webId + "/user");
-            let userCard = getThing(
-                myAppProfile,
-                this.session.info.webId ? this.session.info.webId : "" //will always have some value
-            );
-            let name = getThing(
-                myAppProfile,
-                this.session.info.webId ? this.session.info.webId : "" //will always have some value
-            );
-            let userLogged: User = new User(webId, userSelection ? userSelection : "USER");
-            //signup logic
-            if (localStorage.getItem("signup") == "true") {
-                // resetting back local storage
-                localStorage.setItem("signup", "false");
-                (await this.service.registerUser(userLogged)).subscribe((result: AjaxResult) => {
-                    console.log("after registration");
+        // works at refresh but only the frontend
+        let sessionInfo: any;
+        sessionInfo = await handleIncomingRedirect({ restorePreviousSession: true });
 
-                    if (result['message'] == "user Registered") {
-                        this.service.userLoggedIn = userLogged;
-                        this.route.navigate([routerparam]);
+        console.log(JSON.stringify(sessionInfo))
+        if (sessionInfo) {
+            if (sessionInfo.webId) {
+                this.userService.checkUser(sessionInfo.webId).subscribe(
+                    (response) => {
+                        const isUser = response.message === "User found.";
+                        const userType = response.data;
+                        localStorage.setItem("webID", sessionInfo.webId);
+                        if (isUser) {
+                            localStorage.setItem("isLoggedIn", "true");
+                            localStorage.setItem("userType", userType);
+                        } else {
+                            localStorage.setItem("isLoggedIn", "false");
+                            localStorage.setItem("userType", "undefined");
+                        }
+                        console.log("Logged in as " + sessionInfo.webId);
+                        this.route.navigate(['/home']);
+                    },
+                    (error) => {
+                        console.log(error);
                     }
-                    else {
-                        this._snackBar.open("user exists already Try logging in", "ok");
-                        console.log("user exists already cannot register");
-                    }
-                });
-            }
-            else {// login logic
-                (await this.service.checkUser(userLogged)).subscribe((result: AjaxResult) => {
-                    if (result['message'] == "login success") {
-                        this.service.userLoggedIn = userLogged;
-                        this.route.navigate([routerparam]);
-                    }
-                    else {
-                        this._snackBar.open("user not found, Try signing in", "ok");
-                    }
-                });
-                // resetting back local storage
-                localStorage.setItem("signup", "false");
+                );
+                // const response = await this.authService.checkUser(sessionInfo.webId);
+                // console.log("Test2", JSON.stringify(response));
+                // const isUser = response.message === "User found";
+                // const userType = response.data;
+                // localStorage.setItem("webID", sessionInfo.webId);
+                // if (isUser) {
+                //     localStorage.setItem("isLoggedIn", "true");
+                //     localStorage.setItem("userType", userType);
+                // }
+                // else {
+                //     localStorage.setItem("isLoggedIn", "false");
+                //     localStorage.setItem("userType", "undefined");
+                // }
+                // console.log("Logged in as " + sessionInfo.webId);
+                // this.route.navigate(['/home']);
             }
         }
     }
 
-    ngOnDestroy(): void {
-        this.service.session = this.session; // sets the session property of the service to the current session.
+    async redirectToMemberSignUp() {
+        this.route.navigate(['/memberSignup']);
     }
 
+    async redirectToThirdPartySignUp() {
+        this.route.navigate(['/thirdPartySignUp']);
+    }
 }

@@ -3,13 +3,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
+import { MemberSignUpComponent } from './memberSignUp/memberSignUp.component';
+import { ThirdPartySignUpComponent } from './thirdPartySignUp/thirdPartySignUp.component';
+import { HomeComponent } from './home/home.component';
+import { MemberHomeComponent } from './memberHome/memberHome.component';
+import { ThirdPartyHomeComponent } from './thirdPartyHome/thirdPartyHome.component';
+import { AdminHomeComponent } from './adminHome/adminHome.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { HomePageComponent } from './home-page/home-page.component';
-import { AuthserviceService } from './authservice.service';
+import { UserService } from './services/userservice.service';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,15 +25,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { CompanyDashboardComponent } from './company-dashboard/company-dashboard.component';
-import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RequestResubmitPageComponent } from './request-resubmit-page/request-resubmit-page.component';
 import { MatListModule } from '@angular/material/list';
-import { ProfileComponentComponent } from './profile-component/profile-component.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -38,12 +38,12 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
   declarations: [
     AppComponent,
     LoginComponent,
-    HomePageComponent,
-    CompanyDashboardComponent,
-    UserDashboardComponent,
-    RequestResubmitPageComponent,
-    ProfileComponentComponent,
-    AdminDashboardComponent
+    HomeComponent,
+    MemberHomeComponent,
+    ThirdPartyHomeComponent,
+    AdminHomeComponent,
+    MemberSignUpComponent,
+    ThirdPartySignUpComponent
   ],
   imports: [
     BrowserModule,
@@ -74,7 +74,7 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
     provideFirestore(() => getFirestore())
 
   ],
-  providers: [AuthserviceService],
+  providers: [UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

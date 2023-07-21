@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { CompanyDashboardComponent } from './company-dashboard/company-dashboard.component';
-import { HomePageComponent } from './home-page/home-page.component';
 import { LoginComponent } from './login/login.component';
-import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
+import { MemberSignUpComponent } from './memberSignUp/memberSignUp.component';
+import { ThirdPartySignUpComponent } from './thirdPartySignUp/thirdPartySignUp.component';
+import { HomeComponent } from './home/home.component';
+import { MemberHomeComponent } from './memberHome/memberHome.component';
+import { ThirdPartyHomeComponent } from './thirdPartyHome/thirdPartyHome.component';
+import { AdminHomeComponent } from './adminHome/adminHome.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: 'homepage', component: HomePageComponent },
-  { path: 'userDashboard', component: UserDashboardComponent },
-  { path: 'companyDashboard', component: CompanyDashboardComponent },
-  { path: 'adminDashboard', component: AdminDashboardComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'memberSignup', component: MemberSignUpComponent },
+  { path: 'thirdPartySignUp', component: ThirdPartySignUpComponent }
 ];
 
 @NgModule({

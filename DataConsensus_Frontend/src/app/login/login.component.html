@@ -1,39 +1,34 @@
-<mat-grid-list cols="1" rowHeight="5em" id=sect1>
-    <mat-grid-tile>
-        <h1>SOLID Collaborative Data Sharing Tool (SOLID CDST)</h1><br>
-    </mat-grid-tile>
-    <mat-grid-tile rowspan="3">
-        <p></p>
+<!-- your-component.component.html -->
+<mat-grid-list cols="1" rowHeight="5em">
+    <mat-grid-tile rowspan="1">
+        <h1>Data Consensus</h1>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
-        <mat-button-toggle-group [(ngModel)]="USER_SELECTION" aria-label="Font Style">
-            <mat-button-toggle value="USER">USER</mat-button-toggle>
-            <mat-button-toggle value="COMPANY">THIRD PARTY</mat-button-toggle>
-            <mat-button-toggle value="ADMIN">ADMIN</mat-button-toggle>
-        </mat-button-toggle-group>
-        <!-- This is a button toggle group from Angular Material. It's a group of button toggles that can be toggled on and off. The [(ngModel)] is a two-way data binding that binds the USER_SELECTION property from the component class to the button toggle group. The selected value of the button toggle group will be stored in the USER_SELECTION property. -->
+        <h2>A Collaborative Data Governance Platform</h2>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
-        <mat-button-toggle-group [(ngModel)]="SOLID_IDENTITY_PROVIDER" aria-label="Font Style">
-            <mat-button-toggle value="https://login.inrupt.com">INRUPT.com</mat-button-toggle>
-            <mat-button-toggle value="https://solidcommunity.net/">solid community</mat-button-toggle>
+        <h3>Actions:</h3>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1">
+        <mat-button-toggle-group>
+            <mat-button-toggle mat-raised-button color="primary" (click)="login()">Login</mat-button-toggle>
+            <mat-button-toggle mat-raised-button color="primary" (click)="signUp()">Sign Up</mat-button-toggle>
         </mat-button-toggle-group>
     </mat-grid-tile>
-
-    <mat-grid-tile rowspan="1">
-        <p>Chosen identity provider is {{SOLID_IDENTITY_PROVIDER}}</p>
+    <mat-grid-tile rowspan="1" *ngIf="isSigningUp">
+        <h3>Choose User Type:</h3>
     </mat-grid-tile>
-    <mat-grid-tile rowspan="1" aria-colspan="2">
-        <div>
-            <button mat-raised-button color="blue" (click)="login()">LOGIN</button>
-        </div>
-        <div>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-        </div>
-        <div>
-            <button mat-raised-button color="blue" [disabled]="USER_SELECTION=='ADMIN'" (click)="signUP()"> SIGNUP
-            </button>
-            <!-- This is another raised button. The [disabled] is a property binding that binds the disabled property of the button to the expression USER_SELECTION=='ADMIN'. If USER_SELECTION is "ADMIN", the button will be disabled. -->
-        </div>
+    <mat-grid-tile rowspan="1" *ngIf="isSigningUp">
+        <mat-button-toggle-group>
+            <mat-button-toggle (click)="redirectToMemberSignUp()">Member</mat-button-toggle>
+            <mat-button-toggle (click)="redirectToThirdPartySignUp()">Third Party</mat-button-toggle>
+        </mat-button-toggle-group>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1" *ngIf="isLoggingIn">
+        <mat-form-field [style.width.px]=327>
+            <mat-label>Solid Input Provider</mat-label>
+            <input matInput type="text" [(ngModel)]="loginInput">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="confirmLogin()">Confirm</button>
     </mat-grid-tile>
 </mat-grid-list>

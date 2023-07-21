@@ -13,24 +13,57 @@ module.exports = function (appSession) {
         res.send({ message: `userSession Session WebID: ${userSession.info.webId}` });
     });
 
+    router.get("/checkUser", async (req, res, next) => {
+        const webID = req.query.webID;
+        if (!webID) {
+            res.status(400).send({ message: "WebID are required." });
+        }
+        else {
+            const userTypes = ["MEMBER", "THIRDPARTY", "ADMIN"];
+            let isUser = false;
+            let type;
+            for (const userType of userTypes) {
+                isUser = await userService.checkUserByType({ type: userType, webID }, appSession);
+                if (isUser) {
+                    type = userType;
+                    break;
+                }
+            }
+            if (isUser) {
+                res.send({ data: type, message: "User found." });
+            }
+            else {
+                res.send({ message: "User not found." });
+            }
+        }
+    });
+
     router.post("/registerMember", async function (req, res) {
         // const userSession = await getSessionFromStorage(req.session.sessionId);
         // console.log(req.session);
+        console.log(req.body);
         const { webID, email, name, dataSource } = req.body;
         if (!webID || !email || !name || !dataSource) {
             res.status(400).send({ message: "All fields are required." });
             return;
         }
         else {
-            await userService.checkUserByType({ webID: webID, type: "MEMBER" }, appSession);
-            try {
-                await userService.addMember(req, appSession);
-                // await userService.addNewData(dataSource, appSession, userSession); // FIX THIS AND HOW THE SESSION ID IS PASSED
-                res.send({ message: "Member registered successfully." });
+            const existsAlready = await userService.checkUserByType({ webID: webID, type: "MEMBER" }, appSession);
+            console.log("does it exist?", existsAlready);
+            if (existsAlready) {
+                res.status(400).send({ message: "User is already registered as a member." });
             }
-            catch (error) {
-                console.error(error);
-                res.status(500).send({ message: "Error in registering member.", error: error.message });
+            else {
+                try {
+                    await userService.addMember(req, appSession);
+                    // await userService.addNewData(dataSource, appSession, userSession); // FIX THIS AND HOW THE SESSION ID IS PASSED
+                    console.log("added member")
+                    res.send({ message: "Member registered successfully." });
+                }
+                catch (error) {
+                    console.error(error);
+                    res.status(500).send({ message: "Error in registering member.", error: error.message });
+                }
             }
         }
     });

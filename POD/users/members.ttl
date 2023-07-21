@@ -1,46 +1,87 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix user: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/user#> .
+@prefix user: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/user.ttl#> .
 
 <https://id.inrupt.com/jimdoe>
         rdf:type          user:User ;
-        foaf:email        "jimdoe@example.com" ;
+        foaf:mbox         "jimdoe@example.com" ;
         foaf:name         "Jim Doe" ;
         user:dataSource   <http://example.com/pods/jimdoe> ;
         user:hasUserType  user:Member .
 
+<https://id.inrupt.com/eripley>
+        rdf:type          user:User ;
+        foaf:mbox         "eripley@example.com" ;
+        foaf:name         "Ellen Ripley" ;
+        user:dataSource   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/Sample%20Data.csv> ;
+        user:hasUserType  user:Member .
+
 <https://id.inrupt.com/janedoe>
         rdf:type          user:User ;
-        foaf:email        "janedoe@example.com" ;
+        foaf:mbox         "janedoe@example.com" ;
         foaf:name         "Jane Doe" ;
         user:dataSource   <http://example.com/pods/janedoe> ;
         user:hasUserType  user:Member .
 
-<https://id.inrupt.com/johndoe>
+<https://id.inrupt.com/jconnor>
         rdf:type          user:User ;
-        foaf:email        "johndoe@example.com" ;
-        foaf:name         "John Doe" ;
-        user:dataSource   <http://example.com/pods/johndoe> ;
+        foaf:mbox         "jconnor@example.com" ;
+        foaf:name         "John Connor" ;
+        user:dataSource   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/Sample%20Data.csv> ;
         user:hasUserType  user:Member .
 
-<https://id.inrupt.com/troybarnes>
-        rdf:type    user:User ;
-        foaf:email  "tball@greendale.com" ;
-        foaf:name   "Troy Barns" ;
-        user:dataSource <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/sampleData> ;
-        user:hasUserType user:Member .
-
 <https://id.inrupt.com/jeffwinger>
-        foaf:email        "winger@greendale.com" ;
-        foaf:name         "Jeff Winger" ;
         rdf:type          user:User ;
+        foaf:mbox         "winger@greendale.com" ;
+        foaf:name         "Jeff Winger" ;
         user:dataSource   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/sampleData> ;
         user:hasUserType  user:Member .
 
 <https://id.inrupt.com/brittaperry>
-        rdf:type    user:User ;
-        foaf:email  "bperry@greendale.com" ;
-        foaf:name   "Britta Perry" ;
-        user:dataSource
-                <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/sampleData> ;
-        user:hasUserType user:Member .
+        rdf:type          user:User ;
+        foaf:mbox         "bperry@greendale.com" ;
+        foaf:name         "Britta Perry" ;
+        user:dataSource   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/sampleData> ;
+        user:hasUserType  user:Member .
+
+<https://id.inrupt.com/sconnor>
+        rdf:type            user:User ;
+        foaf:mbox           "sconnor@example.com" ;
+        foaf:name           "Sarah Connor" ;
+        <user:dataSource>   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/Sample%20Data.csv> ;
+        <user:hasUserType>  <user:Member> .
+
+<https://id.inrupt.com/johndoe>
+        rdf:type          user:User ;
+        foaf:mbox         "johndoe@example.com" ;
+        foaf:name         "John Doe" ;
+        user:dataSource   <http://example.com/pods/johndoe> ;
+        user:hasUserType  user:Member .
+
+<https://id.inrupt.com/troybarns>
+        rdf:type          user:User ;
+        foaf:mbox         "tball@greendale.com" ;
+        foaf:name         "Troy Barns" ;
+        user:dataSource   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/sampleData> ;
+        user:hasUserType  user:Member .
+
+<https://id.inrupt.com/piercehawthorne>
+        rdf:type   user:User ;
+        foaf:mbox  "piercehawthorne@example.com" ;
+        foaf:name  "Pierce Hawthorne" ;
+        user:dataSource   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/sampleData> ;
+        user:hasUserType  user:Member .
+
+<https://id.inrupt.com/craigpelton>
+        rdf:type   user:User ;
+        foaf:mbox  "craigpelton@example.com" ;
+        foaf:name  "Craig Pelton" ;
+        user:dataSource   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/sampleData> ;
+        user:hasUserType  user:Member .
+
+<https://id.inrupt.com/benchang>
+        rdf:type          user:User ;
+        foaf:mbox         "bchang@example.com" ;
+        foaf:name         "Benjamin Franklin Chang" ;
+        user:dataSource   <http://example.com/pods/sampleData> ;
+        user:hasUserType  user:Member .

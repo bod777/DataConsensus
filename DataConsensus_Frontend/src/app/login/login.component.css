@@ -7,11 +7,6 @@
     flex-direction: column;
 }
 
-#sect1 {
-
-    background-image: url("../../assets/solid.svg");
-    background-size: 10%;
-    background-repeat: no-repeat;
-    background-position: top-left;
-
+.mat-form-field {
+    width: 327px;
 }

@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require('cors');
 const cookieSession = require("cookie-session");
 const { readFile } = require('fs/promises');
-const { overwriteFile, getSourceUrl, universalAccess } = require("@inrupt/solid-client");
+const { overwriteFile, getSourceUrl } = require("@inrupt/solid-client");
 const {
     getSessionFromStorage,
     getSessionIdFromStorageAll,
@@ -63,17 +63,19 @@ app.use(
 let userSession;
 
 app.get("/login", async (req, res, next) => {
+    console.log("login");
     userSession = new Session();
     console.log(`userSession: ${JSON.stringify(userSession.info)}`);
     req.session.sessionId = userSession.info.sessionId;
 
     const redirectToSolidIdentityProvider = (url) => {
+        console.log(url);
         res.redirect(url);
     };
 
     try {
         await userSession.login({
-            redirectUrl: `http://localhost:${port}/login/callback`,
+            redirectUrl: `http://localhost:3000/login/callback`,
             oidcIssuer: process.env.APP_OIDC_ISSUER,
             clientName: "DataConsensus",
             handleRedirect: redirectToSolidIdentityProvider,
@@ -85,15 +87,17 @@ app.get("/login", async (req, res, next) => {
 
 app.get("/login/callback", async (req, res) => {
     const session = await getSessionFromStorage(req.session.sessionId);
+    console.log(`http://localhost:${port}${req.url}`);
     await session.handleIncomingRedirect(`http://localhost:${port}${req.url}`);
 
     if (session.info.isLoggedIn) {
         console.log(`callback userSession ${JSON.stringify(session.info)}`);
-        return res.send(`<p>Logged in with the WebID ${session.info.sessionId}.</p>`)
+        return res.send(`<p>Logged in with the WebID ${session.info.webId}.</p>`)
     }
 });
 
 app.get("/fetch-user-resource", async (req, res, next) => {
+    console.log("fetch-user-resource");
     console.log(req.session);
     console.log(req.session.sessionId);
     if (typeof req.query["resource"] === "undefined") {
@@ -168,8 +172,10 @@ app.get("/logout", async (req, res, next) => {
 
 app.get("/", async (req, res, next) => {
     const sessionIds = await getSessionIdFromStorageAll();
-    res.send(
-        `<p>There are currently [${sessionIds.length}] visitors.</p>`
+    res.send({
+        data:
+            `<p>There are currently [${sessionIds.length}] visitors.</p>`
+    }
     );
 });
 

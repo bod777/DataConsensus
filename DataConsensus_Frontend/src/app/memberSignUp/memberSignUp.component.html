@@ -1,0 +1,35 @@
+<mat-grid-list cols="1" rowHeight="5em">
+    <mat-grid-tile rowspan="1">
+        <h1>Data Consensus</h1>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1">
+        <h2>A Collaborative Data Governance Platform</h2>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1">
+        <mat-form-field [style.width.px]=327>
+            <mat-label>Name</mat-label>
+            <input matInput type="text" [(ngModel)]="name">
+        </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1">
+        <mat-form-field [style.width.px]=327>
+            <mat-label>Email</mat-label>
+            <input matInput type="text" [(ngModel)]="email">
+        </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1">
+        <mat-form-field [style.width.px]=327>
+            <mat-label>Data Source</mat-label>
+            <input matInput type="text" [(ngModel)]="dataSource">
+        </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <mat-form-field [style.width.px]=327>
+            <mat-label>Solid Input Provider</mat-label>
+            <input matInput type="text" [(ngModel)]="loginInput">
+        </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1">
+        <button mat-raised-button color="primary" (click)="submitForm()">Confirm</button>
+    </mat-grid-tile>
+</mat-grid-list>
