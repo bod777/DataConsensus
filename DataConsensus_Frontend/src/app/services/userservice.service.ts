@@ -18,14 +18,10 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
-    // login() {
-    //     return this.http.get(this.REST_API_SERVICE + '/login');
-    // }
-    // login(): Observable<any> {
-    //     return this.http.get(this.REST_API_SERVICE + '/login').pipe(
-    //         map(response => response)
-    //     );
-    // }
+    login(): Observable<any> {
+        return this.http.get('http://localhost:3000/login');
+    }
+
     checkUser(webID: string): Observable<any> {
 
         const headers = new HttpHeaders({

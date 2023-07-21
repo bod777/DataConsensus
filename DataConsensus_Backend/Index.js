@@ -69,7 +69,6 @@ app.get("/login", async (req, res, next) => {
     req.session.sessionId = userSession.info.sessionId;
 
     const redirectToSolidIdentityProvider = (url) => {
-        console.log(url);
         res.redirect(url);
     };
 
@@ -86,13 +85,15 @@ app.get("/login", async (req, res, next) => {
 });
 
 app.get("/login/callback", async (req, res) => {
-    const session = await getSessionFromStorage(req.session.sessionId);
-    console.log(`http://localhost:${port}${req.url}`);
+    const sessionId = req.session.sessionId;
+    const session = await getSessionFromStorage(sessionId);
     await session.handleIncomingRedirect(`http://localhost:${port}${req.url}`);
 
     if (session.info.isLoggedIn) {
         console.log(`callback userSession ${JSON.stringify(session.info)}`);
-        return res.send(`<p>Logged in with the WebID ${session.info.webId}.</p>`)
+        // Construct the URL with query parameters
+        const redirectURL = `http://localhost:4200/login/callback/?isLoggedIn=${session.info.isLoggedIn}&webId=${session.info.webId}`;
+        res.redirect(redirectURL);
     }
 });
 
