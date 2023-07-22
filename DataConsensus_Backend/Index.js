@@ -10,10 +10,11 @@ const {
     Session
 } = require("@inrupt/solid-client-authn-node");
 
-const VoteRoute = require("./Routes/VoteRoute.js");
-const CommentRoute = require("./Routes/CommentRoute.js");
+const AuthRoute = require("./Routes/AuthRoute.js");
 const UserRoute = require("./Routes/UserRoute.js");
 const PolicyRoute = require("./Routes/PolicyRoute.js");
+const VoteRoute = require("./Routes/VoteRoute.js");
+const CommentRoute = require("./Routes/CommentRoute.js");
 const { removeAccess, grantAccess } = require("./AccessControl.js");
 
 const api = process.env.API_URI;
@@ -62,10 +63,47 @@ app.use(
 
 let userSession;
 
+app.get("/signup", async (req, res, next) => {
+    console.log("signup");
+    userSession = new Session();
+    console.log(userSession.info.sessionId)
+    req.session.sessionId = userSession.info.sessionId;
+
+    const redirectToSolidIdentityProvider = (url) => {
+        res.redirect(url);
+    };
+
+    try {
+        await userSession.login({
+            redirectUrl: `http://localhost:3000/signup/callback`,
+            oidcIssuer: process.env.APP_OIDC_ISSUER,
+            clientName: "DataConsensus",
+            handleRedirect: redirectToSolidIdentityProvider,
+        });
+    } catch (error) {
+        console.error("User login error:", error);
+    }
+});
+
+app.get("/signup/callback", async (req, res) => {
+    console.log("signup callback");
+    const sessionId = req.session.sessionId;
+    console.log(sessionId);
+    console.log(await getSessionIdFromStorageAll());
+    const session = await getSessionFromStorage(sessionId);
+    await session.handleIncomingRedirect(`http://localhost:${port}${req.url}`);
+    console.log(session.info);
+    if (session.info.isLoggedIn) {
+        console.log(`callback userSession ${JSON.stringify(session.info)}`);
+        const redirectURL = `http://localhost:4200/memberSignUp/?isLoggedIn=${session.info.isLoggedIn}&webId=${session.info.webId}&sessionId=${sessionId}`;
+        res.redirect(redirectURL);
+    }
+});
+
+
 app.get("/login", async (req, res, next) => {
     console.log("login");
     userSession = new Session();
-    console.log(`userSession: ${JSON.stringify(userSession.info)}`);
     req.session.sessionId = userSession.info.sessionId;
 
     const redirectToSolidIdentityProvider = (url) => {
@@ -85,29 +123,26 @@ app.get("/login", async (req, res, next) => {
 });
 
 app.get("/login/callback", async (req, res) => {
+    console.log("login callback");
     const sessionId = req.session.sessionId;
     const session = await getSessionFromStorage(sessionId);
     await session.handleIncomingRedirect(`http://localhost:${port}${req.url}`);
 
     if (session.info.isLoggedIn) {
         console.log(`callback userSession ${JSON.stringify(session.info)}`);
-        // Construct the URL with query parameters
-        const redirectURL = `http://localhost:4200/login/callback/?isLoggedIn=${session.info.isLoggedIn}&webId=${session.info.webId}`;
+        const redirectURL = `http://localhost:4200/login/callback/?isLoggedIn=${session.info.isLoggedIn}&webId=${session.info.webId}&sessionId=${session.info.sessionId}`;
         res.redirect(redirectURL);
     }
 });
 
 app.get("/fetch-user-resource", async (req, res, next) => {
-    console.log("fetch-user-resource");
-    console.log(req.session);
-    console.log(req.session.sessionId);
     if (typeof req.query["resource"] === "undefined") {
         res.send(
             "<p>Please pass the (encoded) URL of the Resource you want to fetch using `?resource=&lt;resource URL&gt;`.</p>"
         );
     }
     else {
-        const userSession = await getSessionFromStorage(req.session.sessionId);
+        const userSession = await getSessionFromStorage(req.query["sessionID"]);
         console.log(userSession.info.webId);
         console.log(await (await userSession.fetch(req.query["resource"])).text());
         res.send("<p>Performed authenticated fetch.</p>");
@@ -124,10 +159,6 @@ app.get("/fetch-app-resource", async (req, res, next) => {
     else {
         const resource = await (await appSession.fetch(req.query["resource"])).text();
         console.log(resource);
-        // console.log(await (await appSession.fetch(req.query["resource"])).text());
-        // const response = await fetch(req.query["resource"]);
-        // const contentType = response.headers.get('content-type');
-        // console.log('Resource Type:', contentType);
         res.send(resource);
     }
 });
@@ -180,6 +211,7 @@ app.get("/", async (req, res, next) => {
     );
 });
 
+app.use(`${api}/auth`, AuthRoute);
 app.use(`${api}/user`, UserRoute(appSession));
 app.use(`${api}/policy`, PolicyRoute(appSession));
 app.use(`${api}/vote`, VoteRoute(appSession));

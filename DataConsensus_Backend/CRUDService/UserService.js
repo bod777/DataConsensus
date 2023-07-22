@@ -1,4 +1,5 @@
 require("dotenv").config();
+const fs = require('fs');
 const {
     buildThing,
     createThing,
@@ -9,11 +10,12 @@ const {
     getThing,
     getThingAll,
     getFile,
+    overwriteFile,
     isRawData,
     getContentType,
     getSourceUrl
 } = require("@inrupt/solid-client");
-const { getSessionFromStorage } = require("@inrupt/solid-client-authn-node");
+const { getSessionFromStorage, getSessionIdFromStorageAll } = require("@inrupt/solid-client-authn-node");
 const { RDF, FOAF, DCTERMS } = require("@inrupt/vocab-common-rdf");
 const Transformer = require("../Logic/Transformer.js");
 const { getGivenSolidDataset, saveGivenSolidDataset, getDatasetUrl } = require("../HelperFunctions.js");
@@ -131,33 +133,28 @@ module.exports = {
         return users.length;
     },
 
-    addNewData: async function (fileURL, appSession, userSessionID) {
+    addNewData: async function (fileURL, appSession, userSession) {
         try {
-            const userSession = getSessionFromStorage(userSessionID);
-            const file = await getFile(fileURL, userSession.fetch);
-
-            console.log(`Fetched a ${getContentType(file)} file from ${getSourceUrl(file)}.`);
-            console.log(`The file is ${isRawData(file) ? "not " : ""}a dataset.`);
-
+            const file = await getFile(fileURL, { fetch: userSession.fetch });
             const fileHash = await Transformer.hashFileURL(fileURL);
             const arrayBuffer = await file.arrayBuffer();
             const data = new Uint8Array(arrayBuffer);
             const csvText = new TextDecoder().decode(data);
-            const updatedCsvText = Transformer.addColumnToCSV(csvText, "identifier", fileHash);
+            const updatedCsvText = Transformer.addColumnToCSV(csvText, fileHash);
 
-            // Append the updated data to the existing CSV file in the SOLID pod
-            const existingFile = await getFile(resourceURL, appSession.fetch);
+            const existingFile = await getFile(resourceURL, { fetch: appSession.fetch });
             const existingArrayBuffer = await existingFile.arrayBuffer();
             const existingData = new Uint8Array(existingArrayBuffer);
             const existingCsvText = new TextDecoder().decode(existingData);
 
-            const appendedCsvText = existingCsvText + '\n' + updatedCsvText;
+            const appendedCsvText = existingCsvText + "\n" + updatedCsvText;
             const appendedData = new TextEncoder().encode(appendedCsvText);
 
-            const updatedFile = new File([appendedData], resourceURL, { type: 'text/csv' });
-            await saveFileToPod(updatedFile, resourceURL);
-
-            console.log(`Appended CSV data has been saved to ${resourceURL}.`);
+            const savedFile = await overwriteFile(
+                resourceURL,
+                appendedData,
+                { contentType: "text/csv", fetch: appSession.fetch }
+            );
 
         } catch (error) {
             console.log(error);
@@ -166,8 +163,9 @@ module.exports = {
 
     removeData: async function (fileURL, session) {
         try {
+            console.log(fileURL);
             const fileHash = await Transformer.hashFileURL(fileURL);
-
+            console.log(fileHash);
             const file = await getFile(
                 resourceURL,
                 { fetch: session.fetch }
@@ -193,9 +191,14 @@ module.exports = {
                     rows.splice(matchingRowIndex, 1);
                 }
                 const updatedCsvText = rows.join('\n');
+                console.log(updatedCsvText);
                 const updatedData = new TextEncoder().encode(updatedCsvText);
-                const updatedFile = new File([updatedData], resourceURL, { type: 'text/csv' });
-                await saveFileToPod(updatedFile, resourceURL);
+                console.log(updatedData);
+                const savedFile = await overwriteFile(
+                    resourceURL,
+                    updatedData,
+                    { contentType: "text/csv", fetch: session.fetch }
+                );
             } else {
                 console.log(`No data found for the hashed identifier: ${hashedIdentifier}`);
                 return null;

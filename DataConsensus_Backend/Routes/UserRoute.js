@@ -39,25 +39,31 @@ module.exports = function (appSession) {
     });
 
     router.post("/registerMember", async function (req, res) {
-        // const userSession = await getSessionFromStorage(req.session.sessionId);
-        // console.log(req.session);
+        console.log("registerMember");
         console.log(req.body);
-        const { webID, email, name, dataSource } = req.body;
+        const { webID, email, name, dataSource, sessionID } = req.body;
+        console.log(await getSessionIdFromStorageAll());
+        console.log("sessionID", sessionID);
+        const userSession = await getSessionFromStorage(sessionID);
+        console.log("userSession", userSession.info);
         if (!webID || !email || !name || !dataSource) {
             res.status(400).send({ message: "All fields are required." });
             return;
         }
         else {
-            const existsAlready = await userService.checkUserByType({ webID: webID, type: "MEMBER" }, appSession);
-            console.log("does it exist?", existsAlready);
+            // const existsAlready = await userService.checkUserByType({ webID: webID, type: "MEMBER" }, appSession);
+            // console.log("does it exist?", existsAlready);
+            const existsAlready = false;
             if (existsAlready) {
                 res.status(400).send({ message: "User is already registered as a member." });
             }
             else {
                 try {
-                    await userService.addMember(req, appSession);
-                    // await userService.addNewData(dataSource, appSession, userSession); // FIX THIS AND HOW THE SESSION ID IS PASSED
-                    console.log("added member")
+                    console.log("adding member");
+                    // await userService.addMember(req, appSession);
+                    console.log("added member");
+                    await userService.addNewData(dataSource, appSession, userSession); // FIX THIS AND HOW THE SESSION ID IS PASSED
+                    // console.log("added member")
                     res.send({ message: "Member registered successfully." });
                 }
                 catch (error) {
@@ -233,20 +239,19 @@ module.exports = function (appSession) {
     });
 
     router.delete("/removeData", async (req, res, next) => {
-        const userType = await userService.checkUser({ webID: req.webID }, appSession);
-        if (userType) {
-            try {
-                const userData = userService.getUser({ webID: req.webID, userType }, appSession)
-                await userService.removeData(userData.dataSource, appSession.sessionId);
-                res.send({ message: "Data removed successfully." });
-            }
-            catch (error) {
-                console.error(error);
-                res.status(500).send({ message: "Error in removing data.", error: error.message });
-            }
+        try {
+            const webID = req.query.webID;
+            console.log(webID);
+            const newMember = new Member();
+            await newMember.fetchUser(webID, appSession)
+            const user = newMember.toJson();
+            console.log(user);
+            await userService.removeData(user.dataSource, appSession);
+            res.send({ message: "Data removed successfully." });
         }
-        else {
-            res.status(400).send({ message: "User not found." });
+        catch (error) {
+            console.error(error);
+            res.status(500).send({ message: "Error in removing data.", error: error.message });
         }
     });
 

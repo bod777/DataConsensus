@@ -12,6 +12,7 @@ export class CallbackComponent implements OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe((params) => {
             const isLoggedIn = params["isLoggedIn"]; // Assuming your server returns the sessionId in the callback URL
+            const sessionID = params["sessionId"];
             if (isLoggedIn) {
                 const webID = params["webId"];
                 this.userService.checkUser(webID).subscribe(
@@ -19,6 +20,7 @@ export class CallbackComponent implements OnInit {
                         const isUser = response.message === "User found.";
                         const userType = response.data;
                         localStorage.setItem("webID", webID);
+                        localStorage.setItem("sessionID", sessionID);
                         if (isUser) {
                             localStorage.setItem("isLoggedIn", "true");
                             localStorage.setItem("userType", userType);

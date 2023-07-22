@@ -29,41 +29,22 @@ export class UserService {
         });
         const params = new HttpParams().set('webID', webID);
         return this.http.get('http://localhost:3000/api/v1/user/checkUser', { headers, params });
-        // this.http.get('http://localhost:3000/api/v1/user/checkUser', { headers, params })
-        //     .subscribe(
-        //         (response) => {
-        //             console.log("Test", JSON.stringify(response));
-        //             return response;
-        //         },
-        //         (error) => {
-        //             console.log(error);
-        //         }
-        //     );
-
     }
 
-    getResource(sessionId: string) {
-        console.log("getting resource")
-        const resourceUrl = 'https://storage.inrupt.com/92faa4f2-4dc2-4645-a5fe-9f0f8d47a675/Sample%20Data.csv'; // Replace with the actual resource URL you want to fetch.
-        const headers = new HttpHeaders().set('Authorization', `Bearer ${sessionId}`);
-
-        return this.http.get('http://localhost:3000/fetch-user-resource', { headers, params: { resource: resourceUrl } });
-        // return this.http.get('http://localhost:3000/fetch-user-resource', { params: { resource: resourceUrl } })
-    }
-
-    registerMember(webID: string, name: string, email: string, dataSource: string): Observable<any> {
+    registerMember(webID: string, name: string, email: string, dataSource: string, sessionID: string): Observable<any> {
         console.log("registering Member");
+        console.log("sessionID", sessionID);
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        return this.http.post('http://localhost:3000/api/v1/user/registerMember', { webID, name, email, dataSource }, { headers });
+        return this.http.post('http://localhost:3000/api/v1/user/registerMember', { webID, name, email, dataSource, sessionID }, { headers });
     }
 
-    registerThirdParty(user: User): Observable<any> {
+    registerThirdParty(webID: string, name: string, email: string, organisationType: string, description: string, sessionID: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        return this.http.post('http://localhost:3000/api/v1/user/registerThirdParty', user, { headers });
+        return this.http.post('http://localhost:3000/api/v1/user/registerThirdParty', { webID, name, email, organisationType, description, sessionID }, { headers });
     }
 
 }

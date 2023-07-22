@@ -7,6 +7,7 @@ import { MemberSignUpComponent } from './memberSignUp/memberSignUp.component';
 import { ThirdPartySignUpComponent } from './thirdPartySignUp/thirdPartySignUp.component';
 import { HomeComponent } from './home/home.component';
 import { MemberHomeComponent } from './memberHome/memberHome.component';
+import { MenuComponent } from './menu/menu.component';
 import { ThirdPartyHomeComponent } from './thirdPartyHome/thirdPartyHome.component';
 import { AdminHomeComponent } from './adminHome/adminHome.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,6 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -43,7 +45,8 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
     ThirdPartyHomeComponent,
     AdminHomeComponent,
     MemberSignUpComponent,
-    ThirdPartySignUpComponent
+    ThirdPartySignUpComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,
@@ -58,6 +61,7 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
     FormsModule,
     MatInputModule,
     MatFormFieldModule,
+    MatToolbarModule,
     MatSelectModule,
     MatCheckboxModule,
     ReactiveFormsModule,
@@ -72,7 +76,9 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
     ScrollingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore())
-
+  ],
+  exports: [
+    MenuComponent
   ],
   providers: [UserService],
   bootstrap: [AppComponent]

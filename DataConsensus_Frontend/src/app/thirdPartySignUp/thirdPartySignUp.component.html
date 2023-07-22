@@ -1,9 +1,9 @@
 <mat-grid-list cols="1" rowHeight="5em">
     <mat-grid-tile rowspan="1">
-        <h1>Data Consensus</h1>
+        <h1 (click)="navigateToHomePage()">Data Consensus</h1>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
-        <h2>A Collaborative Data Governance Platform</h2>
+        <h2 (click)="navigateToHomePage()">A Collaborative Data Governance Platform</h2>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
         <p>Welcome</p>
@@ -47,7 +47,7 @@
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>
-        <mat-form-field>
+        <mat-form-field [style.width.px]=327>
             <mat-label>Solid Input Provider</mat-label>
             <input matInput type="text" [(ngModel)]="loginInput">
         </mat-form-field>

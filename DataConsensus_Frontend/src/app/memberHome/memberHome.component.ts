@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { login, getDefaultSession, handleIncomingRedirect } from "@inrupt/solid-client-authn-browser";
+import { UserService } from '../services/userservice.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -9,7 +9,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 
 export class MemberHomeComponent implements OnInit {
-    ngOnInit(): void {
-        throw new Error('Method not implemented.');
+
+    constructor(private userService: UserService, private _snackBar: MatSnackBar) { }
+
+    ngOnInit() {
     }
 }

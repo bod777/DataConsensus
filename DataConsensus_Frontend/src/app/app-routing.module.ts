@@ -13,7 +13,7 @@ import { AdminHomeComponent } from './adminHome/adminHome.component';
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'memberSignup', component: MemberSignUpComponent },
+  { path: 'memberSignUp', component: MemberSignUpComponent },
   { path: 'thirdPartySignUp', component: ThirdPartySignUpComponent },
   { path: 'login/callback', component: CallbackComponent },
 ];
