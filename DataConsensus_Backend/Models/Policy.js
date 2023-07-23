@@ -84,15 +84,16 @@ class Agreement extends Policy {
         const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint`, type: "Agreement" }, session);
         const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint`, type: "Agreement" }, session);
 
-        this.uid = extractTerm(solidThing.predicates[ODRL.uid]["namedNodes"][0]);
-        this.creator = extractTerm(solidThing.predicates[DCTERMS.creator]["namedNodes"][0]);
+        this.uid = solidThing.predicates[ODRL.uid]["namedNodes"][0];
+        this.creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
         this.policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
-        this.isPartOf = extractTerm(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0]);
-        this.assigner = extractTerm(permissionThing.predicates[ODRL.assigner]["namedNodes"][0]);
-        this.assignee = extractTerm(permissionThing.predicates[ODRL.assignee]["namedNodes"][0]);
-        this.references = extractTerm(solidThing.predicates[DCTERMS.references]["namedNodes"][0]);
+        this.isPartOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
+        this.assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
+        this.assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
+        this.references = solidThing.predicates[DCTERMS.references]["namedNodes"][0];
 
         this.purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
+        this.organisation = extractTerm(organisationConstraint.predicates[ODRL.rightOperand]["namedNodes"][0])
         if (sellingDataConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
             this.sellingData = false;
         } else {
@@ -107,14 +108,13 @@ class Agreement extends Policy {
         this.techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
         const recipientsArray = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
         this.recipients = recipientsArray.map((recipient) => extractTerm(recipient));
-        this.recipients = extractTerm(recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"]);
-        this.untilTimeDuration = extractTerm(durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0]);
+        this.untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
 
         const projectThing = await policyService.getProject(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0], session);
         this.title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
         this.description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
         this.projectStatus = extractTerm(projectThing.predicates[`${project}#hasProjectStatus`]["namedNodes"][0]);
-        this.hasAgreement = projectThing.predicates[`${project}#deliberationStartTime`]["literals"][XSD.boolean][0];
+        this.hasAgreement = projectThing.predicates[`${project}#hasAgreement`]["literals"][XSD.boolean][0];
         this.projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
         this.deliberationStartTime = projectThing.predicates[`${project}#deliberationStartTime`]["literals"][XSD.dateTime][0];
         this.requestTime = projectThing.predicates[`${project}#requestTime`]["literals"][XSD.integer][0];
@@ -131,7 +131,7 @@ class Agreement extends Policy {
             isPartOf: this.isPartOf,
             assigner: this.assigner,
             assignee: this.assignee,
-            references: this.assignee,
+            references: this.references,
             purpose: this.purpose,
             sellingData: this.sellingData,
             sellingInsights: this.sellingInsights,

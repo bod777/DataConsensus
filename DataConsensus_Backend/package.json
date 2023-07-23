@@ -11,6 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@angular/animations": "^16.1.6",
+    "@angular/cdk": "^16.1.5",
+    "@angular/material": "^16.1.5",
     "@inrupt/solid-client": "^1.29.0",
     "@inrupt/solid-client-authn-node": "^1.16.0",
     "@inrupt/vocab-common-rdf": "^1.0.5",

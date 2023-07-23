@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+.form-field-container {
+    margin-bottom: 20px;
+}
+
+.mat-form-field {
+    width: 600px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}

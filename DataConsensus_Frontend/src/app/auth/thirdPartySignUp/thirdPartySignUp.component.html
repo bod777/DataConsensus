@@ -10,26 +10,20 @@
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
         <mat-form-field [style.width.px]=327>
-            <mat-label>WebID</mat-label>
-            <input matInput type="text" [(ngModel)]="webID">
-        </mat-form-field>
-    </mat-grid-tile>
-    <mat-grid-tile rowspan="1">
-        <mat-form-field [style.width.px]=327>
             <mat-label>Name</mat-label>
-            <input matInput type="text" [(ngModel)]="name">
+            <input matInput type="text" [(ngModel)]="name" required>
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
         <mat-form-field [style.width.px]=327>
             <mat-label>Email</mat-label>
-            <input matInput type="text" [(ngModel)]="email">
+            <input matInput type="text" [(ngModel)]="email" required>
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
         <mat-form-field [style.width.px]=327>
             <mat-label>Organisation Type</mat-label>
-            <mat-select [(ngModel)]="organisationType">
+            <mat-select [(ngModel)]="organisationType" required>
                 <mat-option value="AcademicScientificOrganisation">Academic Scientific Organisation</mat-option>
                 <mat-option value="ForProfitOrganisation">For-Profit Organisation</mat-option>
                 <mat-option value="GovernmentalOrganisation">Governmental Organisation</mat-option>
@@ -43,7 +37,7 @@
     <mat-grid-tile rowspan="1">
         <mat-form-field [style.width.px]=327>
             <mat-label>Description</mat-label>
-            <textarea matInput type="text" [(ngModel)]="description"></textarea>
+            <textarea matInput type="text" [(ngModel)]="description" required></textarea>
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>

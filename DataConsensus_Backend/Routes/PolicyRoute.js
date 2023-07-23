@@ -319,19 +319,10 @@ module.exports = function (appSession) {
         Expected req.body variables:
         policyURL: string 
     */
-    router.get("/getPolicy", async function (req, res) {
+    router.get("/getAgreement", async function (req, res) {
         try {
-            const policyURL = req.body.policyURL;
-            const policyType = getPolicyDataset(policyURL);
-
-            let fetchedPolicy;
-            if (policyType === agreementsList) {
-                fetchedPolicy = new Agreement();
-            } else if (policyType === offersList) {
-                fetchedPolicy = new Offer();
-            } else if (policyType === requestsList) {
-                fetchedPolicy = new Request();
-            }
+            const policyURL = `${agreementsList}#${req.query.policyID}`;
+            let fetchedPolicy = new Agreement();
 
             if (fetchedPolicy) {
                 const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
@@ -344,6 +335,46 @@ module.exports = function (appSession) {
             res.status(500).send({ message: "Error in getting policies", error: error.message });
         }
     });
+
+    /*  
+        Expected req.body variables:
+        policyURL: string 
+    */
+    router.get("/getRequest", async function (req, res) {
+        try {
+            const policyURL = `${requestsList}${req.query.policyID}`;
+            let fetchedPolicy = new Request();
+            if (fetchedPolicy) {
+                const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
+                res.send({ data: fetchedPolicy.toJson() });
+            } else {
+                res.status(400).send({ message: "Invalid policy type." });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: "Error in getting policies", error: error.message });
+        }
+    });
+    /*  
+        Expected req.body variables:
+        policyURL: string 
+    */
+    router.get("/getOffer", async function (req, res) {
+        try {
+            const policyURL = `${offersList}${req.query.policyID}`;
+            let fetchedPolicy = new Offer();
+            if (fetchedPolicy) {
+                const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
+                res.send({ data: fetchedPolicy.toJson() });
+            } else {
+                res.status(400).send({ message: "Invalid policy type." });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: "Error in getting policies", error: error.message });
+        }
+    });
+
 
     /*  
         Expected req.body variables:

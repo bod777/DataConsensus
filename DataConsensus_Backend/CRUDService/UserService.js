@@ -100,24 +100,34 @@ module.exports = {
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         let projectToUpdate = getThing(solidDataset, req.body.webID);
         if (req.body.name) {
-            console.log(req.body.name);
-            projectToUpdate = setStringNoLocale(projectToUpdate, FOAF.name, req.body.name);
+            // console.log(req.body.name);
+            projectToUpdate = buildThing(projectToUpdate)
+                .setStringNoLocale(FOAF.name, req.body.name)
+                .build();
         }
         if (req.body.email) {
-            console.log(req.body.email);
-            projectToUpdate = setStringNoLocale(projectToUpdate, FOAF.mbox, req.body.email);
+            // console.log(req.body.email);
+            projectToUpdate = buildThing(projectToUpdate)
+                .setStringNoLocale(FOAF.mbox, req.body.email)
+                .build();
         }
-        if (req.body.org) {
-            console.log(req.body.org);
-            projectToUpdate = setUrl(projectToUpdate, `https://w3id.org/dpv#Organisation`, `https://w3id.org/dpv#${req.body.org}`);
+        if (req.body.orgType) {
+            // console.log(req.body.orgType);
+            projectToUpdate = buildThing(projectToUpdate)
+                .setUrl(`https://w3id.org/dpv#Organisation`, `https://w3id.org/dpv#${req.body.orgType}`)
+                .build();
         }
         if (req.body.dataSource) {
-            console.log(req.body.dataSource);
-            projectToUpdate = setUrl(projectToUpdate, `${user}#dataSource`, req.body.dataSource);
+            // console.log(req.body.dataSource);
+            projectToUpdate = buildThing(projectToUpdate)
+                .setUrl(`${user}#dataSource`, req.body.dataSource)
+                .build();
         }
         if (req.body.description) {
-            console.log(req.body.description);
-            projectToUpdate = setStringNoLocale(projectToUpdate, DCTERMS.description, req.description);
+            // console.log(req.body.description);
+            projectToUpdate = buildThing(projectToUpdate)
+                .setStringNoLocale(DCTERMS.description, req.body.description)
+                .build();
         }
 
         solidDataset = setThing(solidDataset, projectToUpdate);

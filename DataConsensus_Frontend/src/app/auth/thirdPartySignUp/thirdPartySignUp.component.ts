@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserService } from '../services/userservice.service';
+import { UserService } from '../../services/userservice.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 
@@ -31,7 +31,7 @@ export class ThirdPartySignUpComponent implements OnInit {
         localStorage.setItem('organisationType', this.organisationType);
         localStorage.setItem('description', this.description);
 
-        window.location.href = "http://localhost:3000/thirdPartySignUp";
+        window.location.href = "http://localhost:3000/api/v1/auth/thirdPartySignUp";
     }
 
     ngOnInit() {

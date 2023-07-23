@@ -1,3 +1,4 @@
+require("dotenv").config();
 const router = require("express").Router();
 const {
     getSessionFromStorage,
@@ -6,6 +7,8 @@ const {
 } = require("@inrupt/solid-client-authn-node");
 const userService = require("../CRUDService/UserService.js");
 const { Member, ThirdParty, Admin } = require("../Models/User.js");
+
+const resourceURL = process.env.RESOURCE_URL;
 
 module.exports = function (appSession) {
     router.get("/", (req, res) => {
@@ -98,7 +101,7 @@ module.exports = function (appSession) {
     });
 
     router.get("/viewMember", async (req, res, next) => {
-        const { webID } = req.body;
+        const { webID } = req.query;
         if (!webID) {
             res.status(400).send({ message: "WebID are required." });
         }
@@ -107,6 +110,7 @@ module.exports = function (appSession) {
                 try {
                     const fetchedMember = new Member();
                     await fetchedMember.fetchUser(webID, appSession);
+                    console.log(fetchedMember.toJson());
                     res.send({ data: fetchedMember.toJson(), message: "User found." });
                 }
                 catch (error) {
@@ -121,8 +125,9 @@ module.exports = function (appSession) {
     });
 
     router.get("/viewThirdParty", async (req, res, next) => {
-        const { webID } = req.body;
+        const { webID } = req.query;
         if (!webID) {
+            console.log("no webID");
             res.status(400).send({ message: "WebID are required." });
         }
         else {
@@ -130,6 +135,7 @@ module.exports = function (appSession) {
                 try {
                     const fetchedThirdParty = new ThirdParty();
                     await fetchedThirdParty.fetchUser(webID, appSession);
+                    console.log(fetchedThirdParty.toJson());
                     res.send({ data: fetchedThirdParty.toJson(), message: "Third party found." });
                 }
                 catch (error) {
@@ -144,7 +150,7 @@ module.exports = function (appSession) {
     });
 
     router.get("/viewAdmin", async (req, res, next) => {
-        const { webID } = req.body;
+        const { webID } = req.query;
         if (!webID) {
             res.status(400).send({ message: "WebID are required." });
         }
@@ -167,6 +173,7 @@ module.exports = function (appSession) {
     });
 
     router.put("/updateMember", async (req, res, next) => {
+        console.log(req.body);
         if (!req.body.webID) {
             res.status(400).send({ message: "WebID are required." });
         }

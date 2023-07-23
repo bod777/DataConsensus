@@ -38,6 +38,6 @@ export class LoginComponent {
     }
 
     async confirmLogin() {
-        window.location.href = "http://localhost:3000/login";
+        window.location.href = "http://localhost:3000/api/v1/auth/login";
     }
 }

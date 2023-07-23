@@ -1,21 +1,22 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { LoginComponent } from './login/login.component';
-import { CallbackComponent } from './callback/callback.component';
-import { MemberSignUpComponent } from './memberSignUp/memberSignUp.component';
-import { ThirdPartySignUpComponent } from './thirdPartySignUp/thirdPartySignUp.component';
+import { LoginComponent } from './auth/login/login.component';
+import { CallbackComponent } from './auth/callback/callback.component';
+import { MemberSignUpComponent } from './auth/memberSignUp/memberSignUp.component';
+import { ThirdPartySignUpComponent } from './auth/thirdPartySignUp/thirdPartySignUp.component';
 import { HomeComponent } from './home/home.component';
-import { MemberHomeComponent } from './memberHome/memberHome.component';
-import { ThirdPartyHomeComponent } from './thirdPartyHome/thirdPartyHome.component';
-import { AdminHomeComponent } from './adminHome/adminHome.component';
+import { ProfileComponent } from './profile/profile.component';
+import { AgreementComponent } from './agreement/agreement.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: 'home', component: HomeComponent },
+  { path: 'login/callback', component: CallbackComponent },
   { path: 'memberSignUp', component: MemberSignUpComponent },
   { path: 'thirdPartySignUp', component: ThirdPartySignUpComponent },
-  { path: 'login/callback', component: CallbackComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'agreement', component: AgreementComponent },
 ];
 
 @NgModule({

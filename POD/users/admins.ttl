@@ -2,7 +2,7 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 @prefix user: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/user#> .
 
-<https://id.inrupt.com/odonneb4> a user:User ;
+<https://id.inrupt.com/dataconsensusadmin> a user:User ;
   foaf:name "Bríd O'Donnell" ;
-  foaf:email "bridodonnell@duck.com" ;
+  foaf:mbox "DataConsensus12345@gmail.com" ;
   user:hasUserType user:Admin .

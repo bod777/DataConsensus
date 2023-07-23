@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserService } from '../services/userservice.service';
+import { UserService } from '../../services/userservice.service';
 
 @Component({
     selector: 'member-sign-up',
@@ -28,7 +27,7 @@ export class MemberSignUpComponent implements OnInit {
         localStorage.setItem('email', this.email);
         localStorage.setItem('dataSource', this.dataSource);
 
-        window.location.href = "http://localhost:3000/memberSignUp";
+        window.location.href = "http://localhost:3000/api/v1/auth/memberSignUp";
     }
 
     async ngOnInit() {

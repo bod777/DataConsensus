@@ -1,21 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { MemberSignUpComponent } from './memberSignUp/memberSignUp.component';
-import { ThirdPartySignUpComponent } from './thirdPartySignUp/thirdPartySignUp.component';
-import { HomeComponent } from './home/home.component';
-import { MemberHomeComponent } from './memberHome/memberHome.component';
-import { MenuComponent } from './menu/menu.component';
-import { ThirdPartyHomeComponent } from './thirdPartyHome/thirdPartyHome.component';
-import { AdminHomeComponent } from './adminHome/adminHome.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { UserService } from './services/userservice.service';
+import { MatCardModule } from '@angular/material/card';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,54 +24,82 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { environment } from '../environments/environment';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+
+import { environment } from '../environments/environment';
+import { AppRoutingModule } from './app-routing.module';
+
+// services
+import { UserService } from './services/userservice.service';
+
+// components
+import { AppComponent } from './app.component';
+import { LoginComponent } from './auth/login/login.component';
+import { MemberSignUpComponent } from './auth/memberSignUp/memberSignUp.component';
+import { ThirdPartySignUpComponent } from './auth/thirdPartySignUp/thirdPartySignUp.component';
+import { HomeComponent } from './home/home.component';
+import { MemberHomeComponent } from './home/memberHome/memberHome.component';
+import { MenuComponent } from './features/menu/menu.component';
+import { ThirdPartyHomeComponent } from './home/thirdPartyHome/thirdPartyHome.component';
+import { AdminHomeComponent } from './home/adminHome/adminHome.component';
+import { ProfileComponent } from './profile/profile.component';
+import { MemberProfileComponent } from './profile/memberProfile/memberProfile.component';
+import { ThirdPartyProfileComponent } from './profile/thirdPartyProfile/thirdPartyProfile.component';
+import { AdminProfileComponent } from './profile/adminProfile/adminProfile.component';
+import { AgreementComponent } from './agreement/agreement.component';
+
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    HomeComponent,
-    MemberHomeComponent,
-    ThirdPartyHomeComponent,
-    AdminHomeComponent,
-    MemberSignUpComponent,
-    ThirdPartySignUpComponent,
-    MenuComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
-    MatGridListModule,
-    MatMenuModule,
-    MatIconModule,
-    HttpClientModule,
-    MatButtonToggleModule,
-    FormsModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatToolbarModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    ReactiveFormsModule,
-    MatSnackBarModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatTooltipModule,
-    MatListModule,
-    MatTabsModule,
-    MatExpansionModule,
-    MatProgressSpinnerModule,
-    ScrollingModule,
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore())
-  ],
-  exports: [
-    MenuComponent
-  ],
-  providers: [UserService],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        LoginComponent,
+        MemberSignUpComponent,
+        ThirdPartySignUpComponent,
+        MenuComponent,
+        HomeComponent,
+        MemberHomeComponent,
+        ThirdPartyHomeComponent,
+        AdminHomeComponent,
+        ProfileComponent,
+        MemberProfileComponent,
+        ThirdPartyProfileComponent,
+        AdminProfileComponent,
+        AgreementComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatGridListModule,
+        MatMenuModule,
+        MatIconModule,
+        MatButtonToggleModule,
+        FormsModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatToolbarModule,
+        MatSelectModule,
+        MatCheckboxModule,
+        ReactiveFormsModule,
+        MatSnackBarModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatTooltipModule,
+        MatCardModule,
+        MatListModule,
+        MatTabsModule,
+        MatExpansionModule,
+        MatProgressSpinnerModule,
+        ScrollingModule,
+        provideFirebaseApp(() => initializeApp(environment.firebase)),
+        provideFirestore(() => getFirestore())
+    ],
+    exports: [
+        MenuComponent
+    ],
+    providers: [UserService],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
 

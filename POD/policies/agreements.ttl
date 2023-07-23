@@ -72,7 +72,7 @@ agreement:639727b3-c8ca-47ea-ba3e-51fc68d05bd9_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2023-12-31"^^xsd:date .
+        odrl:rightOperand  "2023-12-31"^^xsd:dateTime .
 
 
 agreement:dc77aae7-e8bf-4514-a088-9d927b91b39e
@@ -136,7 +136,7 @@ agreement:dc77aae7-e8bf-4514-a088-9d927b91b39e_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2024-06-31"^^xsd:date .
+        odrl:rightOperand  "2024-06-31"^^xsd:dateTime .
 
 
 agreement:bde0484e-34a8-40d7-94b8-949b16d95e93
@@ -200,4 +200,4 @@ agreement:bde0484e-34a8-40d7-94b8-949b16d95e93_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2024-06-31"^^xsd:date .
+        odrl:rightOperand  "2024-06-31"^^xsd:dateTime .

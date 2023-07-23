@@ -1,6 +1,8 @@
 const userService = require("../CRUDService/UserService.js");
 const { FOAF, DCTERMS, XSD } = require("@inrupt/vocab-common-rdf");
+const { extractTerm } = require("../HelperFunctions.js");
 
+const dpv = process.env.DPV;
 const user = process.env.USER;
 
 class User {
@@ -61,12 +63,11 @@ class ThirdParty extends User {
 
     async fetchUser(webID, session) {
         const solidThing = await userService.getUser({ webID, type: "THIRDPARTY" }, session);
-        console.log(JSON.stringify(solidThing));
         this.webID = webID;
         this.name = solidThing.predicates[FOAF.name]["literals"][XSD.string][0];
         this.email = solidThing.predicates[FOAF.mbox]["literals"][XSD.string][0];
         this.description = solidThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
-        this.orgType = solidThing.predicates[DCTERMS.Organisation]["namedNodes"][0];
+        this.orgType = extractTerm(solidThing.predicates[`${dpv}Organisation`]["namedNodes"][0]);
     }
 
     toJson() {
@@ -74,7 +75,7 @@ class ThirdParty extends User {
             webID: this.webID,
             name: this.name,
             email: this.email,
-            dataSource: this.description,
+            description: this.description,
             orgType: this.orgType
         };
     }

@@ -3,22 +3,22 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-home',
+    selector: 'profile',
     template: `
         <menu></menu>
         <ng-container *ngIf="userType === 'MEMBER'">
-            <member-home></member-home>
+            <member-profile></member-profile>
         </ng-container>
         <ng-container *ngIf="userType === 'THIRDPARTY'">
-            <thirdParty-home></thirdParty-home>
+            <thirdParty-profile></thirdParty-profile>
         </ng-container>
         <ng-container *ngIf="userType === 'ADMIN'">
-            <admin-home></admin-home>
+            <admin-profile></admin-profile>
         </ng-container>
     `
 })
 
-export class HomeComponent implements OnInit {
+export class ProfileComponent implements OnInit {
 
     constructor(private router: Router) { }
 

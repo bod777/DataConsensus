@@ -64,6 +64,9 @@ function getPolicyDataset(policyURL) {
         case 'requests':
             type = requestsList;
             break;
+        case 'agreements':
+            type = agreementsList;
+            break;
     }
     return type;
 }

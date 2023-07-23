@@ -18,11 +18,12 @@ export class MenuComponent {
         this.router.navigateByUrl('/agreements');
     }
     navigateToProfilePage() {
-        this.router.navigateByUrl('/agreements');
+        this.router.navigateByUrl('/profile');
     }
     navigateToSubmitRequest() {
         this.router.navigateByUrl('/submitRequest');
     }
+
     logout() {
         localStorage.removeItem('webID');
         localStorage.removeItem('userType');

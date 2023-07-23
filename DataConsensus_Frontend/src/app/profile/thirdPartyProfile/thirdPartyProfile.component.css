@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.form-field-container {
+    margin-bottom: 20px;
+}
+
+.profile-form {
+    width: 600px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
