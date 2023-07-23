@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { PolicyService } from '../services/policyservice.service';
+import { PolicyService } from '../services/policy.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

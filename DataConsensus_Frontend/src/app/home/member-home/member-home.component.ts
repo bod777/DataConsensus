@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../services/userservice.service';
+import { UserService } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'member-home',
-    templateUrl: './memberHome.component.html',
-    styleUrls: ['./memberHome.component.css']
+    templateUrl: './member-home.component.html',
+    styleUrls: ['./member-home.component.css']
 })
 
 export class MemberHomeComponent implements OnInit {

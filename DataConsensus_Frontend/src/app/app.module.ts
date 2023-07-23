@@ -30,23 +30,30 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 
 // services
-import { UserService } from './services/userservice.service';
+import { UserService } from './services/user.service';
 
 // components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
-import { MemberSignUpComponent } from './auth/memberSignUp/memberSignUp.component';
-import { ThirdPartySignUpComponent } from './auth/thirdPartySignUp/thirdPartySignUp.component';
+import { MemberSignUpComponent } from './auth/member-signup/member-signup.component';
+import { ThirdPartySignUpComponent } from './auth/thirdparty-signup/thirdparty-signup.component';
 import { HomeComponent } from './home/home.component';
-import { MemberHomeComponent } from './home/memberHome/memberHome.component';
+import { MemberHomeComponent } from './home/member-home/member-home.component';
 import { MenuComponent } from './features/menu/menu.component';
-import { ThirdPartyHomeComponent } from './home/thirdPartyHome/thirdPartyHome.component';
-import { AdminHomeComponent } from './home/adminHome/adminHome.component';
+import { ThirdPartyHomeComponent } from './home/thirdparty-home/thirdparty-home.component';
+import { AdminHomeComponent } from './home/admin-home/admin-home.component';
 import { ProfileComponent } from './profile/profile.component';
-import { MemberProfileComponent } from './profile/memberProfile/memberProfile.component';
-import { ThirdPartyProfileComponent } from './profile/thirdPartyProfile/thirdPartyProfile.component';
-import { AdminProfileComponent } from './profile/adminProfile/adminProfile.component';
+import { MemberProfileComponent } from './profile/member-profile/member-profile.component';
+import { ThirdPartyProfileComponent } from './profile/thirdparty-profile/thirdparty-profile.component';
+import { AdminProfileComponent } from './profile/admin-profile/admin-profile.component';
 import { AgreementComponent } from './agreement/agreement.component';
+import { CommentSectionComponent } from './features/comments/comments.component';
+import { PreferenceVotingComponent } from './features/preference-voting/preference-voting.component';
+import { RequestCardComponent } from './features/request-card/request-card.component';
+import { SubmitRequestComponent } from './submit-request/submit-request.component';
+import { SubmitOfferComponent } from './submit-offer/submit-offer.component';
+import { ProjectPageComponent } from './project-page/project-page.component';
+import { TabsComponent } from './features/tabs/tabs.component';
 
 @NgModule({
     declarations: [
@@ -63,7 +70,14 @@ import { AgreementComponent } from './agreement/agreement.component';
         MemberProfileComponent,
         ThirdPartyProfileComponent,
         AdminProfileComponent,
-        AgreementComponent
+        AgreementComponent,
+        CommentSectionComponent,
+        PreferenceVotingComponent,
+        RequestCardComponent,
+        SubmitRequestComponent,
+        SubmitOfferComponent,
+        ProjectPageComponent,
+        TabsComponent
     ],
     imports: [
         BrowserModule,
@@ -96,7 +110,8 @@ import { AgreementComponent } from './agreement/agreement.component';
         provideFirestore(() => getFirestore())
     ],
     exports: [
-        MenuComponent
+        MenuComponent,
+        CommentSectionComponent
     ],
     providers: [UserService],
     bootstrap: [AppComponent]

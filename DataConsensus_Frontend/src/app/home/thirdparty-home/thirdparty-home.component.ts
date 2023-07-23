@@ -3,8 +3,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'thirdParty-home',
-    templateUrl: './thirdPartyHome.component.html',
-    styleUrls: ['./thirdPartyHome.component.css']
+    templateUrl: './thirdparty-home.component.html',
+    styleUrls: ['./thirdparty-home.component.css']
 })
 
 export class ThirdPartyHomeComponent implements OnInit {

@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { LoginComponent } from './auth/login/login.component';
 import { CallbackComponent } from './auth/callback/callback.component';
-import { MemberSignUpComponent } from './auth/memberSignUp/memberSignUp.component';
-import { ThirdPartySignUpComponent } from './auth/thirdPartySignUp/thirdPartySignUp.component';
+import { MemberSignUpComponent } from './auth/member-signup/member-signup.component';
+import { ThirdPartySignUpComponent } from './auth/thirdparty-signup/thirdparty-signup.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AgreementComponent } from './agreement/agreement.component';

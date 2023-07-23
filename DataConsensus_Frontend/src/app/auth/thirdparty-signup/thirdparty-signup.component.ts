@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserService } from '../../services/userservice.service';
+import { UserService } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
-    selector: 'third-party-sign-up',
-    templateUrl: './thirdPartySignUp.component.html',
-    styleUrls: ['./thirdPartySignUp.component.css']
+    selector: 'thirdparty-signup',
+    templateUrl: './thirdparty-signup.component.html',
+    styleUrls: ['./thirdparty-signup.component.css']
 })
 
 export class ThirdPartySignUpComponent implements OnInit {

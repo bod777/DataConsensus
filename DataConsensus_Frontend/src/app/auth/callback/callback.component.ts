@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserService } from '../../services/userservice.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-callback',

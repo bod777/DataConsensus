@@ -1,0 +1,14 @@
+<div *ngFor="let comment of comments" class="comment">
+    <p>{{ comment.content }}</p>
+    <p>Author: {{ comment.author }}</p>
+    <p>Time Created: {{ comment.timeCreated }}</p>
+    <p *ngIf="comment.moderated === 'true'">Time Moderated: {{ comment.timeModerated }}</p>
+    <button *ngIf="isAdmin" (click)="moderateComment(comment)"
+        [disabled]="comment.moderated === 'true'">Moderate</button>
+    <button *ngIf="comment.author === 'authenticatedUserId'" (click)="deleteComment(comment)">Delete</button>
+</div>
+
+<div *ngIf="isAdmin">
+    <textarea [(ngModel)]="newComment" placeholder="Add a comment"></textarea>
+    <button (click)="addComment()">Add Comment</button>
+</div>

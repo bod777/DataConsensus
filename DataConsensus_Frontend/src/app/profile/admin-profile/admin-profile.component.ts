@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../services/userservice.service';
+import { UserService } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'admin-profile',
-    templateUrl: './adminProfile.component.html',
-    styleUrls: ['./adminProfile.component.css']
+    templateUrl: './admin-profile.component.html',
+    styleUrls: ['./admin-profile.component.css']
 })
 
 export class AdminProfileComponent implements OnInit {

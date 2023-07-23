@@ -4,8 +4,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'admin-home',
-    templateUrl: './adminHome.component.html',
-    styleUrls: ['./adminHome.component.css']
+    templateUrl: './admin-home.component.html',
+    styleUrls: ['./admin-home.component.css']
 })
 
 export class AdminHomeComponent implements OnInit {

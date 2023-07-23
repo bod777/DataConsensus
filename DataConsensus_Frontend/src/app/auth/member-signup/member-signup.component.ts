@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserService } from '../../services/userservice.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
-    selector: 'member-sign-up',
-    templateUrl: './memberSignUp.component.html',
-    styleUrls: ['./memberSignUp.component.css']
+    selector: 'member-signup',
+    templateUrl: './member-signup.component.html',
+    styleUrls: ['./member-signup.component.css']
 })
 
 export class MemberSignUpComponent implements OnInit {
