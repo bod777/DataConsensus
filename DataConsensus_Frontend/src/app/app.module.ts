@@ -27,6 +27,7 @@ import { NgFor } from '@angular/common';
 import { MatChipsModule } from '@angular/material/chips';
 import { AppRoutingModule } from './app-routing.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 // services
 import { UserService } from './services/user.service';
@@ -117,7 +118,9 @@ import { AppLayoutComponent } from './app-layout/app-layout.component';
         MenuComponent,
         CommentSectionComponent
     ],
-    providers: [UserService, PolicyService],
+    providers: [UserService, PolicyService,
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

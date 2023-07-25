@@ -75,7 +75,6 @@ export class PolicyService {
             "recipients": recipients,
             "untilTimeDuration": duration
         }
-        console.log(offer)
         return this.http.post('http://localhost:3000/api/v1/policy/submit-offer', offer, { headers });
     }
 }

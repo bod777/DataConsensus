@@ -17,17 +17,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 })
 
 export class SubmitOfferComponent {
-    // measuresCtrl = new FormControl();
-    // filteredMeasures: Observable<any[]>;
-    // selectedMeasures: string[] = [];
-
-    // @ViewChild('measureInput') measureInput!: ElementRef<HTMLInputElement>;
-
     constructor(private route: ActivatedRoute, private router: Router, private policyService: PolicyService, private _snackBar: MatSnackBar) {
-        // this.filteredMeasures = this.measuresCtrl.valueChanges.pipe(
-        //     startWith(null),
-        //     map((measure: string | null) => (measure ? this._filter(measure) : this.measuresOptions.slice())),
-        // );
     }
 
     requestsList = "https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/requests.ttl#";
@@ -130,60 +120,19 @@ export class SubmitOfferComponent {
         }
     }
 
-    // addMeasure(event: MatChipInputEvent): void {
-    //     const value = (event.value || '').trim();
-
-    //     if (value && !this.selectedMeasures.includes(value)) {
-    //         this.selectedMeasures.push(value);
-    //     }
-
-    //     event.chipInput!.clear();
-    //     this.measuresCtrl.setValue(null);
-    // }
-
-    // removeMeasure(measure: string): void {
-    //     const index = this.selectedMeasures.indexOf(measure);
-
-    //     if (index >= 0) {
-    //         this.selectedMeasures.splice(index, 1);
-
-    //         this.announcer.announce(`Removed ${measure}`);
-    //     }
-    // }
-
-    // selectedMeasure(event: MatAutocompleteSelectedEvent): void {
-    //     const value = event.option.value;
-    //     if (!this.selectedMeasures.includes(value)) {
-    //         this.selectedMeasures.push(value);
-    //     }
-
-    //     this.measureInput.nativeElement.value = '';
-    //     this.measuresCtrl.setValue(null);
-    // }
-
-    // private _filter(value: string): string[] {
-    //     const filterValue = value.toLowerCase();
-
-    //     return this.measuresOptions
-    //         .filter(option => option.displayText.toLowerCase().includes(filterValue))
-    //         .map(option => option.value);
-    // }
-
     ngOnInit() {
         this.route.queryParams.subscribe((params) => {
             this.requestID = params["requestID"];
         });
-        console.log(this.requestID);
         this.policyService.getRequest(this.requestID).subscribe(
             (request) => {
-                console.log(request.data);
-                this.projectURL = request.data.projectURL;
-                this.requester = request.data.user;
+                this.projectURL = request.data.isPartOf;
+                this.requester = request.data.assignee;
                 this.organisationType = request.data.organisation;
                 this.purpose = request.data.purpose;
                 this.sellingData = request.data.sellingData;
                 this.sellingInsights = request.data.sellingInsights;
-                this.techOrgMeasures = request.data.measures;
+                this.techOrgMeasures = request.data.techOrgMeasures;
                 this.recipients = request.data.recipients;
                 this.duration = request.data.untilTimeDuration;
             },

@@ -86,7 +86,6 @@ module.exports = {
         let techOrgMeasures = req.measures;
         let recipients = req.recipients;
         let untilTimeDuration = req.untilTimeDuration;
-        console.log("untilTimeDuration:", untilTimeDuration);
         let project = req.project;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         const policyID = uuidv4();

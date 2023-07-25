@@ -43,7 +43,7 @@ function checkAndRenewSession() {
 }
 
 checkAndRenewSession();
-setInterval(checkAndRenewSession, 240000);
+setInterval(checkAndRenewSession, 60000);
 
 app.use(
     cookieSession({
