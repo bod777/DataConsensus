@@ -45,35 +45,35 @@ export class AgreementComponent implements OnInit {
         });
 
         this.policyService.getAgreement(this.policyID).subscribe(
-            (profile: any) => {
-                console.log(profile);
-                this.uid = profile.data.uid;
-                this.creator = profile.data.creator;
-                this.policyCreationTime = profile.data.policyCreationTime;
-                this.isPartOf = profile.data.isPartOf;
-                this.assigner = profile.data.assigner;
-                this.assignee = profile.data.assignee;
-                this.references = profile.data.references;
-                this.purpose = profile.data.purpose;
-                this.sellingData = profile.data.sellingData;
-                this.sellingInsights = profile.data.sellingInsights;
-                this.organisation = profile.data.organisation;
-                this.techOrgMeasures = profile.data.techOrgMeasures.join(', ');
-                this.recipients = profile.data.recipients.join(', ');
-                this.untilTimeDuration = profile.data.untilTimeDuration;
-                this.title = profile.data.title;
-                this.description = profile.data.description;
-                this.projectStatus = profile.data.projectStatus;
-                this.hasAgreement = profile.data.hasAgreement;
-                this.projectCreationTime = profile.data.projectCreationTime;
-                this.deliberationStartTime = profile.data.deliberationStartTime;
-                this.requestTime = profile.data.requestTime;
-                this.offerTime = profile.data.offerTime;
-                this.threshold = profile.data.threshold;
-                this.thresholdType = profile.data.thresholdType;
+            (agreement: any) => {
+                console.log(agreement);
+                this.uid = agreement.data.uid;
+                this.creator = agreement.data.creator;
+                this.policyCreationTime = agreement.data.policyCreationTime;
+                this.isPartOf = agreement.data.isPartOf;
+                this.assigner = agreement.data.assigner;
+                this.assignee = agreement.data.assignee;
+                this.references = agreement.data.references;
+                this.purpose = agreement.data.purpose;
+                this.sellingData = agreement.data.sellingData;
+                this.sellingInsights = agreement.data.sellingInsights;
+                this.organisation = agreement.data.organisation;
+                this.techOrgMeasures = agreement.data.techOrgMeasures.join(', ');
+                this.recipients = agreement.data.recipients.join(', ');
+                this.untilTimeDuration = agreement.data.untilTimeDuration;
+                this.title = agreement.data.title;
+                this.description = agreement.data.description;
+                this.projectStatus = agreement.data.projectStatus;
+                this.hasAgreement = agreement.data.hasAgreement;
+                this.projectCreationTime = agreement.data.projectCreationTime;
+                this.deliberationStartTime = agreement.data.deliberationStartTime;
+                this.requestTime = agreement.data.requestTime;
+                this.offerTime = agreement.data.offerTime;
+                this.threshold = agreement.data.threshold;
+                this.thresholdType = agreement.data.thresholdType;
             },
             (error: any) => {
-                this._snackBar.open("Error retrieving profile: " + error, "Close", { duration: 3000 });
+                this._snackBar.open("Error retrieving agreement: " + error, "Close", { duration: 3000 });
             }
         );
     }

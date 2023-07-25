@@ -172,12 +172,12 @@ class Offer extends Policy {
         const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint`, type: "Offer" }, session);
         const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint`, type: "Offer" }, session);
 
-        this.uid = extractTerm(solidThing.predicates[ODRL.uid]["namedNodes"][0]);
+        this.uid = solidThing.predicates[ODRL.uid]["namedNodes"][0];
         this.creator = extractTerm(solidThing.predicates[DCTERMS.creator]["namedNodes"][0]);
         this.policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
-        this.isPartOf = extractTerm(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0]);
-        this.assigner = extractTerm(permissionThing.predicates[ODRL.assigner]["namedNodes"][0]);
-        this.assignee = extractTerm(permissionThing.predicates[ODRL.assignee]["namedNodes"][0]);
+        this.isPartOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
+        this.assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
+        this.assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
         this.adminApproved = extractTerm(solidThing.predicates[`${policy}#adminApproved`]["namedNodes"][0]);
         this.memberApproved = extractTerm(solidThing.predicates[`${policy}#memberApproved`]["namedNodes"][0]);
         this.thirdPartyApproved = extractTerm(solidThing.predicates[`${policy}#thirdPartyApproved`]["namedNodes"][0]);
@@ -265,10 +265,10 @@ class Request extends Policy {
         const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint`, type: "Request" }, session);
         const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint`, type: "Request" }, session);
 
-        this.uid = extractTerm(solidThing.predicates[ODRL.uid]["namedNodes"][0]);
+        this.uid = solidThing.predicates[ODRL.uid]["namedNodes"][0];
         this.creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
         this.policyCreationTime = solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
-        this.isPartOf = extractTerm(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0]);
+        this.isPartOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
         this.assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
         this.assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
         this.adminApproved = extractTerm(solidThing.predicates[`${policy}#adminApproved`]["namedNodes"][0]);
@@ -293,7 +293,6 @@ class Request extends Policy {
         this.untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
 
         const projectThing = await policyService.getProject(solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0], session);
-        console.log(projectThing);
         this.title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
         this.description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
         this.projectStatus = extractTerm(projectThing.predicates[`${project}#hasProjectStatus`]["namedNodes"][0]);

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatCardModule } from '@angular/material/card';
 
 @Component({
     selector: 'member-profile',
@@ -31,7 +30,8 @@ export class MemberProfileComponent implements OnInit {
     }
 
     cancelChanges() {
-
+        this.ngOnInit();
+        window.location.reload();
     }
 
     ngOnInit() {

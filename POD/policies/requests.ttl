@@ -14,7 +14,7 @@ request:12d6eb50-f6e2-488c-8923-fb0c4d47749a
         rdf:type                   odrl:Request ;
         dct:creator                <https://id.inrupt.com/DrJohnSmith> ;
         dct:isPartOf               project:af993b9f-b8ba-4f3f-9f5e-26b6d37747ae ;
-        dct:issued                 "2023-06-04T17:58:31Z"^^xsd:dateTime ;
+        dct:issued                 "2023-06-04T17:58:31"^^xsd:dateTime ;
         odrl:permission            request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_permission ;
         odrl:profile               oac: ;
         odrl:uid                   request:12d6eb50-f6e2-488c-8923-fb0c4d47749a ;
@@ -70,14 +70,14 @@ request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2023-12-31T00:00:00Z"^^xsd:dateTime .
+        odrl:rightOperand  "2023-12-31T00:00:00"^^xsd:dateTime .
 
 
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15
         rdf:type                   odrl:Request ;
         dct:creator                <https://id.inrupt.com/InsuranceCompany> ;
         dct:isPartOf               project:82e7f5d0-662b-4ec0-adb1-b3e52ff32a03 ;
-        dct:issued                 "2023-06-09T14:05:13Z"^^xsd:dateTime ;
+        dct:issued                 "2023-06-09T14:05:13"^^xsd:dateTime ;
         odrl:permission            request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_permission;
         odrl:profile               oac: ;
         odrl:uid                   request:72013827-a31e-4a27-a7cb-0b86fa9ddf15 ;
@@ -133,7 +133,7 @@ request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2024-12-31T00:00:00Z"^^xsd:dateTime .
+        odrl:rightOperand  "2024-12-31T00:00:00"^^xsd:dateTime .
 
 
 
@@ -143,7 +143,7 @@ request:d1739b02-2e77-4930-ac2e-e41ad39ac985
         rdf:type                   odrl:Request ;
         dct:creator                <https://id.inrupt.com/FightDiabetesDublin> ;
         dct:isPartOf               project:4ddb1306-df85-4730-8545-14973be50cd2 ;
-        dct:issued                 "2023-06-06T09:08:23Z"^^xsd:dateTime ;
+        dct:issued                 "2023-06-06T09:08:23"^^xsd:dateTime ;
         odrl:permission            request:d1739b02-2e77-4930-ac2e-e41ad39ac985_permission ;
         odrl:profile               oac: ;
         odrl:uid                   request:d1739b02-2e77-4930-ac2e-e41ad39ac985 ;

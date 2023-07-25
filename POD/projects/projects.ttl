@@ -13,9 +13,9 @@ pod:82e7f5d0-662b-4ec0-adb1-b3e52ff32a03
         rdf:type                       project:Project ;
         dct:creator                    <https://id.inrupt.com/InsuranceCompany> ;
         dct:description                "An insurnance company request" ;
-        dct:issued                     "2023-06-09T14:05:13Z"^^xsd:dateTime ;
+        dct:issued                     "2023-06-09T14:05:13"^^xsd:dateTime ;
         dct:title                      "UserStory2" ;
-        project:deliberationStartTime  "2023-06-10T14:05:13Z"^^xsd:dateTime ;
+        project:deliberationStartTime  "2023-06-10T14:05:13"^^xsd:dateTime ;
         project:hasAgreement           false ;
         project:hasProjectStatus       project:Completed ;
         project:offerTime              7 ;
@@ -28,9 +28,9 @@ pod:af993b9f-b8ba-4f3f-9f5e-26b6d37747ae
         rdf:type                       dct:Project ;
         dct:creator                    <https://id.inrupt.com/DrJohnSmith> ;
         dct:description                "To use CGM data to explore how glucose levels vary throughout the day" ;
-        dct:issued                     "2023-06-04T17:58:31Z"^^xsd:dateTime ;
+        dct:issued                     "2023-06-04T17:58:31"^^xsd:dateTime ;
         dct:title                      "UserStory1" ;
-        project:deliberationStartTime  "2023-06-05T17:58:31Z"^^xsd:dateTime ;
+        project:deliberationStartTime  "2023-06-05T17:58:31"^^xsd:dateTime ;
         project:requestTime       7 ;
         project:hasAgreement           true ;
         project:hasProjectStatus       project:Completed ;
@@ -43,9 +43,9 @@ pod:03d24942-d50e-4602-8470-3b604947335c
         rdf:type                       project:Project ;
         dct:creator                    <https://id.inrupt.com/DrJohnSmith> ;
         dct:description                "Testing the voting system, including the preference votes." ;
-        dct:issued                     "2023-07-17T14:46:54.992Z"^^xsd:dateTime ;
+        dct:issued                     "2023-07-17T14:46:54"^^xsd:dateTime ;
         dct:title                      "Testing the Voting System" ;
-        project:deliberationStartTime  "2023-07-18T14:46:54.990Z"^^xsd:dateTime ;
+        project:deliberationStartTime  "2023-07-18T14:46:54"^^xsd:dateTime ;
         project:hasAgreement           false ;
         project:hasProjectStatus       project:Pending ;
         project:offerTime              7 ;
@@ -58,9 +58,9 @@ pod:4ddb1306-df85-4730-8545-14973be50cd2
         rdf:type                       dct:Project ;
         dct:creator                    <https://id.inrupt.com/FightDiabetesDublin> ;
         dct:description                "A new nonprofit organization looking to improve healthcare resources for people with diabetes." ;
-        dct:issued                     "2023-06-06T09:08:23Z"^^xsd:dateTime ;
+        dct:issued                     "2023-06-06T09:08:23"^^xsd:dateTime ;
         dct:title                      "UserStory3" ;
-        project:deliberationStartTime  "2023-06-07T09:08:23Z"^^xsd:dateTime ;
+        project:deliberationStartTime  "2023-06-07T09:08:23"^^xsd:dateTime ;
         project:hasAgreement           true ;
         project:hasProjectStatus       project:Completed ;
         project:offerTime              7 ;

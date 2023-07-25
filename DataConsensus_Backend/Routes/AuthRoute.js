@@ -14,7 +14,7 @@ module.exports = function () {
 
     let userSession;
 
-    router.get("/thirdPartySignUp", async (req, res, next) => {
+    router.get("/thirdparty-signup", async (req, res, next) => {
         userSession = new Session();
         req.session.sessionId = userSession.info.sessionId;
 
@@ -24,7 +24,7 @@ module.exports = function () {
 
         try {
             await userSession.login({
-                redirectUrl: `${HOSTNAME}${port}${api}/auth/thirdPartySignUp/callback`,
+                redirectUrl: `${HOSTNAME}${port}${api}/auth/thirdparty-signup/callback`,
                 oidcIssuer: process.env.APP_OIDC_ISSUER,
                 clientName: "DataConsensus",
                 handleRedirect: redirectToSolidIdentityProvider,
@@ -34,17 +34,17 @@ module.exports = function () {
         }
     });
 
-    router.get("/thirdPartySignUp/callback", async (req, res) => {
+    router.get("/thirdparty-signup/callback", async (req, res) => {
         const sessionId = req.session.sessionId;
         const session = await getSessionFromStorage(sessionId);
         await session.handleIncomingRedirect(`${HOSTNAME}${port}${api}/auth${req.url}`);
         if (session.info.isLoggedIn) {
-            const redirectURL = `${FRONTEND}/thirdPartySignUp/?isLoggedIn=${session.info.isLoggedIn}&webId=${session.info.webId}&sessionId=${sessionId}`;
+            const redirectURL = `${FRONTEND}/thirdparty-signup/?isLoggedIn=${session.info.isLoggedIn}&webId=${session.info.webId}&sessionId=${sessionId}`;
             res.redirect(redirectURL);
         }
     });
 
-    router.get("/memberSignUp", async (req, res, next) => {
+    router.get("/member-signup", async (req, res, next) => {
         userSession = new Session();
         req.session.sessionId = userSession.info.sessionId;
 
@@ -54,7 +54,7 @@ module.exports = function () {
 
         try {
             await userSession.login({
-                redirectUrl: `${HOSTNAME}${port}${api}/auth/memberSignUp/callback`,
+                redirectUrl: `${HOSTNAME}${port}${api}/auth/member-signup/callback`,
                 oidcIssuer: process.env.APP_OIDC_ISSUER,
                 clientName: "DataConsensus",
                 handleRedirect: redirectToSolidIdentityProvider,
@@ -64,12 +64,12 @@ module.exports = function () {
         }
     });
 
-    router.get("/memberSignUp/callback", async (req, res) => {
+    router.get("/member-signup/callback", async (req, res) => {
         const sessionId = req.session.sessionId;
         const session = await getSessionFromStorage(sessionId);
         await session.handleIncomingRedirect(`${HOSTNAME}${port}${api}/auth${req.url}`);
         if (session.info.isLoggedIn) {
-            const redirectURL = `${FRONTEND}/memberSignUp/?isLoggedIn=${session.info.isLoggedIn}&webId=${session.info.webId}&sessionId=${sessionId}`;
+            const redirectURL = `${FRONTEND}/member-signup/?isLoggedIn=${session.info.isLoggedIn}&webId=${session.info.webId}&sessionId=${sessionId}`;
             res.redirect(redirectURL);
         }
     });

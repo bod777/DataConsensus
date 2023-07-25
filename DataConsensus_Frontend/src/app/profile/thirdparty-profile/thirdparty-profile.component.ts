@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
-    selector: 'thirdParty-profile',
+    selector: 'thirdparty-profile',
     templateUrl: './thirdparty-profile.component.html',
     styleUrls: ['./thirdparty-profile.component.css']
 })

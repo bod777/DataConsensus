@@ -31,7 +31,8 @@ module.exports = function (appSession) {
         recipients: string
         untilTimeDuration: string
     */
-    router.post("/submitRequest", async function (req, res) {
+    router.post("/submit-request", async function (req, res) {
+        console.log(req.body)
         const {
             title, description, user, organisation, purpose, sellingData, sellingInsights, measures, recipients, untilTimeDuration
         } = req.body;
@@ -75,7 +76,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.put("/updateProject", async (req, res) => {
+    router.put("/update-project", async (req, res) => {
         if (!req.body.projectURL) {
             res.status(400).send({ message: "Project URL is required." });
             return;
@@ -117,7 +118,7 @@ module.exports = function (appSession) {
         recipients: string
         untilTimeDuration: string
     */
-    router.post("/submitOffer", async (req, res) => {
+    router.post("/submit-offer", async (req, res) => {
         const {
             project, user, requester, purpose, sellingData, sellingInsights, organisation, measures, recipients, untilTimeDuration
         } = req.body;
@@ -156,7 +157,7 @@ module.exports = function (appSession) {
         policyURL: string
         webID: string
     */
-    router.delete("/removeProposal", async (req, res) => {
+    router.delete("/remove-proposal", async (req, res) => {
         try {
             await policyService.removeProposal({ policyURL: req.body.policyURL, requester: req.body.webID }, appSession);
             res.send({ message: "Proposal removed successfully" });
@@ -171,7 +172,7 @@ module.exports = function (appSession) {
         policyURL: string
         status: string
     */
-    router.put("/thirdPartyApproved", async (req, res) => {
+    router.put("/thirdparty-approved", async (req, res) => {
         const { policyURL, status } = req.body;
 
         if (!URL) {
@@ -200,7 +201,7 @@ module.exports = function (appSession) {
         status: string
         type: string
     */
-    router.put("/adminApproved", async (req, res) => {
+    router.put("/admin-approved", async (req, res) => {
         const { policyURL, status, type } = req.body;
 
         if (!policyURL) {
@@ -254,7 +255,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.delete("/removeApprovalForAgreement", async (req, res) => {
+    router.delete("/remove-approval", async (req, res) => {
         try {
             const thirdparty = await policyService.removeAgreement(req.body.policyURL, appSession);
             removeAccess(thirdparty, appSession);
@@ -267,7 +268,7 @@ module.exports = function (appSession) {
 
     /* FETCHING */
 
-    router.get("/allRequests", async function (req, res) {
+    router.get("/all-requests", async function (req, res) {
         try {
             const requestURLs = await policyService.getpolicyURLs({ type: "Request" }, appSession);
             let requests = [];
@@ -283,7 +284,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.get("/allOffers", async (req, res) => {
+    router.get("/all-offers", async (req, res) => {
         try {
             const offerURLs = await policyService.getpolicyURLs("Agreement", appSession);
             let offers = [];
@@ -299,7 +300,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.get("/allAgreements", async (req, res) => {
+    router.get("/all-agreements", async (req, res) => {
         try {
             const agreementURLs = await policyService.getpolicyURLs("Agreement", appSession);
             let agreements = [];
@@ -319,7 +320,7 @@ module.exports = function (appSession) {
         Expected req.body variables:
         policyURL: string 
     */
-    router.get("/getAgreement", async function (req, res) {
+    router.get("/agreement", async function (req, res) {
         try {
             const policyURL = `${agreementsList}#${req.query.policyID}`;
             let fetchedPolicy = new Agreement();
@@ -340,9 +341,9 @@ module.exports = function (appSession) {
         Expected req.body variables:
         policyURL: string 
     */
-    router.get("/getRequest", async function (req, res) {
+    router.get("/request", async function (req, res) {
         try {
-            const policyURL = `${requestsList}${req.query.policyID}`;
+            const policyURL = `${requestsList}#${req.query.policyID}`;
             let fetchedPolicy = new Request();
             if (fetchedPolicy) {
                 const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
@@ -359,9 +360,9 @@ module.exports = function (appSession) {
         Expected req.body variables:
         policyURL: string 
     */
-    router.get("/getOffer", async function (req, res) {
+    router.get("/offer", async function (req, res) {
         try {
-            const policyURL = `${offersList}${req.query.policyID}`;
+            const policyURL = `${offersList}#${req.query.policyID}`;
             let fetchedPolicy = new Offer();
             if (fetchedPolicy) {
                 const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
@@ -380,7 +381,7 @@ module.exports = function (appSession) {
         Expected req.body variables:
         projectURL: string 
     */
-    router.get("/getProject", async function (req, res) {
+    router.get("/project", async function (req, res) {
         try {
             const projectURL = req.body.projectURL;
             const fetchedProject = new Project();

@@ -9,7 +9,7 @@ module.exports = function (appSession) {
         res.send({ message: `App Session WebID: ${appSession.info.webId}` });
     });
 
-    router.post("/addComment", async (req, res) => {
+    router.post("/add-comment", async (req, res) => {
         const {
             policyURL, user, text
         } = req.body;
@@ -32,7 +32,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.get("/getComments", async (req, res) => {
+    router.get("/comments", async (req, res) => {
         const policyURL = req.body.policyURL;
         if (!policyURL) {
             res.status(400).send({ message: "Policy URL is required." });
@@ -55,7 +55,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.put("/moderateComment", async (req, res) => {
+    router.put("/moderate-comment", async (req, res) => {
         const { commentURL, moderator } = req.body;
 
         if (!commentURL || !moderator) {
@@ -72,7 +72,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.delete("/removeComment", async (req, res) => {
+    router.delete("/remove-comment", async (req, res) => {
         const { commentURL } = req.body;
         if (!commentURL) {
             res.status(400).send({ message: "commentURL is required." });

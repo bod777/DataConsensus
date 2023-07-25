@@ -58,7 +58,7 @@ offer:64555f2b-efee-485d-abef-3542ca867ebf_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2023-10-10T17:00:00.000Z"^^xsd:dateTime .
+        odrl:rightOperand  "2023-10-10T00:00:00"^^xsd:dateTime .
 
 offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_recipientConstraint
         rdf:type           odrl:Constraint ;
@@ -84,7 +84,7 @@ offer:64555f2b-efee-485d-abef-3542ca867ebf
         rdf:type                   odrl:Offer ;
         dct:creator                <https://id.inrupt.com/JeffWinger> ;
         dct:isPartOf               project:03d24942-d50e-4602-8470-3b604947335c ;
-        dct:issued                 "2023-07-17T15:10:16.557Z"^^xsd:dateTime ;
+        dct:issued                 "2023-07-17T15:10:16"^^xsd:dateTime ;
         odrl:permission            offer:64555f2b-efee-485d-abef-3542ca867ebf_permission ;
         odrl:profile               oac: ;
         odrl:uid                   offer:64555f2b-efee-485d-abef-3542ca867ebf ;
@@ -108,7 +108,7 @@ offer:4aaeb920-bdb4-48cc-9f41-644c6206433f
         rdf:type                   odrl:Offer ;
         dct:creator                <https://id.inrupt.com/BenChang> ;
         dct:isPartOf               project:03d24942-d50e-4602-8470-3b604947335c ;
-        dct:issued                 "2023-07-17T15:10:29.871Z"^^xsd:dateTime ;
+        dct:issued                 "2023-07-17T15:10:29"^^xsd:dateTime ;
         odrl:permission            offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_permission ;
         odrl:profile               oac: ;
         odrl:uid                   offer:4aaeb920-bdb4-48cc-9f41-644c6206433f ;
@@ -126,13 +126,13 @@ offer:87c44b67-78f9-4e08-801f-9f098379bd04_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2023-10-10T17:00:00.000Z"^^xsd:dateTime .
+        odrl:rightOperand  "2023-10-10T00:00:00"^^xsd:dateTime .
 
 offer:ff284cf0-2c7b-4718-b261-698119c2408c_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2024-11-08T17:26:35"^^xsd:dateTime .
+        odrl:rightOperand  "2024-11-08T00:00:00"^^xsd:dateTime .
 
 offer:87c44b67-78f9-4e08-801f-9f098379bd04_purposeConstraint
         rdf:type           odrl:Constraint ;
@@ -182,7 +182,7 @@ offer:87c44b67-78f9-4e08-801f-9f098379bd04
         rdf:type                   odrl:Offer ;
         dct:creator                <https://id.inrupt.com/AnnieEddison> ;
         dct:isPartOf               project:03d24942-d50e-4602-8470-3b604947335c ;
-        dct:issued                 "2023-07-17T15:11:19.640Z"^^xsd:dateTime ;
+        dct:issued                 "2023-07-17T15:11:19"^^xsd:dateTime ;
         odrl:permission            offer:87c44b67-78f9-4e08-801f-9f098379bd04_permission ;
         odrl:profile               oac: ;
         odrl:uid                   offer:87c44b67-78f9-4e08-801f-9f098379bd04 ;
@@ -234,7 +234,7 @@ offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2023-10-10T17:00:00.000Z"^^xsd:dateTime .
+        odrl:rightOperand  "2023-10-10T00:00:00"^^xsd:dateTime .
 
 offer:ff284cf0-2c7b-4718-b261-698119c2408c_purposeConstraint
         rdf:type           odrl:Constraint ;

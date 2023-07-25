@@ -5,12 +5,11 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'profile',
     template: `
-        <menu></menu>
         <ng-container *ngIf="userType === 'MEMBER'">
             <member-profile></member-profile>
         </ng-container>
         <ng-container *ngIf="userType === 'THIRDPARTY'">
-            <thirdParty-profile></thirdParty-profile>
+            <thirdparty-profile></thirdparty-profile>
         </ng-container>
         <ng-container *ngIf="userType === 'ADMIN'">
             <admin-profile></admin-profile>

@@ -12,11 +12,10 @@ const resourceURL = process.env.RESOURCE_URL;
 
 module.exports = function (appSession) {
     router.get("/", (req, res) => {
-        console.log(JSON.stringify(userSession.info));
         res.send({ message: `userSession Session WebID: ${userSession.info.webId}` });
     });
 
-    router.get("/checkUser", async (req, res, next) => {
+    router.get("/check-user", async (req, res, next) => {
         const webID = req.query.webID;
         if (!webID) {
             res.status(400).send({ message: "WebID are required." });
@@ -41,32 +40,24 @@ module.exports = function (appSession) {
         }
     });
 
-    router.post("/registerMember", async function (req, res) {
-        console.log("registerMember");
-        console.log(req.body);
+    router.post("/register-member", async function (req, res) {
         const { webID, email, name, dataSource, sessionID } = req.body;
-        console.log(await getSessionIdFromStorageAll());
-        console.log("sessionID", sessionID);
         const userSession = await getSessionFromStorage(sessionID);
-        console.log("userSession", userSession.info);
         if (!webID || !email || !name || !dataSource) {
             res.status(400).send({ message: "All fields are required." });
             return;
         }
         else {
-            // const existsAlready = await userService.checkUserByType({ webID: webID, type: "MEMBER" }, appSession);
-            // console.log("does it exist?", existsAlready);
-            const existsAlready = false;
+            const existsAlready = await userService.checkUserByType({ webID: webID, type: "MEMBER" }, appSession);
+            console.log("does it exist?", existsAlready);
+            // const existsAlready = false;
             if (existsAlready) {
                 res.status(400).send({ message: "User is already registered as a member." });
             }
             else {
                 try {
-                    console.log("adding member");
-                    // await userService.addMember(req, appSession);
-                    console.log("added member");
+                    await userService.addMember(req, appSession);
                     await userService.addNewData(dataSource, appSession, userSession); // FIX THIS AND HOW THE SESSION ID IS PASSED
-                    // console.log("added member")
                     res.send({ message: "Member registered successfully." });
                 }
                 catch (error) {
@@ -77,7 +68,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.post("/registerThirdParty", async function (req, res) {
+    router.post("/register-thirdparty", async function (req, res) {
         const { webID, email, name, org, description } = req.body;
         if (!webID || !email || !name || !org || !description) {
             res.status(400).send({ message: "All fields are required." });
@@ -100,7 +91,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.get("/viewMember", async (req, res, next) => {
+    router.get("/member", async (req, res, next) => {
         const { webID } = req.query;
         if (!webID) {
             res.status(400).send({ message: "WebID are required." });
@@ -110,7 +101,6 @@ module.exports = function (appSession) {
                 try {
                     const fetchedMember = new Member();
                     await fetchedMember.fetchUser(webID, appSession);
-                    console.log(fetchedMember.toJson());
                     res.send({ data: fetchedMember.toJson(), message: "User found." });
                 }
                 catch (error) {
@@ -124,10 +114,9 @@ module.exports = function (appSession) {
         }
     });
 
-    router.get("/viewThirdParty", async (req, res, next) => {
+    router.get("/thirdparty", async (req, res, next) => {
         const { webID } = req.query;
         if (!webID) {
-            console.log("no webID");
             res.status(400).send({ message: "WebID are required." });
         }
         else {
@@ -135,7 +124,6 @@ module.exports = function (appSession) {
                 try {
                     const fetchedThirdParty = new ThirdParty();
                     await fetchedThirdParty.fetchUser(webID, appSession);
-                    console.log(fetchedThirdParty.toJson());
                     res.send({ data: fetchedThirdParty.toJson(), message: "Third party found." });
                 }
                 catch (error) {
@@ -149,7 +137,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.get("/viewAdmin", async (req, res, next) => {
+    router.get("/admin", async (req, res, next) => {
         const { webID } = req.query;
         if (!webID) {
             res.status(400).send({ message: "WebID are required." });
@@ -172,8 +160,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.put("/updateMember", async (req, res, next) => {
-        console.log(req.body);
+    router.put("/update-member", async (req, res, next) => {
         if (!req.body.webID) {
             res.status(400).send({ message: "WebID are required." });
         }
@@ -197,7 +184,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.put("/updateThirdParty", async (req, res, next) => {
+    router.put("/update-thirdparty", async (req, res, next) => {
         if (!req.body.webID) {
             res.status(400).send({ message: "WebID are required." });
         }
@@ -221,7 +208,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.put("/updateAdmin", async (req, res, next) => {
+    router.put("/update-admin", async (req, res, next) => {
         if (!req.body.webID) {
             res.status(400).send({ message: "WebID are required." });
         }
@@ -245,14 +232,12 @@ module.exports = function (appSession) {
         }
     });
 
-    router.delete("/removeData", async (req, res, next) => {
+    router.delete("/remove-data", async (req, res, next) => {
         try {
             const webID = req.query.webID;
-            console.log(webID);
             const newMember = new Member();
             await newMember.fetchUser(webID, appSession)
             const user = newMember.toJson();
-            console.log(user);
             await userService.removeData(user.dataSource, appSession);
             res.send({ message: "Data removed successfully." });
         }
@@ -262,7 +247,7 @@ module.exports = function (appSession) {
         }
     });
 
-    router.get("/getMemberCount", async (req, res, next) => {
+    router.get("/get-member-count", async (req, res, next) => {
         try {
             const memberCount = await userService.getMemberCount(appSession);
             res.send({ data: memberCount, message: "Member count found." });

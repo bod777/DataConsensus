@@ -11,23 +11,25 @@ export class MenuComponent {
 
     constructor(private router: Router) { }
 
+    userType: string = localStorage.getItem('userType') || "";
+
     navigateToHomePage() {
         this.router.navigateByUrl('/home');
     }
     navigateToAgreementsPage() {
-        this.router.navigateByUrl('/agreements');
+        this.router.navigateByUrl('/active-agreements');
     }
     navigateToProfilePage() {
         this.router.navigateByUrl('/profile');
     }
     navigateToSubmitRequest() {
-        this.router.navigateByUrl('/submitRequest');
+        this.router.navigateByUrl('/submit-request');
     }
 
     logout() {
         localStorage.removeItem('webID');
         localStorage.removeItem('userType');
         localStorage.setItem('loggedIn', 'false');
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/login');
     }
 }

@@ -1,0 +1,30 @@
+.content {
+    height: 75vh;
+}
+
+mat-card {
+    display: flex;
+    justify-content: center;
+}
+
+mat-card-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+mat-checkbox {
+    margin-right: 100px;
+    margin-left: 100px;
+    margin-bottom: 20px;
+}
+
+.form-field-container {
+    display: flex;
+    justify-content: center;
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: center;
+}

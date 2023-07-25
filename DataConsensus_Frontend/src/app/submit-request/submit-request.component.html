@@ -1,1 +1,110 @@
-<p>submit-request works!</p>
+<div class="content">
+    <mat-card class="card-container">
+        <mat-card-header>
+            <mat-card-title>Submit Request</mat-card-title>
+        </mat-card-header>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Title</mat-label>
+                <input matInput type="text" [(ngModel)]="title" required>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Description</mat-label>
+                <textarea matInput type="text" [(ngModel)]="description" required></textarea>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Organisation Type</mat-label>
+                <mat-select [(ngModel)]="organisationType" required>
+                    <mat-option value="AcademicScientificOrganisation">Academic Scientific
+                        Organisation</mat-option>
+                    <mat-option value="ForProfitOrganisation">For-Profit Organisation</mat-option>
+                    <mat-option value="GovernmentalOrganisation">Governmental Organisation</mat-option>
+                    <mat-option value="IndustryConsortium">Industry Consortium</mat-option>
+                    <mat-option value="InternationalOrganisation">International Organisation</mat-option>
+                    <mat-option value="NonGovernmentalOrganisation">Non-Governmental
+                        Organisation</mat-option>
+                    <mat-option value="NonProfitOrganisation">Non-Profit Organisation</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Purpose</mat-label>
+                <mat-select [(ngModel)]="purpose" required>
+                    <mat-option value="AcademicResearch">Academic Scientific Organisation</mat-option>
+                    <mat-option value="CommercialResearch">For-Profit Organisation</mat-option>
+                    <mat-option value="NonCommercialResearch">Governmental Organisation</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-checkbox [(ngModel)]="sellingData">Selling Data</mat-checkbox>
+            <mat-checkbox [(ngModel)]="sellingInsights">Selling Insights</mat-checkbox>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Technical Organisational Measures</mat-label>
+                <mat-select [(ngModel)]="techOrgMeasures" multiple required>
+                    <mat-option *ngFor="let option of measuresOptions" [value]="option.value">
+                        {{ option.displayText }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <!-- <div class="form-field-container">
+            <mat-form-field class="example-chip-list">
+                <mat-label>Technical and Organisation Measures</mat-label>
+                <mat-chip-grid #chipGrid aria-label="Measures selection">
+                    <mat-chip-row *ngFor="let option of measuresOptions" (removed)="removeMeasure(option.value)">
+                        {{option.displayText}}
+                        <button matChipRemove [attr.aria-label]="'remove ' + option.displayText">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
+                </mat-chip-grid>
+                <input placeholder="New Measure..." #measureInput [formControl]="measuresCtrl"
+                    [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addMeasure($event)" />
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedMeasure($event)">
+                    <mat-option *ngFor="let measure of filteredMeasures | async" [value]="measure">
+                        {{measure}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </div> -->
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Recipients</mat-label>
+                <mat-chip-grid #chipGrid aria-label="Enter recipients">
+                    <mat-chip-row *ngFor="let recipient of recipients" (removed)="removeRecipient(recipient)"
+                        [editable]="true" (edited)="editRecipient(recipient, $event)"
+                        [aria-description]="'press enter to edit ' + recipient">
+                        {{recipient}}
+                        <button matChipRemove [attr.aria-label]="'remove ' + recipient">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
+                    <input placeholder="New recipient..." [matChipInputFor]="chipGrid"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                        (matChipInputTokenEnd)="addRecipient($event)" />
+                </mat-chip-grid>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Choose a date</mat-label>
+                <input matInput [(ngModel)]="duration" [matDatepicker]="picker">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <mat-card-actions class="button-container">
+            <button mat-raised-button color="primary" (click)="submit()">Save</button>
+            <button mat-raised-button (click)="cancelChanges()">Cancel</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

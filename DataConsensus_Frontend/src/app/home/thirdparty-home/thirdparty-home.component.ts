@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-    selector: 'thirdParty-home',
+    selector: 'thirdparty-home',
     templateUrl: './thirdparty-home.component.html',
     styleUrls: ['./thirdparty-home.component.css']
 })

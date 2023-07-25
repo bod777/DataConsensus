@@ -19,7 +19,7 @@ module.exports = function (appSession) {
         rankedVotes: an array of vote objects each containing a policyURL and a voteRank
         voter: string
     */
-    router.post("/addPreferenceVotes", async (req, res) => {
+    router.post("/add-preference", async (req, res) => {
         const { rankedVotes, voter } = req.body;
 
         const promises = rankedVotes.map(async vote => {
@@ -99,7 +99,7 @@ module.exports = function (appSession) {
     /* 
         policyURL: string
     */
-    router.get("/getRequestResult", async (req, res) => {
+    router.get("/request-result", async (req, res) => {
         const policyURL = req.body.policyURL;
 
         if (!policyURL) {
@@ -149,7 +149,7 @@ module.exports = function (appSession) {
     /* 
         projectURL: string
     */
-    router.get("/getOfferResult", async (req, res) => {
+    router.get("/offer-result", async (req, res) => {
         const projectURL = req.body.projectURL;
         try {
             const projectPolicies = await policyService.getProjectPolicies(projectURL, appSession);
