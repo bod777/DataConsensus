@@ -11,6 +11,7 @@ const { removeAccess } = require("../AccessControl.js");
 const agreementsList = process.env.AGREEMENTS;
 const requestsList = process.env.REQUESTS;
 const offersList = process.env.OFFERS;
+const projectsList = process.env.PROJECTS;
 
 module.exports = function (appSession) {
     router.get("/", (req, res) => {
@@ -322,7 +323,9 @@ module.exports = function (appSession) {
     */
     router.get("/agreement", async function (req, res) {
         try {
+            console.log(req.query.policyID);
             const policyURL = `${agreementsList}#${req.query.policyID}`;
+            console.log(policyURL);
             let fetchedPolicy = new Agreement();
 
             if (fetchedPolicy) {
@@ -343,10 +346,13 @@ module.exports = function (appSession) {
     */
     router.get("/request", async function (req, res) {
         try {
+            console.log(req.query.policyID);
             const policyURL = `${requestsList}#${req.query.policyID}`;
+            console.log(policyURL);
             let fetchedPolicy = new Request();
             if (fetchedPolicy) {
                 const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
+                console.log(fetchedPolicy.toJson());
                 res.send({ data: fetchedPolicy.toJson() });
             } else {
                 res.status(400).send({ message: "Invalid policy type." });
@@ -383,7 +389,7 @@ module.exports = function (appSession) {
     */
     router.get("/project", async function (req, res) {
         try {
-            const projectURL = req.body.projectURL;
+            const projectURL = `${projectsList}#${req.query.projectID}`;
             const fetchedProject = new Project();
             const project = await fetchedProject.fetchProject(projectURL, appSession);
             res.send({ data: fetchedProject.toJson() });

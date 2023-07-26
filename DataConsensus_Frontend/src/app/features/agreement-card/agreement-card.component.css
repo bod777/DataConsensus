@@ -1,27 +1,22 @@
 .content {
     height: 75vh;
+    justify-content: center;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 mat-card {
     display: flex;
-    justify-content: center;
+    width: 800px;
 }
 
 mat-card-header {
     margin-bottom: 20px;
     display: flex;
-    justify-content: center;
-}
-
-mat-checkbox {
-    margin-right: 100px;
-    margin-left: 100px;
-    margin-bottom: 20px;
-}
-
-.form-field-container {
-    display: flex;
-    justify-content: center;
 }
 
 mat-card-actions {

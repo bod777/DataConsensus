@@ -60,14 +60,13 @@ module.exports = {
         return policy;
     },
 
-    getpolicyURLs: async function (req, session) {
-        let datasetURL = getDatasetUrl(req.type);
-
+    getpolicyURLs: async function (policyType, session) {
+        let datasetURL = getDatasetUrl(policyType);
         const solidDataset = await getGivenSolidDataset(datasetURL, session);
         const policies = await getThingAll(solidDataset);
 
         const policyURLs = await policies
-            .filter((policy) => getUrl(policy, RDF.type) === `${odrl}${req.type}`);
+            .filter((policy) => getUrl(policy, RDF.type) === `${odrl}${policyType}`);
 
         let urlList = policyURLs.map(item => item.url);
 

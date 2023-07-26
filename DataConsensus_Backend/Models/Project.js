@@ -47,7 +47,7 @@ class Project {
     async fetchProject(projectURL, session) {
         const projectThing = await policyService.getProject(projectURL, session);
         const projectPolicies = await policyService.getProjectPolicies(projectURL, session);
-        this.id = extractTerm(projectURL);
+        this.id = projectURL;
         this.creator = projectThing.predicates[DCTERMS.creator]["namedNodes"][0];
         this.organisation = extractTerm(projectThing.predicates[`${oac}Organisation`]["namedNodes"][0]);
         this.title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
@@ -65,7 +65,7 @@ class Project {
 
     toJson() {
         return {
-            id: this.uid,
+            id: this.id,
             creator: this.creator,
             title: this.title,
             description: this.description,

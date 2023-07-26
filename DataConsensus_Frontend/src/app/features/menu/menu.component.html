@@ -2,7 +2,9 @@
     <mat-toolbar color="primary">
         <span (click)="navigateToHomePage()" class="gap">DATA CONSENSUS</span>
         <button mat-button (click)="navigateToHomePage()">Home</button>
-        <button mat-button (click)="navigateToAgreementsPage()">Agreements</button>
+        <button mat-button *ngIf="userType === 'THIRDPARTY'" (click)="navigateToSubmitRequest()">Submit
+            Request</button>
+        <button mat-button *ngIf="userType !== 'THIRDPARTY'" (click)="navigateToAgreementsPage()">Agreements</button>
         <button mat-button (click)="navigateToProfilePage()">Profile</button>
         <span class="filler"></span>
         <button mat-button (click)="logout()">Logout</button>

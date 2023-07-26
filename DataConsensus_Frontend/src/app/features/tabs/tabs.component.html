@@ -1,1 +1,18 @@
-<p>tabs works!</p>
+<mat-drawer-container class="example-container">
+    <mat-drawer mode="side" opened>
+        <mat-button-toggle-group name="tab" [(ngModel)]="tab" aria-label="Font Style">
+            <mat-button-toggle value="overview">Overview</mat-button-toggle>
+            <mat-button-toggle value="request">Request</mat-button-toggle>
+            <mat-button-toggle value="offer">Offers</mat-button-toggle>
+        </mat-button-toggle-group>
+    </mat-drawer>
+    <mat-drawer-content *ngIf="tab === 'overview'">
+        <h1>Overview</h1>
+    </mat-drawer-content>
+    <mat-drawer-content *ngIf="tab === 'request'">
+        <h1>Request</h1>
+    </mat-drawer-content>
+    <mat-drawer-content *ngIf="tab === 'offer'">
+        <h1>Offers</h1>
+    </mat-drawer-content>
+</mat-drawer-container>

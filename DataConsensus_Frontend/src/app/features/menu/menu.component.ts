@@ -17,7 +17,7 @@ export class MenuComponent {
         this.router.navigateByUrl('/home');
     }
     navigateToAgreementsPage() {
-        this.router.navigateByUrl('/active-agreements');
+        this.router.navigateByUrl('/agreements');
     }
     navigateToProfilePage() {
         this.router.navigateByUrl('/profile');

@@ -1,1 +1,162 @@
-<p>project-page works!</p>
+<div class="content">
+    <div class="card-container">
+        <mat-drawer-container class="example-container">
+            <mat-drawer mode="side" opened>
+                <mat-button-toggle-group class="sidebar" name="tab" [(ngModel)]="tab" aria-label="Font Style">
+                    <mat-button-toggle class="sidebar-panel" value="overview">Overview</mat-button-toggle>
+                    <mat-button-toggle class="sidebar-panel" value="request">Request</mat-button-toggle>
+                    <mat-button-toggle class="sidebar-panel" value="offer">Offers</mat-button-toggle>
+                </mat-button-toggle-group>
+            </mat-drawer>
+            <mat-drawer-content *ngIf="tab === 'overview'">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{ project.title }}</mat-card-title>
+                        <mat-card-subtitle>Overview</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>
+                            <b>Description:</b> {{ project.description }}
+                        </p>
+                        <p>
+                            <b>Third Party Requester:</b> {{ project.creator }}
+                        </p>
+                        <p>
+                            <b>Organisation type:</b> {{ project.organisation }}
+                        </p>
+                        <p>
+                            <b>Creation date:</b> {{ project.projectCreationTime }}
+                        </p>
+                        <p>
+                            <b>Project status:</b> {{ project.projectStatus }}
+                        </p>
+                    </mat-card-content>
+                </mat-card>
+            </mat-drawer-content>
+            <mat-drawer-content *ngIf="tab === 'request'">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{ project.title }}</mat-card-title>
+                        <mat-card-subtitle>Request</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>
+                            <b>Project description:</b> {{ project.description }}
+                        </p>
+                        <p>
+                            <b>Project creator:</b> {{ project.creator }}
+                        </p>
+                        <p>
+                            <b>Creation date:</b> {{ request.policyCreationTime }}
+                        </p>
+                        <div class="status-bar">
+                            <b style="margin-left:50px">Member Status:</b>
+                            <mat-chip *ngIf="request.memberApproved==='Rejected'" style="background-color:darksalmon">{{
+                                request.memberApproved}}</mat-chip>
+                            <mat-chip *ngIf="request.memberApproved==='Approved'" style="background-color:palegreen">{{
+                                request.memberApproved}}</mat-chip>
+                            <mat-chip *ngIf="request.memberApproved==='Pending'"
+                                style="background-color:lightskyblue">{{
+                                request.memberApproved}}</mat-chip>
+                            <b>Third Party Status:</b>
+                            <mat-chip *ngIf="request.thirdPartyApproved==='Rejected'"
+                                style="background-color:darksalmon">{{
+                                request.thirdPartyApproved}}</mat-chip>
+                            <mat-chip *ngIf="request.thirdPartyApproved==='Approved'"
+                                style="background-color:palegreen">{{
+                                request.thirdPartyApproved}}</mat-chip>
+                            <mat-chip *ngIf="request.thirdPartyApproved==='Pending'"
+                                style="background-color:lightskyblue">{{
+                                request.thirdPartyApproved}}</mat-chip>
+                            <b>Admin Status:</b>
+                            <mat-chip *ngIf="request.adminApproved==='Rejected'" style="background-color:darksalmon">{{
+                                request.adminApproved}}</mat-chip>
+                            <mat-chip *ngIf="request.adminApproved==='Approved'" style="background-color:palegreen">{{
+                                request.adminApproved}}</mat-chip>
+                            <mat-chip *ngIf="request.adminApproved==='Pending'" style="background-color:lightskyblue">{{
+                                request.adminApproved}}</mat-chip>
+                            <mat-chip *ngIf="request.adminApproved==='Blocked'" style="background-color:plum">{{
+                                request.adminApproved}}</mat-chip>
+                        </div>
+                        <h3 class="instructions">Do you approve of this request?</h3>
+                        <mat-button-toggle-group class="voting-div">
+                            <mat-button-toggle class="upvote-button" mat-icon-button matTooltip="Upvote"
+                                (click)="upvote()" aria-label="Upvote">
+                                <mat-icon>thumb_up</mat-icon>
+                            </mat-button-toggle>
+                            <span class="gap"></span>
+                            <mat-button-toggle class="downvote-button" color="primary" mat-icon-button
+                                (click)="downvote()" matTooltip="Downvote" aria-label="Downvote">
+                                <mat-icon>thumb_down</mat-icon>
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                        <mat-divider></mat-divider>
+                        <h2>Constraints</h2>
+                        <p>
+                            <b>Organisation:</b> {{ request.organisation }}
+                        </p>
+                        <p>
+                            <b>Purpose:</b> {{ request.purpose }}
+                        </p>
+                        <p>
+                            <b>Ends on:</b> {{ request.untilTimeDuration }}
+                        </p>
+                        <p><b>Technical and Organisational Measures</b></p>
+                        <mat-chip-set aria-label="Measures selection">
+                            <mat-chip *ngFor="let measure of request.techOrgMeasures">{{measure}}</mat-chip>
+                        </mat-chip-set>
+                        <p><b>Recipients</b></p>
+                        <mat-chip-set aria-label="Recipients selection">
+                            <mat-chip *ngFor="let recipient of request.recipients">{{recipient}}</mat-chip>
+                        </mat-chip-set>
+                    </mat-card-content>
+                </mat-card>
+            </mat-drawer-content>
+            <mat-drawer-content *ngIf="tab === 'offer'">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{ project.title }}</mat-card-title>
+                        <mat-card-subtitle>Offers</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div cdkDropList class="rank-list" (cdkDropListDropped)="onDrop($event)">
+                            <div class="rank-chip" *ngFor="let item of offerRanking" cdkDrag>{{ item.id
+                                }}</div>
+                        </div>
+                        <mat-card-actions>
+                            <button mat-raised-button color="primary" (click)="submitRanking()">Submit Ranking</button>
+                        </mat-card-actions>
+                    </mat-card-content>
+                </mat-card>
+                <mat-tab-group>
+                    <mat-tab *ngFor="let offer of offers" [label]="offer.id">
+                        <mat-card>
+                            <mat-card-content>
+                                <p>
+                                    <b>Proposer:</b> {{ offer.creator }}
+                                </p>
+                                <p>
+                                    <b>Organisation:</b> {{ offer.organisation }}
+                                </p>
+                                <p>
+                                    <b>Purpose:</b> {{ offer.purpose }}
+                                </p>
+                                <p>
+                                    <b>Ends on:</b> {{ offer.untilTimeDuration }}
+                                </p>
+                                <p><b>Technical and Organisational Measures</b></p>
+                                <mat-chip-set aria-label="Measures selection">
+                                    <mat-chip *ngFor="let measure of offer.techOrgMeasures">{{measure}}</mat-chip>
+                                </mat-chip-set>
+                                <p><b>Recipients</b></p>
+                                <mat-chip-set aria-label="Recipients selection">
+                                    <mat-chip *ngFor="let recipient of offer.recipients">{{recipient}}</mat-chip>
+                                </mat-chip-set>
+                            </mat-card-content>
+                        </mat-card>
+                    </mat-tab>
+                </mat-tab-group>
+            </mat-drawer-content>
+        </mat-drawer-container>
+    </div>
+</div>

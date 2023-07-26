@@ -28,6 +28,10 @@ import { MatChipsModule } from '@angular/material/chips';
 import { AppRoutingModule } from './app-routing.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatTableModule } from '@angular/material/table';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { DatePipe } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 // services
 import { UserService } from './services/user.service';
@@ -35,27 +39,38 @@ import { PolicyService } from './services/policy.service';
 
 // components
 import { AppComponent } from './app.component';
+
 import { LoginComponent } from './auth/login/login.component';
 import { MemberSignUpComponent } from './auth/member-signup/member-signup.component';
 import { ThirdPartySignUpComponent } from './auth/thirdparty-signup/thirdparty-signup.component';
+
+import { AppLayoutComponent } from './app-layout/app-layout.component';
+import { MenuComponent } from './features/menu/menu.component';
+
 import { HomeComponent } from './home/home.component';
 import { MemberHomeComponent } from './home/member-home/member-home.component';
-import { MenuComponent } from './features/menu/menu.component';
 import { ThirdPartyHomeComponent } from './home/thirdparty-home/thirdparty-home.component';
 import { AdminHomeComponent } from './home/admin-home/admin-home.component';
+
 import { ProfileComponent } from './profile/profile.component';
 import { MemberProfileComponent } from './profile/member-profile/member-profile.component';
 import { ThirdPartyProfileComponent } from './profile/thirdparty-profile/thirdparty-profile.component';
 import { AdminProfileComponent } from './profile/admin-profile/admin-profile.component';
-import { AgreementComponent } from './agreement/agreement.component';
+
+import { AgreementListComponent } from './agreement-list/agreement-list.component';
+import { AgreementCardComponent } from './features/agreement-card/agreement-card.component';
+import { IndividualAgreementComponent } from './individual-agreement/individual-agreement.component';
+
+import { SubmitRequestComponent } from './submit-request/submit-request.component';
+import { ProjectPageComponent } from './project-page/project-page.component';
+import { SubmitOfferComponent } from './submit-offer/submit-offer.component';
+
 import { CommentSectionComponent } from './features/comments/comments.component';
 import { PreferenceVotingComponent } from './features/preference-voting/preference-voting.component';
 import { RequestCardComponent } from './features/request-card/request-card.component';
-import { SubmitRequestComponent } from './submit-request/submit-request.component';
-import { SubmitOfferComponent } from './submit-offer/submit-offer.component';
-import { ProjectPageComponent } from './project-page/project-page.component';
 import { TabsComponent } from './features/tabs/tabs.component';
-import { AppLayoutComponent } from './app-layout/app-layout.component';
+
+
 
 @NgModule({
     declarations: [
@@ -72,7 +87,6 @@ import { AppLayoutComponent } from './app-layout/app-layout.component';
         MemberProfileComponent,
         ThirdPartyProfileComponent,
         AdminProfileComponent,
-        AgreementComponent,
         CommentSectionComponent,
         PreferenceVotingComponent,
         RequestCardComponent,
@@ -80,7 +94,10 @@ import { AppLayoutComponent } from './app-layout/app-layout.component';
         SubmitOfferComponent,
         ProjectPageComponent,
         TabsComponent,
-        AppLayoutComponent
+        AppLayoutComponent,
+        IndividualAgreementComponent,
+        AgreementCardComponent,
+        AgreementListComponent
     ],
     imports: [
         BrowserModule,
@@ -112,13 +129,18 @@ import { AppLayoutComponent } from './app-layout/app-layout.component';
         MatFormFieldModule,
         MatChipsModule,
         MatAutocompleteModule,
-        NgFor
+        NgFor,
+        MatTableModule,
+        MatSidenavModule,
+        DragDropModule
     ],
     exports: [
         MenuComponent,
-        CommentSectionComponent
+        CommentSectionComponent,
+        AgreementCardComponent,
+        TabsComponent
     ],
-    providers: [UserService, PolicyService,
+    providers: [UserService, PolicyService, DatePipe,
         { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
     ],
     bootstrap: [AppComponent]

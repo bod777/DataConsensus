@@ -4,12 +4,12 @@ import { PolicyService } from '../services/policy.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-    selector: 'agreement',
-    templateUrl: './agreement.component.html',
-    styleUrls: ['./agreement.component.css']
+    selector: 'individual-agreement',
+    templateUrl: './individual-agreement.component.html',
+    styleUrls: ['./individual-agreement.component.css']
 })
 
-export class AgreementComponent implements OnInit {
+export class IndividualAgreementComponent implements OnInit {
 
     constructor(private route: ActivatedRoute, private router: Router, private policyService: PolicyService, private _snackBar: MatSnackBar) { }
 
@@ -46,7 +46,7 @@ export class AgreementComponent implements OnInit {
 
         this.policyService.getAgreement(this.policyID).subscribe(
             (agreement: any) => {
-                console.log(agreement);
+                // console.log(agreement);
                 this.uid = agreement.data.uid;
                 this.creator = agreement.data.creator;
                 this.policyCreationTime = agreement.data.policyCreationTime;
