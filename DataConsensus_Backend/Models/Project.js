@@ -58,11 +58,10 @@ class Project {
         this.projectStatus = extractTerm(projectThing.predicates[`${project}#hasProjectStatus`]["namedNodes"][0]);
         this.hasAgreement = projectThing.predicates[`${project}#hasAgreement`]["literals"][XSD.boolean][0];
         this.projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
-        this.deliberationStartTime = projectThing.predicates[`${project}#deliberationStartTime`]["literals"][XSD.dateTime][0];
-        this.requestTime = projectThing.predicates[`${project}#requestTime`]["literals"][XSD.integer][0];
-        this.offerTime = projectThing.predicates[`${project}#offerTime`]["literals"][XSD.integer][0];
+        this.requestStartTime = projectThing.predicates[`${project}#requestStartTime`]["literals"][XSD.dateTime][0];
+        this.requestEndTime = projectThing.predicates[`${project}#requestEndTime`]["literals"][XSD.dateTime][0];
+        this.offerEndTime = projectThing.predicates[`${project}#offerEndTime`]["literals"][XSD.dateTime][0];
         this.threshold = projectThing.predicates[`${project}#threshold`]["literals"][XSD.decimal][0];
-        this.thresholdType = extractTerm(projectThing.predicates[`${project}#thresholdType`]["namedNodes"][0]);
         this.projectPolicies = projectPolicies;
     }
 
@@ -77,12 +76,11 @@ class Project {
             projectStatus: this.projectStatus,
             hasAgreement: this.hasAgreement,
             projectCreationTime: this.projectCreationTime,
-            deliberationStartTime: this.deliberationStartTime,
-            requestTime: this.requestTime,
-            offerTime: this.offerTime,
+            requestStartTime: this.requestStartTime,
+            requestEndTime: this.requestEndTime,
+            offerEndTime: this.offerEndTime,
             threshold: this.threshold,
-            projectPolicies: this.projectPolicies,
-            thresholdType: this.thresholdType
+            projectPolicies: this.projectPolicies
         };
     }
 }

@@ -38,10 +38,11 @@ project:hasProjectStatus a rdf:Property ;
 project:projectStatus a rdfs:Class ;
     rdfs:domain project:Project ;
     rdfs:label "Project Status" ;
-    owl:oneOf (project:Pending project:Complete) .
+    owl:oneOf (project:Pending project:RequestDeliberation project:OfferDeliberation project:Completed) .
 
 project:Pending a project:projectStatus .
-
+project:RequestDeliberation a project:projectStatus .
+project:OfferDeliberation a project:projectStatus .
 project:Completed a project:projectStatus .
 
 project:thresholdType a rdf:Property ;
@@ -53,17 +54,17 @@ project:totalMembership a rdf:Property .
 
 project:totalVotes a rdf:Property .
 
-project:deliberationStartTime a rdf:Property ;
+project:requestStartTime a rdf:Property ;
     rdfs:domain project:Project ;
     rdfs:range xsd:dateTime .
 
-project:requestTime a rdf:Property ;
+project:requestEndTime a rdf:Property ;
     rdfs:domain project:Project ;
-    rdfs:range xsd:integer .
+    rdfs:range xsd:dateTime .
 
-project:offerTime a rdf:Property ;
+project:offerEndTime a rdf:Property ;
     rdfs:domain project:Project ;
-    rdfs:range xsd:integer .
+    rdfs:range xsd:dateTime .
 
 project:threshold a rdf:Property ;
     rdfs:domain project:Project ;

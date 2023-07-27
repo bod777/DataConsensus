@@ -2,10 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const cors = require('cors');
 const cookieSession = require("cookie-session");
-
-const { readFile } = require('fs/promises');
-const { overwriteFile, getSourceUrl } = require("@inrupt/solid-client");
-const { removeAccess, grantAccess } = require("./AccessControl.js");
 const {
     getSessionIdFromStorageAll,
     Session
@@ -49,34 +45,6 @@ function checkAndRenewSession() {
 checkAndRenewSession();
 setInterval(checkAndRenewSession, 60000);
 
-// app.get("/uploadFile", async (req, res, next) => {
-//     uploadFile('C:/myProjects/MSc Programming/CS7CS5_Dissertation/DataConsensus/POD/interactions/votes.ttl', "text/turtle", `https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/interactions/votes.ttl`, appSession.fetch);
-//     res.send("<p>Performed overwriting.</p>");
-// });
-
-// async function uploadFile(filepath, mimetype, targetURL, fetch) {
-//     try {
-//         const data = await readFile(filepath);
-//         writeFileToPod(data, mimetype, targetURL, fetch);
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
-
-// async function writeFileToPod(filedata, mimetype, targetFileURL, fetch) {
-//     try {
-//         const savedFile = await overwriteFile(
-//             targetFileURL,                   // URL for the file.
-//             filedata,                        // Buffer containing file data
-//             { contentType: mimetype, fetch: fetch } // mimetype if known, fetch from the authenticated session
-//         );
-//         console.log(`File saved at ${getSourceUrl(savedFile)}`);
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
-
-
 app.use(
     cookieSession({
         name: "session",
@@ -100,6 +68,7 @@ app.get("/", async (req, res, next) => {
 app.use(`${api}/auth`, AuthRoute());
 app.use(`${api}/user`, UserRoute(appSession));
 app.use(`${api}/policy`, PolicyRoute(appSession));
+app.use(`${api}/project`, ProjectRoute(appSession));
 app.use(`${api}/vote`, VoteRoute(appSession));
 app.use(`${api}/comment`, CommentRoute(appSession));
 

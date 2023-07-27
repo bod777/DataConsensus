@@ -39,7 +39,7 @@ class Policy {
         return this;
     }
 
-    setPolicy(id, creator, policyCreationTime, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType) {
+    setPolicy(id, creator, policyCreationTime, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
         this.id = id;
         this.creator = creator;
         this.policyCreationTime = policyCreationTime;
@@ -59,11 +59,10 @@ class Policy {
         this.projectStatus = projectStatus;
         this.hasAgreement = hasAgreement;
         this.projectCreationTime = projectCreationTime;
-        this.deliberationStartTime = deliberationStartTime;
-        this.requestTime = requestTime;
-        this.offerTime = offerTime;
+        this.requestStartTime = requestStartTime;
+        this.requestEndTime = requestEndTime;
+        this.offerEndTime = offerEndTime;
         this.threshold = threshold;
-        this.thresholdType = thresholdType;
     }
 }
 
@@ -116,11 +115,10 @@ class Agreement extends Policy {
         this.projectStatus = extractTerm(projectThing.predicates[`${project}#hasProjectStatus`]["namedNodes"][0]);
         this.hasAgreement = projectThing.predicates[`${project}#hasAgreement`]["literals"][XSD.boolean][0];
         this.projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
-        this.deliberationStartTime = projectThing.predicates[`${project}#deliberationStartTime`]["literals"][XSD.dateTime][0];
-        this.requestTime = projectThing.predicates[`${project}#requestTime`]["literals"][XSD.integer][0];
-        this.offerTime = projectThing.predicates[`${project}#offerTime`]["literals"][XSD.integer][0];
+        this.requestStartTime = projectThing.predicates[`${project}#requestStartTime`]["literals"][XSD.dateTime][0];
+        this.requestEndTime = projectThing.predicates[`${project}#requestEndTime`]["literals"][XSD.dateTime][0];
+        this.offerEndTime = projectThing.predicates[`${project}#offerEndTime`]["literals"][XSD.dateTime][0];
         this.threshold = projectThing.predicates[`${project}#threshold`]["literals"][XSD.decimal][0];
-        this.thresholdType = extractTerm(projectThing.predicates[`${project}#thresholdType`]["namedNodes"][0]);
     }
 
     toJson() {
@@ -132,6 +130,9 @@ class Agreement extends Policy {
             assigner: this.assigner,
             assignee: this.assignee,
             references: this.references,
+            adminApproved: this.adminApproved,
+            memberApproved: this.memberApproved,
+            thirdPartyApproved: this.thirdPartyApproved,
             purpose: this.purpose,
             sellingData: this.sellingData,
             sellingInsights: this.sellingInsights,
@@ -144,11 +145,10 @@ class Agreement extends Policy {
             projectStatus: this.projectStatus,
             hasAgreement: this.hasAgreement,
             projectCreationTime: this.projectCreationTime,
-            deliberationStartTime: this.deliberationStartTime,
-            requestTime: this.requestTime,
-            offerTime: this.offerTime,
-            threshold: this.threshold,
-            thresholdType: this.thresholdType
+            requestStartTime: this.requestStartTime,
+            requestEndTime: this.requestEndTime,
+            offerEndTime: this.offerEndTime,
+            threshold: this.threshold
         };
     }
 }
@@ -206,11 +206,10 @@ class Offer extends Policy {
         this.projectStatus = extractTerm(projectThing.predicates[`${project}#hasProjectStatus`]["namedNodes"][0]);
         this.hasAgreement = projectThing.predicates[`${project}#hasAgreement`]["literals"][XSD.boolean][0];
         this.projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
-        this.deliberationStartTime = projectThing.predicates[`${project}#deliberationStartTime`]["literals"][XSD.dateTime][0];
-        this.requestTime = projectThing.predicates[`${project}#requestTime`]["literals"][XSD.integer][0];
-        this.offerTime = projectThing.predicates[`${project}#offerTime`]["literals"][XSD.integer][0];
+        this.requestStartTime = projectThing.predicates[`${project}#requestStartTime`]["literals"][XSD.dateTime][0];
+        this.requestEndTime = projectThing.predicates[`${project}#requestEndTime`]["literals"][XSD.dateTime][0];
+        this.offerEndTime = projectThing.predicates[`${project}#offerEndTime`]["literals"][XSD.dateTime][0];
         this.threshold = projectThing.predicates[`${project}#threshold`]["literals"][XSD.decimal][0];
-        this.thresholdType = extractTerm(projectThing.predicates[`${project}#thresholdType`]["namedNodes"][0]);
     }
 
     toJson() {
@@ -236,19 +235,18 @@ class Offer extends Policy {
             projectStatus: this.projectStatus,
             hasAgreement: this.hasAgreement,
             projectCreationTime: this.projectCreationTime,
-            deliberationStartTime: this.deliberationStartTime,
-            requestTime: this.requestTime,
-            offerTime: this.offerTime,
-            threshold: this.threshold,
-            thresholdType: this.thresholdType
+            requestStartTime: this.requestStartTime,
+            requestEndTime: this.requestEndTime,
+            offerEndTime: this.offerEndTime,
+            threshold: this.threshold
         };
     }
 }
 
 
 class Request extends Policy {
-    constructor(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType) {
-        super(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType);
+    constructor(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
+        super(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
         this.thirdPartyApproved = thirdPartyStatus;
         this.memberApproved = memberStatus;
         this.adminApproved = adminStatus;
@@ -298,11 +296,10 @@ class Request extends Policy {
         this.projectStatus = extractTerm(projectThing.predicates[`${project}#hasProjectStatus`]["namedNodes"][0]);
         this.hasAgreement = projectThing.predicates[`${project}#hasAgreement`]["literals"][XSD.boolean][0];
         this.projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
-        this.deliberationStartTime = projectThing.predicates[`${project}#deliberationStartTime`]["literals"][XSD.dateTime][0];
-        this.requestTime = projectThing.predicates[`${project}#requestTime`]["literals"][XSD.integer][0];
-        this.offerTime = projectThing.predicates[`${project}#offerTime`]["literals"][XSD.integer][0];
+        this.requestStartTime = projectThing.predicates[`${project}#requestStartTime`]["literals"][XSD.dateTime][0];
+        this.requestEndTime = projectThing.predicates[`${project}#requestEndTime`]["literals"][XSD.dateTime][0];
+        this.offerEndTime = projectThing.predicates[`${project}#offerEndTime`]["literals"][XSD.dateTime][0];
         this.threshold = projectThing.predicates[`${project}#threshold`]["literals"][XSD.decimal][0];
-        this.thresholdType = extractTerm(projectThing.predicates[`${project}#thresholdType`]["namedNodes"][0]);
     }
 
     toJson() {
@@ -328,11 +325,10 @@ class Request extends Policy {
             projectStatus: this.projectStatus,
             hasAgreement: this.hasAgreement,
             projectCreationTime: this.projectCreationTime,
-            deliberationStartTime: this.deliberationStartTime,
-            requestTime: this.requestTime,
-            offerTime: this.offerTime,
-            threshold: this.threshold,
-            thresholdType: this.thresholdType
+            requestStartTime: this.requestStartTime,
+            requestEndTime: this.requestEndTime,
+            offerEndTime: this.offerEndTime,
+            threshold: this.threshold
         };
         return json;
     }

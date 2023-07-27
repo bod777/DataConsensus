@@ -3,7 +3,6 @@ const router = require("express").Router();
 const policyService = require("../CRUDService/PolicyService.js");
 const { grantAccess } = require("../AccessControl.js");
 const { Agreement, Request, Offer } = require("../Models/Policy.js");
-const { Project } = require("../Models/Project.js");
 const { DCTERMS } = require("@inrupt/vocab-common-rdf");
 const { extractTerm, getPolicyDataset } = require("../HelperFunctions.js");
 const { removeAccess } = require("../AccessControl.js");
@@ -12,7 +11,6 @@ const { Trigger } = require("../Logic/Trigger.js");
 const agreementsList = process.env.AGREEMENTS;
 const requestsList = process.env.REQUESTS;
 const offersList = process.env.OFFERS;
-const projectsList = process.env.PROJECTS;
 
 module.exports = function (appSession) {
     router.get("/", (req, res) => {
@@ -75,34 +73,6 @@ module.exports = function (appSession) {
         catch (error) {
             console.error(error);
             res.status(500).send({ message: "Error in creating project.", error: error.message });
-        }
-    });
-
-    router.put("/update-project", async (req, res) => {
-        if (!req.body.projectURL) {
-            res.status(400).send({ message: "Project URL is required." });
-            return;
-        }
-
-        try {
-            // Prepare the project object to be updated
-            const projectToUpdate = { projectURL: req.body.projectURL };
-
-            if (req.body.title) projectToUpdate.title = req.body.title;
-            if (req.body.description) projectToUpdate.description = req.body.description;
-            if (req.body.status) projectToUpdate.status = req.body.status;
-            if (req.body.startTime) projectToUpdate.startTime = req.body.startTime;
-            if (req.body.requestTime) projectToUpdate.requestTime = req.body.requestTime;
-            if (req.body.offerTime) projectToUpdate.offerTime = req.body.offerTime;
-            if (req.body.threshold) projectToUpdate.threshold = req.body.threshold;
-            if (req.body.agreement) projectToUpdate.agreement = req.body.agreement;
-
-            updatedProject = await policyService.updateProject(projectToUpdate, appSession);
-
-            res.send({ data: updatedProject, message: "Project updated successfully." });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: "Error in updating project.", error: error.message });
         }
     });
 
@@ -324,22 +294,6 @@ module.exports = function (appSession) {
         }
     });
 
-    router.get("/all-projects", async (req, res) => {
-        try {
-            const projectURLs = await policyService.getProjects(appSession);
-            let projects = [];
-            for (const projectURL of projectURLs) {
-                const fetchedProject = new Project();
-                const project = await fetchedProject.fetchProject(projectURL, appSession);
-                projects.push(fetchedProject.toJson());
-            }
-            res.send({ data: projects });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: "Error in getting requests", error: error.message });
-        }
-    });
-
     /*  
         Expected req.body variables:
         policyURL: string 
@@ -400,25 +354,21 @@ module.exports = function (appSession) {
         }
     });
 
-
-    /*  
-        Expected req.body variables:
-        projectURL: string 
-    */
-    router.get("/project", async function (req, res) {
-        try {
-            const projectURL = `${projectsList}#${req.query.projectID}`;
-            const fetchedProject = new Project();
-            const project = await fetchedProject.fetchProject(projectURL, appSession);
-            res.send({ data: fetchedProject.toJson() });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({
-                message: "Error in getting project",
-            });
+    router.get("/thirdparty-approval-needed", async function (req, res) {
+        const requestsURLs = await policyService.getpolicyURLs("Request", appSession);
+        const offersURLs = await policyService.getpolicyURLs("Offer", appSession);
+        const policiesURLs = requestsURLs.concat(offersList);
+        let policies = [];
+        for (const policyURL of policiesURLs) {
+            const fetchedPolicies = new Agreement();
+            const policy = await fetchedPolicies.fetchPolicy(policyURL, appSession);
+            policies.push(fetchedPolicies.toJson());
         }
     });
 
+    router.get("/admin-approval-needed", async function (req, res) {
+
+    });
 
     return router;
 };

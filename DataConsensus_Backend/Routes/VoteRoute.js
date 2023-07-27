@@ -192,10 +192,16 @@ module.exports = function (appSession) {
                 if (upvotes > (membersNumber * threshold)) {
                     result = true;
                 }
+                if (result === true) {
+                    const projectToUpdate = { policyURL, actor: "memberApproved", newStatus: "Approved" };
+                    updatedProject = await policyService.updatePolicyStatus(projectToUpdate, appSession);
+                }
+                else {
+                    const projectToUpdate = { policyURL, actor: "memberApproved", newStatus: "Rejected" };
+                    updatedProject = await policyService.updatePolicyStatus(projectToUpdate, appSession);
+                }
                 res.send({ result, upvotes, downvotes, abstention, membersNumber, threshold });
             }
-
-
             catch (error) {
                 console.error(error);
                 res.status(500).send({ message: "Error in retrieving result.", error: error.message });
@@ -217,7 +223,6 @@ module.exports = function (appSession) {
             const project = new Project();
             await project.fetchProject(projectURL, appSession);
             const threshold = project.toJson().threshold;
-            const thresholdType = project.toJson().thresholdType;
             let results = [];
             let winner = `${offersList}#rejection`;
             for (const offer of projectOffers) {
@@ -230,16 +235,20 @@ module.exports = function (appSession) {
             results.push({ policyUrl: `${offersList}#rejection`, count: rejectVote });
             const sortedResults = results.sort((a, b) => b.count - a.count);
             const totalCount = sortedResults.reduce((total, policy) => total + policy.count, 0);
-            let cutoff;
-            if (thresholdType === "totalVote") {
-                cutoff = threshold * totalCount;
-            } else {
-                cutoff = membersNumber * threshold
+            const cutoff = membersNumber * threshold;
+            for (let i = 0; i < sortedResults.length; i++) {
+                const policyToUpdate = { policyURL: sortedResults[i].policyUrl, actor: "memberApproved" };
+                if (i === 0) {
+                    policyToUpdate.newStatus = "Approved";
+                } else {
+                    policyToUpdate.newStatus = "Rejected";
+                }
+                await policyService.updatePolicyStatus(policyToUpdate, appSession);
             }
             if (sortedResults[0].count > cutoff) {
                 winner = sorted[0].policyUrl;
             }
-            res.send({ sortedResults, winner, membersNumber, threshold });
+            res.send({ sortedResults, winner, totalCount, cutoff, membersNumber, threshold });
         }
         catch (error) {
             console.error(error);

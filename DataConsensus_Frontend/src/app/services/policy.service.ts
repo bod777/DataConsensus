@@ -118,5 +118,12 @@ export class PolicyService {
         const params = new HttpParams().set('projectID', projectID);
         return this.http.get('http://localhost:3000/api/v1/policy/project', { headers, params });
     }
+
+    updateStatus(projectID: string, status: string): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        return this.http.put('http://localhost:3000/api/v1/policy/update-status', { projectID, status }, { headers });
+    }
 }
 

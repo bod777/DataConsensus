@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DatePipe } from '@angular/common'
 import { VoteService } from '../services/vote.service';
 import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DateService } from '../services/date.service';
 
 @Component({
     selector: 'app-project-page',
@@ -14,9 +15,10 @@ import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk
 })
 export class ProjectPageComponent implements OnInit {
 
-    constructor(private voteService: VoteService, private commentService: CommentService, private route: ActivatedRoute, private router: Router, private policyService: PolicyService, private _snackBar: MatSnackBar, public datepipe: DatePipe) { }
+    constructor(private voteService: VoteService, private dateService: DateService, private commentService: CommentService, private route: ActivatedRoute, private router: Router, private policyService: PolicyService, private _snackBar: MatSnackBar, public datepipe: DatePipe) { }
 
     user: string = localStorage.getItem("webID") || "";
+    projectStatus: string = "pending";
     projectID: string = "";
     requestID: string = "";
     agreementID: string = "";
@@ -26,10 +28,15 @@ export class ProjectPageComponent implements OnInit {
     agreement: any = {};
     offerRanking: any[] = [];
     existingVote: any = {};
+    requestStartTime: Date = new Date();
+    requestEndTime: Date = new Date();
+    offerEndTime: Date = new Date();
     downvoteState: boolean = false;
     upvoteState: boolean = false;
     tab: string = 'overview';
     comments: any[] = [];
+    requestResult: any = {};
+    offerResult: any = {};
 
     // Function to update the selected tab
     setSelectedTab(tab: string) {
@@ -110,15 +117,11 @@ export class ProjectPageComponent implements OnInit {
                 const requestID = requestURL.substring(hashIndex + 1);
                 this.requestID = requestID;
                 this.project.projectCreationTime = new Date(this.project.projectCreationTime);
-                this.project.deliberationStartTime = new Date(this.project.deliberationStartTime);
-                // this.project.projectCreationTime = this.datepipe.transform(this.project.projectCreationTime, 'dd-MM-yyyy');
-                // this.project.deliberationStartTime = this.datepipe.transform(this.project.deliberationStartTime, 'dd-MM-yyyy');
-                this.project.requestTime = Number(this.project.requestTime);
-                this.project.offerTime = Number(this.project.offerTime);
-                this.project.threshold = Number(this.project.threshold);
+                this.project.requestStartTime = new Date(this.project.requestStartTime);
+                this.project.requestEndTime = new Date(this.project.requestEndTime);
+                this.project.offerEndTime = new Date(this.project.offerEndTime);
                 this.project.hasAgreement = this.project.hasAgreement === "true" ? true : false;
-                this.project.requestEndTime = new Date(this.project.deliberationStartTime.getTime() + this.project.requestTime * 24 * 60 * 60 * 1000);
-                this.project.offerEndTime = new Date(this.project.requestEndTime.getTime() + this.project.offerTime * 24 * 60 * 60 * 1000);
+
                 // Fetching request data
                 this.policyService.getRequest(this.requestID).subscribe(
                     (request: any) => {
@@ -199,7 +202,77 @@ export class ProjectPageComponent implements OnInit {
                 this._snackBar.open("Error retrieving project: " + error, "Close", { duration: 3000 });
             }
         );
-
-
+        if (this.dateService.isDatePassed(this.requestStartTime)) {
+            this.projectStatus = "request";
+            this.policyService.updateStatus(this.projectID, this.projectStatus).subscribe(
+                (response) => {
+                    console.log(response);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+        }
+        if (this.dateService.isDatePassed(this.requestEndTime)) {
+            this.voteService.getRequestResult(this.requestID).subscribe(
+                (response) => {
+                    this.requestResult = response.result;
+                    console.log(response);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+            if (this.requestResult === false && this.offers.length !== 0) {
+                this.projectStatus = "offer";
+                this.policyService.updateStatus(this.projectID, this.projectStatus).subscribe(
+                    (response) => {
+                        console.log(response);
+                    },
+                    (error) => {
+                        console.log(error);
+                    }
+                );
+            }
+            else {
+                this.projectStatus = "completed";
+            }
+            this.policyService.updateStatus(this.projectID, this.projectStatus).subscribe(
+                (response) => {
+                    console.log(response);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+            // get request result
+            // if rejected
+            // check if offers exist
+            // if yes, then projectStatus = "offer"
+            // if no, then projectStatus = "completed"
+            // update accordingly
+        }
+        if (this.projectStatus === "offer" && this.dateService.isDatePassed(this.offerEndTime)) {
+            this.projectStatus = "completed";
+            this.voteService.getOfferResult(this.projectID).subscribe(
+                (response) => {
+                    console.log(response);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+            this.policyService.updateStatus(this.projectID, this.projectStatus).subscribe(
+                (response) => {
+                    console.log(response);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+            // get offer result
+            // projectStatus = "completed"
+            // update accordingly
+        }
     }
 }

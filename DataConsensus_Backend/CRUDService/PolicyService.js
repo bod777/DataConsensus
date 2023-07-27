@@ -346,8 +346,10 @@ module.exports = {
         let solidDataset = await getGivenSolidDataset(projectsList, session);
         const projectID = uuidv4();
         const projectURL = `${projectsList}#${projectID}`;
-        const deliberationStartTime = new Date();
-        deliberationStartTime.setDate(deliberationStartTime.getDate() + 1);
+        const currentTime = new Date();
+        const requestStartTime = new Date(currentTime.getTime() + 1 * 24 * 60 * 60 * 1000);
+        const requestEndTime = new Date(requestStartTime.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const offerEndTime = new Date(requestEndTime.getTime() + 7 * 24 * 60 * 60 * 1000);
         const newProject = buildThing(createThing({ url: projectURL }))
             .addUrl(RDF.type, `${projectSchema}#Project`)
             .addUrl(`${projectSchema}#hasProjectStatus`, `${projectSchema}#Pending`)
@@ -355,14 +357,15 @@ module.exports = {
             .addStringNoLocale(DCTERMS.description, req.description)
             .addUrl(`${oac}Organisation`, `${dpv}${req.organisation}`)
             .addUrl(DCTERMS.creator, req.creator)
-            .addDatetime(DCTERMS.issued, new Date())
-            .addDatetime(`${projectSchema}#deliberationStartTime`, deliberationStartTime)
-            .addInteger(`${projectSchema}#requestTime`, 7)
-            .addInteger(`${projectSchema}#offerTime`, 7)
+            .addDatetime(DCTERMS.issued, currentTime)
+            .addDatetime(`${projectSchema}#requestStartTime`, deliberationStartTime)
+            .addDatetime(`${projectSchema}#requestEndTime`, requestEndTime)
+            .addDatetime(`${projectSchema}#offerEndTime`, offerEndTime)
             .addDecimal(`${projectSchema}#threshold`, 0.5)
-            .addUrl(`${projectSchema}#thresholdType`, `${projectSchema}#TotalMembership`)
             .addBoolean(`${projectSchema}#hasAgreement`, false)
             .build();
+
+
 
         solidDataset = setThing(solidDataset, newProject);
         await saveGivenSolidDataset(projectsList, solidDataset, session);
@@ -388,25 +391,21 @@ module.exports = {
                 projectToUpdate = buildThing(projectToUpdate)
                     .setStringNoLocale(DCTERMS.description, req.description).build();
             }
-            if (req.startTime) {
+            if (req.requestStartTime) {
                 projectToUpdate = buildThing(projectToUpdate)
-                    .setInteger(`${projectSchema}#deliberationStartTime`, req.startTime).build();
+                    .setInteger(`${projectSchema}#requestStartTime`, req.startTime).build();
             }
-            if (req.requestTime) {
+            if (req.requestEndTime) {
                 projectToUpdate = buildThing(projectToUpdate)
-                    .setInteger(`${projectSchema}#requestTime`, req.requestTime).build();
+                    .setInteger(`${projectSchema}#requestEndTime`, req.requestTime).build();
             }
-            if (req.offerTime) {
+            if (req.offerEndTime) {
                 projectToUpdate = buildThing(projectToUpdate)
-                    .setInteger(`${projectSchema}#offerTime`, req.offerTime).build();
+                    .setInteger(`${projectSchema}#offerEndTime`, req.offerTime).build();
             }
             if (req.threshold) {
                 projectToUpdate = buildThing(projectToUpdate)
                     .setDecimal(`${projectSchema}#threshold`, req.threshold).build();
-            }
-            if (req.thresholdType) {
-                projectToUpdate = buildThing(projectToUpdate)
-                    .setUrl(`${projectSchema}#thresholdType`, `${projectSchema}#${req.thresholdType}`).build();
             }
             if (req.agreememt) {
                 projectToUpdate = buildThing(projectToUpdate)
@@ -420,6 +419,15 @@ module.exports = {
             throw new Error("Project not found.");
         }
     },
+
+    getPendingThirdPartyPolicies: async function () {
+
+    },
+
+    getPendingAdminPolicies: async function () {
+
+    },
+
 
     getProjects: async function (session) {
         const solidDataset = await getGivenSolidDataset(projectsList, session);
