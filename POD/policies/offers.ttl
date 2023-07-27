@@ -23,7 +23,7 @@ offer:ff284cf0-2c7b-4718-b261-698119c2408c
         dct:issued                 "2022-11-08T17:26:35"^^xsd:dateTime ;
         odrl:permission            offer:ff284cf0-2c7b-4718-b261-698119c2408c_permission ;
         odrl:profile               oac: ;
-        odrl:uid                   offer:1 ;
+        odrl:uid                   offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
         policy:adminApproved       policy:Approved ;
         policy:memberApproved      policy:Approved ;
         policy:thirdPartyApproved  policy:Approved .

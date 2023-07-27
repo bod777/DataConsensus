@@ -1,14 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-
-interface Comment {
-    id: string;
-    timeCreated: string;
-    policyID: string;
-    author: string;
-    content: string;
-    timeModerated?: string;
-    moderated?: string;
-}
+import { Comment } from "../../model/comment.interface";
+import { CommentService } from "../../services/comment.service";
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'comments',
@@ -16,13 +9,14 @@ interface Comment {
     styleUrls: ['./comments.component.css'],
 })
 export class CommentSectionComponent implements OnInit {
-    @Input() comments: Comment[] = [];
-    @Input() isAdmin: boolean = false;
+    @Input() policyURL: string = '';
     newComment: string = '';
+    comments: Comment[] = [];
+    user: string = localStorage.getItem("webID") || "";
+    userType: string = localStorage.getItem("userType") || "MEMBER";
+    isAdmin: boolean = this.userType === "ADMIN";
 
-    constructor() { }
-
-    ngOnInit(): void { }
+    constructor(private commentService: CommentService, private _snackBar: MatSnackBar) { }
 
     addComment() {
         if (this.newComment.trim() !== '') {
@@ -49,5 +43,29 @@ export class CommentSectionComponent implements OnInit {
     moderateComment(comment: Comment) {
         comment.moderated = 'true';
         comment.timeModerated = new Date().toISOString();
+    }
+
+    ngOnInit() {
+        this.commentService.getComments(this.policyURL).subscribe(
+            (comments: any) => {
+                const relevantComments = comments.data;
+                const processedComments = relevantComments.map((comment: Comment) => {
+                    const datetimeCreated = new Date(comment.timeCreated);
+                    const booleanModerated = comment.moderated === 'true';
+                    return {
+                        ...comment,
+                        datetimeCreated,
+                        booleanModerated,
+                    };
+                });
+                processedComments.sort((a: any, b: any) => {
+                    return a.datetimeCreated.getDate() - b.datetimeCreated.getDate();
+                });
+                this.comments = processedComments;
+            },
+            (error: any) => {
+                this._snackBar.open("Error retrieving comments: " + error, "Close", { duration: 3000 });
+            }
+        );
     }
 }

@@ -1,0 +1,34 @@
+.content {
+    flex-direction: column;
+    height: 100%;
+}
+
+.page-header {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.mat-grid-list {
+    height: 50vh;
+    margin-top: 5vh;
+    margin-left: 10vw;
+    margin-right: 10vw;
+}
+
+.mat-grid-tile {
+    height: 100%;
+    margin-top: 0px !important;
+    padding-top: 0px !important;
+}
+
+.mat-mdc-card {
+    width: 95%;
+    text-align: center;
+    align-self: baseline;
+}
+
+.button-list {
+    display: block;
+    width: 100%;
+}

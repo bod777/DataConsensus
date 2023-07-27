@@ -271,7 +271,6 @@ module.exports = {
         else {
             // only the creator of the policy or an admin can delete it and only if the memberApproved is Pending
             const isAdmin = await userService.checkUserByType({ type: "ADMIN", webID }, session);
-            console.log(isAdmin);
             if (webID === getUrl(policy, DCTERMS.creator) || isAdmin) {
                 if (policy.memberApproved === `${policySchema}#Pending`) {
                     if (datasetURL === requestsList) {
@@ -314,7 +313,7 @@ module.exports = {
         const referenceURL = getUrl(policy, DCTERMS.references);
         const thirdparty = getUrl(permissionThing, ODRL.assignee);
         if (referenceURL !== null) {
-            console.log("dct:reference:", referenceURL);
+            // console.log("dct:reference:", referenceURL);
             let req = {
                 policyURL: referenceURL,
                 actor: "adminApproved",
@@ -323,7 +322,7 @@ module.exports = {
             await this.updatePolicyStatus(req, session);
         }
         if (projectURL !== null) {
-            console.log("projectURL:", projectURL);
+            // console.log("projectURL:", projectURL);
             await this.updateProject({ projectURL, agreement: false }, session);
         }
 
@@ -420,6 +419,13 @@ module.exports = {
         else {
             throw new Error("Project not found.");
         }
+    },
+
+    getProjects: async function (session) {
+        const solidDataset = await getGivenSolidDataset(projectsList, session);
+        const projects = getThingAll(solidDataset);
+        let projectList = projects.map(item => item.url);
+        return projectList;
     },
 
     getProjectPolicies: async function (projectURL, session) {

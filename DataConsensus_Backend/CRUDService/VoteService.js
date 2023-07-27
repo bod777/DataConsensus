@@ -9,7 +9,7 @@ const {
     getUrl,
     getSolidDataset
 } = require("@inrupt/solid-client");
-const { RDF, XSD } = require("@inrupt/vocab-common-rdf");
+const { RDF, XSD, DCTERMS } = require("@inrupt/vocab-common-rdf");
 const { v4: uuidv4 } = require('uuid');
 const { getGivenSolidDataset, saveGivenSolidDataset } = require("../HelperFunctions.js");
 const voteSchema = process.env.VOTE;
@@ -17,6 +17,7 @@ const votesList = process.env.VOTES
 
 module.exports = {
     addVote: async function (req, session) {
+        // console.log("Adding vote: ", JSON.stringify(req));
         let datasetURL = votesList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
 
@@ -31,12 +32,14 @@ module.exports = {
                 break;
             }
         }
-
         if (existingVote) {
-            // Update the existing vote.
-            existingVote = buildThing(existingVote).setInteger(`${voteSchema}#voteRank`, req.voteRank).build();
+            // console.log("Updating existing vote to ", req.voteRank, " for ", req.policyURL);
+            existingVote = buildThing(existingVote)
+                .setDatetime(DCTERMS.modified, new Date())
+                .setInteger(`${voteSchema}#voteRank`, req.voteRank)
+                .build();
         } else {
-            // Create a new vote.
+            // console.log("Creating new vote to ", req.voteRank, " for ", req.policyURL);
             const voteID = uuidv4();
             const voteURI = `${datasetURL}#${voteID}`;
 
@@ -44,10 +47,12 @@ module.exports = {
                 .addUrl(RDF.type, `${voteSchema}#Vote`)
                 .addUrl(`${voteSchema}#hasVoter`, req.voter)
                 .addUrl(`${voteSchema}#hasPolicy`, req.policyURL)
+                .setDatetime(DCTERMS.issued, new Date())
+                .setDatetime(DCTERMS.modified, new Date())
                 .addInteger(`${voteSchema}#voteRank`, req.voteRank)
                 .build();
         }
-
+        // console.log("Saving vote: ", JSON.stringify(existingVote));
         solidDataset = setThing(solidDataset, existingVote);
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
     },
@@ -66,4 +71,20 @@ module.exports = {
         const count = filteredPolicyVotes.length;
         return count;
     },
+
+    getVote: async function (req, session) {
+        let datasetURL = votesList;
+        let solidDataset = await getGivenSolidDataset(datasetURL, session);
+        const existingVotes = getThingAll(solidDataset);
+        let existingVote = null;
+        for (const vote of existingVotes) {
+            const voter = getUrl(vote, `${voteSchema}#hasVoter`);
+            const policy = getUrl(vote, `${voteSchema}#hasPolicy`);
+            if (voter === req.voter && policy === req.policyURL) {
+                existingVote = vote;
+                break;
+            }
+        }
+        return existingVote;
+    }
 }

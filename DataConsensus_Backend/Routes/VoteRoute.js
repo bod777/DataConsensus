@@ -6,8 +6,10 @@ const userService = require("../CRUDService/UserService.js");
 const { getPolicyDataset } = require("../HelperFunctions.js");
 const { Request, Offer } = require("../Models/Policy.js");
 const { Project } = require("../Models/Project.js");
+const { Vote } = require("../Models/Vote.js");
 const offersList = process.env.OFFERS
 const requestsList = process.env.REQUESTS
+const projectsList = process.env.PROJECTS
 
 module.exports = function (appSession) {
     router.get("/", (req, res) => {
@@ -28,7 +30,7 @@ module.exports = function (appSession) {
                 policyURL: vote.policyURL,
                 voteRank: vote.voteRank
             };
-
+            // console.log(voteDetails);
             try {
                 await voteService.addVote(voteDetails, appSession);
             } catch (error) {
@@ -97,6 +99,72 @@ module.exports = function (appSession) {
     });
 
     /* 
+        voter: string
+        policyURL: string
+    */
+    router.get("/get-request-vote", async (req, res) => {
+        const { voter, policyID } = req.query;
+        const policyURL = `${requestsList}#${policyID}`;
+        try {
+            const fetchedVote = new Vote();
+            await fetchedVote.fetchVote(voter, policyURL, appSession);
+            const vote = await fetchedVote.toJson();
+            res.send({ data: vote });
+        }
+        catch (error) {
+            if (error.message === "No votes found") {
+                console.log(`No vote found`);
+                res.send({ data: null });
+            }
+            else {
+                console.error(error);
+                res.status(500).send({ message: "Error in retrieving votes.", error: error.message });
+            }
+        }
+    });
+
+    router.get("/get-offer-vote", async (req, res) => {
+        // console.log(req.query);
+        const { voter, projectID } = req.query;
+        const projectURL = `${projectsList}#${projectID}`;
+        // console.log("project URL ", projectURL);
+        const projectPolicies = await policyService.getProjectPolicies(projectURL, appSession);
+        const projectOffers = projectPolicies.offers;
+        // console.log("list of offer URL ", projectOffers);
+        const rankedOffers = []
+        for (const offer of projectOffers) {
+            // console.log("individual offer ", offer);
+            try {
+                // console.log("trying");
+                const fetchedVote = new Vote();
+                // console.log("fetching");
+                await fetchedVote.fetchVote(voter, offer, appSession);
+                // console.log("fetched");
+                const vote = await fetchedVote.toJson();
+                // console.log("vote data:", vote);
+                rankedOffers.push({ URL: vote.policy, rank: vote.rank });
+                // console.log("pushed");
+            }
+            catch (error) {
+                if (error.message === "No votes found") {
+                    // Handle the case where there are no votes for this offer
+                    // console.log(`No votes found for offer ${offer}`);
+                    rankedOffers.push({ URL: offer, rank: projectOffers.length + 1 }); // Assuming default rank as 0 when no votes are found
+                } else {
+                    console.error(error);
+                    res.status(500).send({ message: "Error in retrieving votes.", error: error.message });
+                    return; // Exit the function in case of an error
+                }
+            }
+        }
+        // console.log("rankedOffers: ", rankedOffers);
+        rankedOffers.sort((a, b) => a.rank - b.rank);
+        const sortedOffersWithoutRank = rankedOffers.map(({ URL }) => ({ URL, id: URL.substring(URL.lastIndexOf("#") + 1) }));
+        // console.log("sortedOffersWithoutRank: ", sortedOffersWithoutRank);
+        res.send({ data: sortedOffersWithoutRank });
+    });
+
+    /* 
         policyURL: string
     */
     router.get("/request-result", async (req, res) => {
@@ -150,7 +218,7 @@ module.exports = function (appSession) {
         projectURL: string
     */
     router.get("/offer-result", async (req, res) => {
-        const projectURL = req.body.projectURL;
+        const projectURL = `${offersList}#${req.query.projectID}`;
         try {
             const projectPolicies = await policyService.getProjectPolicies(projectURL, appSession);
             const projectOffers = projectPolicies.offers;

@@ -17,7 +17,6 @@ class Comment {
 
     async fetchComment(id, session) {
         const solidThing = await commentService.getComment(id, session);
-        console.log(solidThing);
         this.id = id;
         this.timeCreated = solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
         this.policyID = solidThing.predicates[DCTERMS.references]["namedNodes"][0];

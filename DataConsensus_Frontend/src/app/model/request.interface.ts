@@ -1,4 +1,4 @@
-export interface RequestData {
+export interface Request {
     uid: string;
     creator: string;
     policyCreationTime: string;

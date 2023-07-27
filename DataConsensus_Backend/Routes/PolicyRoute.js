@@ -33,7 +33,6 @@ module.exports = function (appSession) {
         untilTimeDuration: string
     */
     router.post("/submit-request", async function (req, res) {
-        console.log(req.body)
         const {
             title, description, user, organisation, purpose, sellingData, sellingInsights, measures, recipients, untilTimeDuration
         } = req.body;
@@ -271,9 +270,10 @@ module.exports = function (appSession) {
 
     router.get("/all-requests", async function (req, res) {
         try {
-            const requestURLs = await policyService.getpolicyURLs({ type: "Request" }, appSession);
+            const requestURLs = await policyService.getpolicyURLs("Request", appSession);
             let requests = [];
             for (const requestURL of requestURLs) {
+                console.log(requestURL);
                 const fetchedRequest = new Request();
                 const request = await fetchedRequest.fetchPolicy(requestURL, appSession);
                 requests.push(fetchedRequest.toJson());
@@ -287,12 +287,17 @@ module.exports = function (appSession) {
 
     router.get("/all-offers", async (req, res) => {
         try {
-            const offerURLs = await policyService.getpolicyURLs("Agreement", appSession);
+            const offerURLs = await policyService.getpolicyURLs("Offer", appSession);
             let offers = [];
             for (const offerURL of offerURLs) {
-                const fetchedOffer = new Offer();
-                const offer = await fetchedOffer.fetchPolicy(offerURL, appSession);
-                offers.push(fetchedOffer.toJson());
+                if (offerURL === "https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/offers.ttl#rejection") {
+                    continue;
+                }
+                else {
+                    const fetchedOffer = new Offer();
+                    const offer = await fetchedOffer.fetchPolicy(offerURL, appSession);
+                    offers.push(fetchedOffer.toJson());
+                }
             }
             res.send({ data: offers });
         } catch (error) {
@@ -317,15 +322,29 @@ module.exports = function (appSession) {
         }
     });
 
+    router.get("/all-projects", async (req, res) => {
+        try {
+            const projectURLs = await policyService.getProjects(appSession);
+            let projects = [];
+            for (const projectURL of projectURLs) {
+                const fetchedProject = new Project();
+                const project = await fetchedProject.fetchProject(projectURL, appSession);
+                projects.push(fetchedProject.toJson());
+            }
+            res.send({ data: projects });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: "Error in getting requests", error: error.message });
+        }
+    });
+
     /*  
         Expected req.body variables:
         policyURL: string 
     */
     router.get("/agreement", async function (req, res) {
         try {
-            console.log(req.query.policyID);
             const policyURL = `${agreementsList}#${req.query.policyID}`;
-            console.log(policyURL);
             let fetchedPolicy = new Agreement();
 
             if (fetchedPolicy) {
@@ -346,13 +365,10 @@ module.exports = function (appSession) {
     */
     router.get("/request", async function (req, res) {
         try {
-            console.log(req.query.policyID);
             const policyURL = `${requestsList}#${req.query.policyID}`;
-            console.log(policyURL);
             let fetchedPolicy = new Request();
             if (fetchedPolicy) {
                 const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
-                console.log(fetchedPolicy.toJson());
                 res.send({ data: fetchedPolicy.toJson() });
             } else {
                 res.status(400).send({ message: "Invalid policy type." });

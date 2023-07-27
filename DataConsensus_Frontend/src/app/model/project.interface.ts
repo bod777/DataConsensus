@@ -1,4 +1,4 @@
-interface ProjectData {
+export interface Project {
     creator: string;
     title: string;
     description: string;
@@ -7,6 +7,9 @@ interface ProjectData {
     hasAgreement: string;
     projectCreationTime: string;
     deliberationStartTime: string;
+    startTime: Date;
+    requestEndTime: Date;
+    offerEndTime: Date;
     requestTime: string;
     offerTime: string;
     threshold: string;

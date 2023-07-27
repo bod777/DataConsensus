@@ -5,7 +5,8 @@
                 <mat-button-toggle-group class="sidebar" name="tab" [(ngModel)]="tab" aria-label="Font Style">
                     <mat-button-toggle class="sidebar-panel" value="overview">Overview</mat-button-toggle>
                     <mat-button-toggle class="sidebar-panel" value="request">Request</mat-button-toggle>
-                    <mat-button-toggle class="sidebar-panel" value="offer">Offers</mat-button-toggle>
+                    <mat-button-toggle *ngIf="project.projectPolicies.offers.length > 0" class="sidebar-panel"
+                        value="offer">Offers</mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-drawer>
             <mat-drawer-content *ngIf="tab === 'overview'">
@@ -81,12 +82,13 @@
                         <h3 class="instructions">Do you approve of this request?</h3>
                         <mat-button-toggle-group class="voting-div">
                             <mat-button-toggle class="upvote-button" mat-icon-button matTooltip="Upvote"
-                                (click)="upvote()" aria-label="Upvote">
+                                (click)="upvote()" [checked]="upvoteState" aria-label="Upvote">
                                 <mat-icon>thumb_up</mat-icon>
                             </mat-button-toggle>
                             <span class="gap"></span>
                             <mat-button-toggle class="downvote-button" color="primary" mat-icon-button
-                                (click)="downvote()" matTooltip="Downvote" aria-label="Downvote">
+                                (click)="downvote()" matTooltip="Downvote" [checked]="downvoteState"
+                                aria-label="Downvote">
                                 <mat-icon>thumb_down</mat-icon>
                             </mat-button-toggle>
                         </mat-button-toggle-group>
@@ -98,6 +100,19 @@
                         <p>
                             <b>Purpose:</b> {{ request.purpose }}
                         </p>
+                        <p>
+                            <b>Other Permissions:</b>
+                        </p>
+                        <div class="permissions-div">
+                            <mat-chip *ngIf="request.sellingData===false" color="primary">
+                                Not perrmitted to selling the data to other third parties.</mat-chip>
+                            <mat-chip *ngIf="request.sellingData===true" color="warn">
+                                Perrmitted to selling the data to other third parties.</mat-chip>
+                            <mat-chip *ngIf="request.sellingInsights===false" color="primary">Not
+                                perrmitted to selling insights from the shared data.</mat-chip>
+                            <mat-chip *ngIf="request.sellingInsights===true" color="warn">Perrmitted
+                                to selling insights from the shared data.</mat-chip>
+                        </div>
                         <p>
                             <b>Ends on:</b> {{ request.untilTimeDuration }}
                         </p>
@@ -142,6 +157,18 @@
                                     <b>Purpose:</b> {{ offer.purpose }}
                                 </p>
                                 <p>
+                                    <b>Other Permissions:</b>
+                                </p>
+                                <mat-chip *ngIf="offer.sellingData===false" color="primary">
+                                    Not perrmitted to selling the data to other third parties.</mat-chip>
+                                <mat-chip *ngIf="offer.sellingData===true" color="warn">
+                                    Perrmitted to selling the data to other third parties.</mat-chip>
+                                <mat-chip *ngIf="offer.sellingInsights===false" color="primary">Not
+                                    perrmitted to
+                                    selling insights from the shared data.</mat-chip>
+                                <mat-chip *ngIf="offer.sellingInsights===true" color="warn">Perrmitted to
+                                    selling insights from the shared data.</mat-chip>
+                                <p>
                                     <b>Ends on:</b> {{ offer.untilTimeDuration }}
                                 </p>
                                 <p><b>Technical and Organisational Measures</b></p>
@@ -152,6 +179,8 @@
                                 <mat-chip-set aria-label="Recipients selection">
                                     <mat-chip *ngFor="let recipient of offer.recipients">{{recipient}}</mat-chip>
                                 </mat-chip-set>
+                                <mat-divider></mat-divider>
+                                <comments [policyURL]="offer.uid"></comments>
                             </mat-card-content>
                         </mat-card>
                     </mat-tab>

@@ -5,3 +5,8 @@
 .gap {
     margin-right: 50px;
 }
+
+.toolbar-container {
+    height: 5vh;
+    margin-bottom: 10vh;
+}

@@ -98,6 +98,13 @@ mat-icon {
     margin-top: 20px;
 }
 
+.permissions-div {
+    justify-content: center;
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
 .rank-list {
     display: flex;
     flex-direction: column;

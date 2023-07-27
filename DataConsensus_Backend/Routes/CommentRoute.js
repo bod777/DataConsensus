@@ -33,9 +33,12 @@ module.exports = function (appSession) {
     });
 
     router.get("/comments", async (req, res) => {
-        const policyURL = req.body.policyURL;
-        if (!policyURL) {
-            res.status(400).send({ message: "Policy URL is required." });
+        const policyID = req.query.policyID;
+        const policyType = req.query.policyType;
+        const policyURL = `${policyType}#${policyID}`;
+        console.log(policyURL);
+        if (!policyID || !policyType) {
+            res.status(400).send({ message: "Policy ID or/and Policy Type are required." });
             return;
         }
         else {
@@ -73,7 +76,7 @@ module.exports = function (appSession) {
     });
 
     router.delete("/remove-comment", async (req, res) => {
-        const { commentURL } = req.body;
+        const { commentURL } = req.query;
         if (!commentURL) {
             res.status(400).send({ message: "commentURL is required." });
             return;

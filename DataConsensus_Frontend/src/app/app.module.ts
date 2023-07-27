@@ -32,6 +32,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { DatePipe } from '@angular/common';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatTreeModule } from '@angular/material/tree';
 
 // services
 import { UserService } from './services/user.service';
@@ -132,7 +133,8 @@ import { TabsComponent } from './features/tabs/tabs.component';
         NgFor,
         MatTableModule,
         MatSidenavModule,
-        DragDropModule
+        DragDropModule,
+        MatTreeModule
     ],
     exports: [
         MenuComponent,
