@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PolicyService } from '../../services/policy.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Project } from '../../model/project.interface';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'admin-home',
@@ -11,7 +12,7 @@ import { Project } from '../../model/project.interface';
 
 export class AdminHomeComponent implements OnInit {
 
-    constructor(private policyService: PolicyService, private _snackBar: MatSnackBar) {
+    constructor(private policyService: PolicyService, private router: Router, private _snackBar: MatSnackBar) {
     }
 
     user: string = localStorage.getItem('webID') || "";
@@ -45,6 +46,9 @@ export class AdminHomeComponent implements OnInit {
         return isPending;
     }
 
+    navigateToProject(project: Project) {
+        this.router.navigate([`/project`], { queryParams: { projectID: project.projectID } });
+    }
 
     ngOnInit() {
         this.policyService.getAllProjects().subscribe(

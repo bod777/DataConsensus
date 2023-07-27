@@ -26,6 +26,18 @@ vote:voteRank a rdf:Property ;
     rdfs:label "vote rank" ;
     rdfs:range xsd:integer .
 
+vote:hasVoteType a rdf:Property ;
+    rdfs:domain vote:Vote ;
+    rdfs:range rdfs:Class .
+
+vote:BinaryVote a rdfs:Class ;
+    rdfs:label "Binary Vote" ;
+    rdfs:subClassOf vote:Vote .
+
+vote:PreferenceVote a rdfs:Class ;
+    rdfs:label "Preference Vote" ;
+    rdfs:subClassOf vote:Vote .
+
 dct:isPartOf a rdf:Property ;
     rdfs:label "project" ;
     rdfs:domain vote:Vote ;

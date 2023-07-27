@@ -1,12 +1,10 @@
 export interface Comment {
-    id: string;
-    timeCreated: string;
-    datetimeCreated?: Date;
+    commentURL: string;
+    commentID: string;
+    timeCreated: Date;
     policyID: string;
     author: string;
     content: string;
-    datetimeModerated?: Date;
-    booleanModerated?: boolean;
-    timeModerated?: string;
-    moderated?: string;
+    timeModerated: Date;
+    moderated: boolean;
 }

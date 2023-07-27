@@ -32,8 +32,22 @@ export class CommentService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        const params = new HttpParams().set('commentID', comment.id);
+        const params = new HttpParams().set('commentID', comment.commentID);
         return this.http.delete('http://localhost:3000/api/v1/comment/remove-comment', { headers, params });
     }
-}
 
+    addComment(policyURL: string, user: string, text: string): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        return this.http.post('http://localhost:3000/api/v1/comment/add-comment', { policyURL, user, text }, { headers });
+    }
+
+    moderate(commentID: string, moderator: string): Observable<any> {
+        console.log("moderating comment");
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        return this.http.put('http://localhost:3000/api/v1/comment/moderate-comment', { commentID, moderator }, { headers });
+    }
+}

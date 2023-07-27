@@ -1,11 +1,7 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Session } from '@inrupt/solid-client-authn-browser';
-import { User } from '../model/user-info';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { DataAccessRequest } from '../model/data-access-request';
-import { SolidDataset, getSolidDataset, getThing, ThingPersisted } from '@inrupt/solid-client';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'

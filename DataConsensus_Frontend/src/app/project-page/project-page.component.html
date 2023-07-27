@@ -7,6 +7,8 @@
                     <mat-button-toggle class="sidebar-panel" value="request">Request</mat-button-toggle>
                     <mat-button-toggle *ngIf="project.projectPolicies.offers.length > 0" class="sidebar-panel"
                         value="offer">Offers</mat-button-toggle>
+                    <mat-button-toggle *ngIf="project.hasAgreement===true" class="sidebar-panel"
+                        value="agreement">Agreement</mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-drawer>
             <mat-drawer-content *ngIf="tab === 'overview'">
@@ -29,9 +31,17 @@
                             <b>Creation date:</b> {{ project.projectCreationTime }}
                         </p>
                         <p>
-                            <b>Project status:</b> {{ project.projectStatus }}
+                            <b>Passing threshold:</b> {{ project.threshold }}
                         </p>
+                        <b>Project Status:</b>
+                        <mat-chip *ngIf="project.projectStatus==='Pending'" style="background-color:darksalmon">{{
+                            project.projectStatus}}</mat-chip>
+                        <mat-chip *ngIf="project.projectStatus==='Completed'" style="background-color:palegreen">{{
+                            project.projectStatus}}</mat-chip>
                     </mat-card-content>
+                    <mat-card-actions>
+                        <button mat-button (click)="navigateToSubmitOffer()">Submit Counter Offer</button>
+                    </mat-card-actions>
                 </mat-card>
             </mat-drawer-content>
             <mat-drawer-content *ngIf="tab === 'request'">
@@ -124,6 +134,9 @@
                         <mat-chip-set aria-label="Recipients selection">
                             <mat-chip *ngFor="let recipient of request.recipients">{{recipient}}</mat-chip>
                         </mat-chip-set>
+                        <mat-divider></mat-divider>
+                        <h2>Comments</h2>
+                        <comments [policyURL]="request.uid"></comments>
                     </mat-card-content>
                 </mat-card>
             </mat-drawer-content>
@@ -134,9 +147,12 @@
                         <mat-card-subtitle>Offers</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content>
-                        <div cdkDropList class="rank-list" (cdkDropListDropped)="onDrop($event)">
-                            <div class="rank-chip" *ngFor="let item of offerRanking" cdkDrag>{{ item.id
-                                }}</div>
+                        <h3> Rank the offers: </h3>
+                        <div class="preferences-div">
+                            <div cdkDropList class="rank-list" (cdkDropListDropped)="onDrop($event)">
+                                <div class="rank-chip" *ngFor="let item of offerRanking" cdkDrag>{{ item.id
+                                    }}</div>
+                            </div>
                         </div>
                         <mat-card-actions>
                             <button mat-raised-button color="primary" (click)="submitRanking()">Submit Ranking</button>
@@ -180,11 +196,67 @@
                                     <mat-chip *ngFor="let recipient of offer.recipients">{{recipient}}</mat-chip>
                                 </mat-chip-set>
                                 <mat-divider></mat-divider>
+                                <h2>Comments</h2>
                                 <comments [policyURL]="offer.uid"></comments>
                             </mat-card-content>
                         </mat-card>
                     </mat-tab>
                 </mat-tab-group>
+            </mat-drawer-content>
+            <mat-drawer-content *ngIf="tab === 'agreement'">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{ agreement.title }}</mat-card-title>
+                        <mat-card-subtitle>Agreement</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>
+                            <b>Project description:</b> {{ agreement.description }}
+                        </p>
+                        <p>
+                            <b>Project creator:</b> {{ agreement.creator }}
+                        </p>
+                        <p>
+                            <b>Creation date:</b> {{ agreement.policyCreationTime }}
+                        </p>
+                        <mat-divider></mat-divider>
+                        <h2>Constraints</h2>
+                        <p>
+                            <b>Organisation:</b> {{ agreement.organisation }}
+                        </p>
+                        <p>
+                            <b>Purpose:</b> {{ agreement.purpose }}
+                        </p>
+                        <p>
+                            <b>Other Permissions:</b>
+                        </p>
+                        <div class="permissions-div">
+                            <mat-chip *ngIf="agreement.sellingData===false" color="primary">
+                                Not perrmitted to selling the data to other third parties.</mat-chip>
+                            <mat-chip *ngIf="agreement.sellingData===true" color="warn">
+                                Perrmitted to selling the data to other third parties.</mat-chip>
+                            <mat-chip *ngIf="agreement.sellingInsights===false" color="primary">Not
+                                perrmitted to selling insights from the shared data.</mat-chip>
+                            <mat-chip *ngIf="agreement.sellingInsights===true" color="warn">Perrmitted
+                                to selling insights from the shared data.</mat-chip>
+                        </div>
+                        <p>
+                            <b>Ends on:</b> {{ agreement.untilTimeDuration }}
+                        </p>
+                        <p><b>Technical and Organisational Measures</b></p>
+                        <mat-chip-set aria-label="Measures selection">
+                            <mat-chip *ngFor="let measure of agreement.techOrgMeasures">{{measure}}</mat-chip>
+                        </mat-chip-set>
+                        <p><b>Recipients</b></p>
+                        <mat-chip-set aria-label="Recipients selection">
+                            <mat-chip *ngFor="let recipient of agreement.recipients">{{recipient}}</mat-chip>
+                        </mat-chip-set>
+
+                        <mat-divider></mat-divider>
+                        <h2>Comments</h2>
+                        <comments [policyURL]="agreement.uid"></comments>
+                    </mat-card-content>
+                </mat-card>
             </mat-drawer-content>
         </mat-drawer-container>
     </div>

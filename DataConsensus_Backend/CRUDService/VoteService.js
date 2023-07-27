@@ -17,11 +17,9 @@ const votesList = process.env.VOTES
 
 module.exports = {
     addVote: async function (req, session) {
-        // console.log("Adding vote: ", JSON.stringify(req));
         let datasetURL = votesList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
 
-        // Search for an existing vote from the same voter on the same policy.
         const existingVotes = getThingAll(solidDataset);
         let existingVote = null;
         for (const vote of existingVotes) {
@@ -33,26 +31,32 @@ module.exports = {
             }
         }
         if (existingVote) {
-            // console.log("Updating existing vote to ", req.voteRank, " for ", req.policyURL);
             existingVote = buildThing(existingVote)
                 .setDatetime(DCTERMS.modified, new Date())
                 .setInteger(`${voteSchema}#voteRank`, req.voteRank)
                 .build();
         } else {
-            // console.log("Creating new vote to ", req.voteRank, " for ", req.policyURL);
             const voteID = uuidv4();
             const voteURI = `${datasetURL}#${voteID}`;
+            let voteType;
+            if (req.isPreference) {
+                voteType = `${voteSchema}#PreferenceVote`;
+            } else {
+                voteType = `${voteSchema}#BinaryVote`;
+            }
 
             existingVote = buildThing(createThing({ url: voteURI }))
                 .addUrl(RDF.type, `${voteSchema}#Vote`)
+                .addUrl(`${voteSchema}#hasVoteType`, voteType)
                 .addUrl(`${voteSchema}#hasVoter`, req.voter)
                 .addUrl(`${voteSchema}#hasPolicy`, req.policyURL)
+                .addUrl(DCTERMS.isPartOf, req.projectURL)
                 .setDatetime(DCTERMS.issued, new Date())
                 .setDatetime(DCTERMS.modified, new Date())
                 .addInteger(`${voteSchema}#voteRank`, req.voteRank)
                 .build();
         }
-        // console.log("Saving vote: ", JSON.stringify(existingVote));
+        console.log("existingVote", existingVote);
         solidDataset = setThing(solidDataset, existingVote);
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
     },
@@ -66,13 +70,13 @@ module.exports = {
         const filteredPolicyVotes = policyVotes.filter(vote => {
             const voteRankString = vote.predicates[`${voteSchema}#voteRank`].literals[XSD.integer][0];
             const voteRank = Number(voteRankString);
-            return voteRank === 1;
+            return voteRank === req.rank;
         });
         const count = filteredPolicyVotes.length;
         return count;
     },
 
-    getVote: async function (req, session) {
+    getBinaryVote: async function (req, session) {
         let datasetURL = votesList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         const existingVotes = getThingAll(solidDataset);
@@ -81,6 +85,23 @@ module.exports = {
             const voter = getUrl(vote, `${voteSchema}#hasVoter`);
             const policy = getUrl(vote, `${voteSchema}#hasPolicy`);
             if (voter === req.voter && policy === req.policyURL) {
+                existingVote = vote;
+                break;
+            }
+        }
+        return existingVote;
+    },
+
+    getPreferenceVote: async function (req, session) {
+        let datasetURL = votesList;
+        let solidDataset = await getGivenSolidDataset(datasetURL, session);
+        const existingVotes = getThingAll(solidDataset);
+        let existingVote = null;
+        for (const vote of existingVotes) {
+            const voter = getUrl(vote, `${voteSchema}#hasVoter`);
+            const policy = getUrl(vote, `${voteSchema}#hasPolicy`);
+            const project = getUrl(vote, DCTERMS.isPartOf);
+            if (voter === req.voter && policy === req.policyURL && project === req.projectURL) {
                 existingVote = vote;
                 break;
             }

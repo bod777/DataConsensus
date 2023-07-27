@@ -6,8 +6,9 @@ const oac = process.env.OAC;
 const project = process.env.PROJECT;
 
 class Project {
-    constructor(id, creator, title, description, organisation, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType, projectPolicies) {
-        this.id = id;
+    constructor(url, id, creator, title, description, organisation, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType, projectPolicies) {
+        this.projectURL = url;
+        this.projectID = id;
         this.creator = creator;
         this.title = title;
         this.description = description;
@@ -27,8 +28,9 @@ class Project {
         return this;
     }
 
-    setProject(id, creator, title, description, organisation, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType, projectPolicies) {
-        this.id = id;
+    setProject(url, id, creator, title, description, organisation, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType, projectPolicies) {
+        this.projectURL = url;
+        this.projectID = id;
         this.creator = creator;
         this.title = title;
         this.description = description;
@@ -47,7 +49,8 @@ class Project {
     async fetchProject(projectURL, session) {
         const projectThing = await policyService.getProject(projectURL, session);
         const projectPolicies = await policyService.getProjectPolicies(projectURL, session);
-        this.id = projectURL;
+        this.projectURL = projectURL;
+        this.projectID = projectURL.split('#')[1];
         this.creator = projectThing.predicates[DCTERMS.creator]["namedNodes"][0];
         this.organisation = extractTerm(projectThing.predicates[`${oac}Organisation`]["namedNodes"][0]);
         this.title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
@@ -65,7 +68,8 @@ class Project {
 
     toJson() {
         return {
-            id: this.id,
+            projectURL: this.projectURL,
+            projectID: this.projectID,
             creator: this.creator,
             title: this.title,
             description: this.description,

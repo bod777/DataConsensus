@@ -8,7 +8,8 @@
                 </mat-card-header>
                 <mat-card-content>
                     <button mat-stroked-button class="button-list" color="primary"
-                        *ngFor="let project of pendingProjects">{{project.title}}</button>
+                        *ngFor="let project of pendingProjects"
+                        (click)="navigateToProject(project)">{{project.title}}</button>
                 </mat-card-content>
             </mat-card>
             <mat-card>
@@ -16,7 +17,7 @@
                     <mat-card-title>Active Deliberations</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                    <button mat-stroked-button class="button-list" color="primary"
+                    <button mat-stroked-button class="button-list" color="primary" (click)="navigateToProject(project)"
                         *ngFor="let project of activeProjects">{{project.title}}</button>
                 </mat-card-content>
             </mat-card>

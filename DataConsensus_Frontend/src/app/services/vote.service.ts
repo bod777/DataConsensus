@@ -28,7 +28,7 @@ export class VoteService {
       'Content-Type': 'application/json'
     });
     const params = new HttpParams().set('voter', voter).set('policyID', policyID);
-    return this.http.get('http://localhost:3000/api/v1/vote/get-request-vote', { headers, params });
+    return this.http.get('http://localhost:3000/api/v1/vote/request-vote', { headers, params });
   }
 
   submitPreference(req: any): Observable<any> {
@@ -43,6 +43,6 @@ export class VoteService {
       'Content-Type': 'application/json'
     });
     const params = new HttpParams().set('voter', voter).set('projectID', projectID);
-    return this.http.get('http://localhost:3000/api/v1/vote/get-offer-vote', { headers, params });
+    return this.http.get('http://localhost:3000/api/v1/vote/offer-vote', { headers, params });
   }
 }

@@ -105,13 +105,20 @@ mat-icon {
     text-align: center;
 }
 
+.preferences-div {
+    justify-content: center;
+    align-content: center;
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
 .rank-list {
     display: flex;
     flex-direction: column;
-    align-items: center;
     border: 2px dashed #ccc;
     padding: 20px;
-    min-height: 150px;
+    min-height: 100px;
 }
 
 .rank-chip {

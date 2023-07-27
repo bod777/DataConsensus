@@ -61,5 +61,5 @@ pod:7f74b6b7-f701-45a5-a9c4-be25ab91c170
         dct:creator           <https://id.inrupt.com/odonneb4> ;
         dct:modified          "2023-06-27T12:34:56Z"^^xsd:dateTime ;
         dct:references        offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
-        comment:text          "This is a great policy!" ;
+        comment:text          "I have some questions about this policy." ;
         comment:wasModerated  false .

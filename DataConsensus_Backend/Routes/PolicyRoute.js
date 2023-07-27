@@ -7,6 +7,7 @@ const { Project } = require("../Models/Project.js");
 const { DCTERMS } = require("@inrupt/vocab-common-rdf");
 const { extractTerm, getPolicyDataset } = require("../HelperFunctions.js");
 const { removeAccess } = require("../AccessControl.js");
+const { Trigger } = require("../Logic/Trigger.js");
 
 const agreementsList = process.env.AGREEMENTS;
 const requestsList = process.env.REQUESTS;
@@ -63,6 +64,7 @@ module.exports = function (appSession) {
                 const policyURL = await policyService.createPolicy(policy, appSession);
                 const request = new Request();
                 await request.fetchPolicy(policyURL, appSession);
+                await Trigger.setDeliberation(request.toJson(), appSession);
                 res.send({ data: request.toJson(), message: "Request submitted successfully." });
             }
             catch (error) {

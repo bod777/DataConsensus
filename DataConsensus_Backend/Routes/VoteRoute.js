@@ -6,7 +6,7 @@ const userService = require("../CRUDService/UserService.js");
 const { getPolicyDataset } = require("../HelperFunctions.js");
 const { Request, Offer } = require("../Models/Policy.js");
 const { Project } = require("../Models/Project.js");
-const { Vote } = require("../Models/Vote.js");
+const { Vote, BinaryVote, PreferenceVote } = require("../Models/Vote.js");
 const offersList = process.env.OFFERS
 const requestsList = process.env.REQUESTS
 const projectsList = process.env.PROJECTS
@@ -22,32 +22,22 @@ module.exports = function (appSession) {
         voter: string
     */
     router.post("/add-preference", async (req, res) => {
-        const { rankedVotes, voter } = req.body;
-
-        const promises = rankedVotes.map(async vote => {
-            const voteDetails = {
-                voter: voter,
-                policyURL: vote.policyURL,
-                voteRank: vote.voteRank
-            };
-            // console.log(voteDetails);
-            try {
+        try {
+            const { rankedVotes, voter, projectID } = req.body;
+            for (const vote of rankedVotes) {
+                const voteDetails = {
+                    voter: voter,
+                    policyURL: vote.policyURL,
+                    voteRank: vote.voteRank,
+                    isPreference: true,
+                    projectURL: projectID
+                };
                 await voteService.addVote(voteDetails, appSession);
-            } catch (error) {
-                console.error(`Error in adding vote for policy ${vote.policyURL}:`, error);
-                return { policyURL: vote.policyURL, error: error.message };
             }
-
-            return { policyURL: vote.policyURL, status: "Vote added successfully." };
-        });
-
-        const results = await Promise.all(promises);
-        const errors = results.filter(result => result.error);
-
-        if (errors.length > 0) {
-            res.status(500).send({ message: "Error(s) in adding multiple votes.", errors });
-        } else {
-            res.send({ message: "All votes added successfully.", results });
+            res.send({ message: "All votes added successfully." });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: "Error(s) in adding multiple votes.", errors: error.errors });
         }
     });
 
@@ -57,12 +47,14 @@ module.exports = function (appSession) {
         policyURL: string
     */
     router.post("/upvote", async (req, res) => {
-        const { voter, policyURL } = req.body;
+        const { voter, policyURL, projectURL } = req.body;
 
         const vote = {
             voter: voter,
             policyURL: policyURL,
-            voteRank: 1
+            voteRank: 1,
+            isPreference: false,
+            projectURL: projectURL
         };
 
         try {
@@ -80,12 +72,14 @@ module.exports = function (appSession) {
         policyURL: string
     */
     router.post("/downvote", async (req, res) => {
-        const { voter, policyURL } = req.body;
+        const { voter, policyURL, projectURL } = req.body;
 
         const vote = {
             voter: voter,
             policyURL: policyURL,
-            voteRank: 2
+            voteRank: 2,
+            isPreference: false,
+            projectURL: projectURL
         };
 
         try {
@@ -102,13 +96,14 @@ module.exports = function (appSession) {
         voter: string
         policyURL: string
     */
-    router.get("/get-request-vote", async (req, res) => {
+    router.get("/request-vote", async (req, res) => {
         const { voter, policyID } = req.query;
         const policyURL = `${requestsList}#${policyID}`;
         try {
-            const fetchedVote = new Vote();
-            await fetchedVote.fetchVote(voter, policyURL, appSession);
+            const fetchedVote = new BinaryVote();
+            await fetchedVote.fetchVote({ voter, policyURL }, appSession);
             const vote = await fetchedVote.toJson();
+            // console.log("vote data:", vote);
             res.send({ data: vote });
         }
         catch (error) {
@@ -123,22 +118,25 @@ module.exports = function (appSession) {
         }
     });
 
-    router.get("/get-offer-vote", async (req, res) => {
+    router.get("/offer-vote", async (req, res) => {
+        // console.log("get offer vote");
         // console.log(req.query);
         const { voter, projectID } = req.query;
         const projectURL = `${projectsList}#${projectID}`;
         // console.log("project URL ", projectURL);
         const projectPolicies = await policyService.getProjectPolicies(projectURL, appSession);
         const projectOffers = projectPolicies.offers;
+        projectOffers.push(`${offersList}#rejection`)
         // console.log("list of offer URL ", projectOffers);
         const rankedOffers = []
+        // console.log("project offers ", projectOffers);
         for (const offer of projectOffers) {
             // console.log("individual offer ", offer);
             try {
                 // console.log("trying");
-                const fetchedVote = new Vote();
+                const fetchedVote = new PreferenceVote();
                 // console.log("fetching");
-                await fetchedVote.fetchVote(voter, offer, appSession);
+                await fetchedVote.fetchVote({ voter, policyURL: offer, projectURL }, appSession);
                 // console.log("fetched");
                 const vote = await fetchedVote.toJson();
                 // console.log("vote data:", vote);
@@ -147,19 +145,22 @@ module.exports = function (appSession) {
             }
             catch (error) {
                 if (error.message === "No votes found") {
-                    // Handle the case where there are no votes for this offer
-                    // console.log(`No votes found for offer ${offer}`);
-                    rankedOffers.push({ URL: offer, rank: projectOffers.length + 1 }); // Assuming default rank as 0 when no votes are found
+                    console.log(`No votes found for offer ${offer}`);
+                    rankedOffers.push({ URL: offer, rank: projectOffers.length + 1 });
                 } else {
                     console.error(error);
                     res.status(500).send({ message: "Error in retrieving votes.", error: error.message });
-                    return; // Exit the function in case of an error
+                    return;
                 }
             }
         }
         // console.log("rankedOffers: ", rankedOffers);
         rankedOffers.sort((a, b) => a.rank - b.rank);
-        const sortedOffersWithoutRank = rankedOffers.map(({ URL }) => ({ URL, id: URL.substring(URL.lastIndexOf("#") + 1) }));
+        const sortedOffersWithoutRank = rankedOffers.map(({ URL }) => ({
+            URL, id: URL.substring(URL.lastIndexOf("#") + 1) === "rejection"
+                ? "reject all offers"
+                : URL.substring(URL.lastIndexOf("#") + 1)
+        }));
         // console.log("sortedOffersWithoutRank: ", sortedOffersWithoutRank);
         res.send({ data: sortedOffersWithoutRank });
     });
@@ -168,26 +169,16 @@ module.exports = function (appSession) {
         policyURL: string
     */
     router.get("/request-result", async (req, res) => {
-        const policyURL = req.body.policyURL;
-
-        if (!policyURL) {
-            res.status(400).send({ message: "Policy URL is required." });
-            return;
+        const policyID = req.query.policyID;
+        if (!policyID) {
+            res.status(400).send({ message: "policyID is required." });
         }
         else {
-            const type = getPolicyDataset(policyURL);
-            let policy;
-            if (type === requestsList) {
+            try {
+                const policyURL = `${requestsList}#${policyID}`;
                 policy = new Request();
                 await policy.fetchPolicy(policyURL, appSession);
-            }
-            else if (type === offersList) {
-                policy = new Offer();
-                await policy.fetchPolicy(policyURL, appSession);
-            }
-            const policyJSON = policy.toJson();
-
-            try {
+                const policyJSON = policy.toJson();
                 const upvotes = await voteService.countVotesByRankPolicy(
                     { policyURL: policyURL, rank: 1 },
                     appSession);
@@ -218,7 +209,7 @@ module.exports = function (appSession) {
         projectURL: string
     */
     router.get("/offer-result", async (req, res) => {
-        const projectURL = `${offersList}#${req.query.projectID}`;
+        const projectURL = `${projectsList}#${req.query.projectID}`;
         try {
             const projectPolicies = await policyService.getProjectPolicies(projectURL, appSession);
             const projectOffers = projectPolicies.offers;
@@ -235,7 +226,7 @@ module.exports = function (appSession) {
                     appSession);
                 results.push({ policyUrl: offer, count: firstPreference });
             }
-            const rejectVote = await voteService.countVotesByRankPolicy({ offerId: 0, rank: 1 }, appSession);
+            const rejectVote = await voteService.countVotesByRankPolicy({ policyURL: `${offersList}#rejection`, rank: 1 }, appSession);
             results.push({ policyUrl: `${offersList}#rejection`, count: rejectVote });
             const sortedResults = results.sort((a, b) => b.count - a.count);
             const totalCount = sortedResults.reduce((total, policy) => total + policy.count, 0);

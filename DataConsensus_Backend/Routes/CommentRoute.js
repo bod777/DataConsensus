@@ -1,6 +1,8 @@
+require("dotenv").config();
 const router = require("express").Router();
 const { Comment } = require("../Models/Comment.js");
 const commentService = require("../CRUDService/CommentService.js");
+const commentsList = process.env.COMMENTS;
 
 module.exports = function (appSession) {
     // Use appSession in your routes
@@ -59,13 +61,15 @@ module.exports = function (appSession) {
     });
 
     router.put("/moderate-comment", async (req, res) => {
-        const { commentURL, moderator } = req.body;
+        console.log(req.body);
+        const { commentID, moderator } = req.body;
 
-        if (!commentURL || !moderator) {
+        if (!commentID || !moderator) {
             res.status(400).send({ message: "Both commentURL and moderator are required." });
             return;
         }
-
+        const commentURL = `${commentsList}#${commentID}`;
+        console.log("commentURL: ", commentURL);
         try {
             await commentService.moderateComment({ commentURL, moderator }, appSession);
             res.send({ message: "Comment moderated successfully." });
@@ -76,12 +80,12 @@ module.exports = function (appSession) {
     });
 
     router.delete("/remove-comment", async (req, res) => {
-        const { commentURL } = req.query;
-        if (!commentURL) {
-            res.status(400).send({ message: "commentURL is required." });
+        const { commentID } = req.query;
+        if (!commentID) {
+            res.status(400).send({ message: "commentID is required." });
             return;
         }
-
+        const commentURL = `${commentsList}#${commentID}`;
         try {
             await commentService.removeComment(commentURL, appSession);
             res.send({ message: "Comment removed successfully." });

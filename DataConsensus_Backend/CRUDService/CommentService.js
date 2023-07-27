@@ -60,7 +60,6 @@ module.exports = {
         let datasetURL = commentsList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         let commentToRemove = getThing(solidDataset, commentURL);
-
         solidDataset = removeThing(solidDataset, commentToRemove);
 
         await saveGivenSolidDataset(datasetURL, solidDataset, session);

@@ -8,8 +8,8 @@
             <p>{{comment.timeCreated}}</p>
         </mat-card-content>
         <mat-card-actions *ngIf="comment.author === user || isAdmin">
-            <button mat-button *ngIf="isAdmin" (click)="moderateComment(comment)"
-                [disabled]="comment.moderated === 'true'">Moderate</button>
+            <button mat-button *ngIf="isAdmin" (click)="moderateComment(comment)">Moderate</button>
+            <!-- [disabled]="comment.moderated === 'true'" -->
             <button mat-button *ngIf="comment.author === user" (click)="deleteComment(comment)">Delete</button>
         </mat-card-actions>
 

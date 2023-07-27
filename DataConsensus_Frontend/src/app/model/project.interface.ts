@@ -1,4 +1,6 @@
 export interface Project {
+    projectURL: string;
+    projectID: string;
     creator: string;
     title: string;
     description: string;

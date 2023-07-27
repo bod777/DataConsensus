@@ -19,9 +19,11 @@ export class ProjectPageComponent implements OnInit {
     user: string = localStorage.getItem("webID") || "";
     projectID: string = "";
     requestID: string = "";
+    agreementID: string = "";
     project: any = {};
     request: any = {};
     offers: any[] = [];
+    agreement: any = {};
     offerRanking: any[] = [];
     existingVote: any = {};
     downvoteState: boolean = false;
@@ -61,17 +63,18 @@ export class ProjectPageComponent implements OnInit {
     }
 
     onDrop(event: CdkDragDrop<string[]>): void {
+        console.log(this.offerRanking);
         moveItemInArray(this.offerRanking, event.previousIndex, event.currentIndex);
     }
 
     submitRanking(): void {
-        console.log('Submitting ranking:', this.offerRanking);
+        // console.log('Submitting ranking:', this.offerRanking);
         const voteArray = this.offerRanking.map((item, index) => ({
             policyURL: item.URL,
             voteRank: index + 1
         }));
-        const req = { rankedVotes: voteArray, voter: this.user };
-        console.log(req);
+        const req = { rankedVotes: voteArray, voter: this.user, projectID: this.projectID };
+        // console.log(req);
         this.voteService.submitPreference(req).subscribe(
             (vote: any) => {
                 this._snackBar.open("Success", "Close", { duration: 3000 });
@@ -80,6 +83,10 @@ export class ProjectPageComponent implements OnInit {
                 this._snackBar.open("Error retrieving project: " + error, "Close", { duration: 3000 });
             }
         );
+    }
+
+    navigateToSubmitOffer() {
+        this.router.navigate(['/submit-offer'], { queryParams: { requestID: this.requestID } });
     }
 
     ngOnInit() {
@@ -102,20 +109,29 @@ export class ProjectPageComponent implements OnInit {
                 const hashIndex = requestURL.lastIndexOf("#");
                 const requestID = requestURL.substring(hashIndex + 1);
                 this.requestID = requestID;
-                this.project.projectCreationTime = this.datepipe.transform(this.project.projectCreationTime, 'dd-MM-yyyy');
-                this.project.deliberationStartTime = this.datepipe.transform(this.project.deliberationStartTime, 'dd-MM-yyyy');
-
+                this.project.projectCreationTime = new Date(this.project.projectCreationTime);
+                this.project.deliberationStartTime = new Date(this.project.deliberationStartTime);
+                // this.project.projectCreationTime = this.datepipe.transform(this.project.projectCreationTime, 'dd-MM-yyyy');
+                // this.project.deliberationStartTime = this.datepipe.transform(this.project.deliberationStartTime, 'dd-MM-yyyy');
+                this.project.requestTime = Number(this.project.requestTime);
+                this.project.offerTime = Number(this.project.offerTime);
+                this.project.threshold = Number(this.project.threshold);
+                this.project.hasAgreement = this.project.hasAgreement === "true" ? true : false;
+                this.project.requestEndTime = new Date(this.project.deliberationStartTime.getTime() + this.project.requestTime * 24 * 60 * 60 * 1000);
+                this.project.offerEndTime = new Date(this.project.requestEndTime.getTime() + this.project.offerTime * 24 * 60 * 60 * 1000);
+                // Fetching request data
                 this.policyService.getRequest(this.requestID).subscribe(
                     (request: any) => {
-                        console.log("Request Data: ", request.data);
                         this.request = request.data;
-                        this.request.untilTimeDuration = this.datepipe.transform(this.request.untilTimeDuration, 'dd-MM-yyyy');
-                        this.request.policyCreationTime = this.datepipe.transform(this.request.policyCreationTime, 'dd-MM-yyyy');
+                        this.request.untilTimeDuration = new Date(this.request.untilTimeDuration);
+                        this.request.policyCreationTime = new Date(this.request.policyCreationTime);
                     }
                 );
+                // Fetching Request Vote if it exists
                 this.voteService.getVote(this.user, this.requestID).subscribe(
                     (vote: any) => {
                         this.existingVote = vote.data;
+                        console.log("Existing vote: ", this.existingVote);
                         if (this.existingVote) {
                             if (this.existingVote.rank === "1") {
                                 this.upvoteState = true;
@@ -138,11 +154,11 @@ export class ProjectPageComponent implements OnInit {
                     }
                 );
                 const offerURLs = this.project.projectPolicies.offers;
-                console.log("Offer URLs: ", offerURLs);
+                // console.log("Offer URLs: ", offerURLs);
                 if (offerURLs.length !== 0) {
                     for (const i in offerURLs) {
                         const URL = offerURLs[i];
-                        console.log("Offer URL: ", URL)
+                        // console.log("Offer URL: ", URL)
                         const id = URL.substring(URL.lastIndexOf("#") + 1);
                         this.policyService.getOffer(id).subscribe(
                             (offer: any) => {
@@ -155,8 +171,28 @@ export class ProjectPageComponent implements OnInit {
                             }
                         )
                     }
-                    console.log("Offer ranking: ", this.offerRanking);
-                    console.log("Offer Data: ", this.offers);
+                    // console.log("Offer ranking: ", this.offerRanking);
+                    // console.log("Offer Data: ", this.offers);
+                }
+                this.agreementID = this.project.projectPolicies.agreements[0].split("#")[1] || "";
+                if (this.agreementID !== "") {
+                    this.policyService.getAgreement(this.agreementID).subscribe(
+                        (policy) => {
+                            this.agreement = policy.data;
+                            this.agreement.policyCreationTime = new Date(this.agreement.policyCreationTime);
+                            this.agreement.untilTimeDuration = new Date(this.agreement.untilTimeDuration);
+                            this.agreement.projectCreationTime = new Date(this.agreement.projectCreationTime);
+                            this.agreement.deliberationStartTime = new Date(this.agreement.deliberationStartTime);
+                            this.agreement.hasAgreement = this.agreement.hasAgreement === "true" ? true : false;
+                            this.agreement.offerTime = Number(this.agreement.offerTime);
+                            this.agreement.requestTime = Number(this.agreement.requestTime);
+                            this.agreement.threshold = Number(this.agreement.threshold);
+                            console.log("Agreement: ", this.agreement);
+                        },
+                        (error) => {
+                            console.log(error);
+                        }
+                    );
                 }
             },
             (error) => {
