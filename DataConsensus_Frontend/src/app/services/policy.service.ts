@@ -25,7 +25,7 @@ export class PolicyService {
             'Content-Type': 'application/json'
         });
         const params = new HttpParams().set('policyID', agreementID);
-        return this.http.get<{ data: Agreement }>('http://localhost:3000/api/v1/policy/agreement', { headers, params });
+        return this.http.get('http://localhost:3000/api/v1/policy/agreement', { headers, params });
     }
 
     getRequest(requestID: string): Observable<any> {
@@ -69,7 +69,7 @@ export class PolicyService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        return this.http.get<{ data: Project[] }>('http://localhost:3000/api/v1/policy/all-projects', { headers });
+        return this.http.get<{ data: Project[] }>('http://localhost:3000/api/v1/project/all-projects', { headers });
     }
 
     submitRequest(webID: string, title: string, description: string, organisationType: string, purpose: string, sellingData: boolean, sellingInsights: boolean, techOrgMeasures: string[], recipients: string[], duration: number): Observable<any> {
@@ -116,14 +116,14 @@ export class PolicyService {
             'Content-Type': 'application/json'
         });
         const params = new HttpParams().set('projectID', projectID);
-        return this.http.get('http://localhost:3000/api/v1/policy/project', { headers, params });
+        return this.http.get('http://localhost:3000/api/v1/project/project', { headers, params });
     }
 
     updateStatus(projectID: string, status: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        return this.http.put('http://localhost:3000/api/v1/policy/update-status', { projectID, status }, { headers });
+        return this.http.put('http://localhost:3000/api/v1/project/update-project', { projectID, status }, { headers });
     }
 }
 

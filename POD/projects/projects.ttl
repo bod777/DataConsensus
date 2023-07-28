@@ -43,7 +43,7 @@ pod:4ddb1306-df85-4730-8545-14973be50cd2
         dct:description                "A new nonprofit organization looking to improve healthcare resources for people with diabetes." ;
         dct:issued                     "2023-06-06T09:08:23"^^xsd:dateTime ;
         dct:title                      "UserStory3" ;
-        project:deliberationStartTime  "2023-06-07T09:08:23"^^xsd:dateTime ;
+        project:requestStartTime        "2023-06-07T09:08:23"^^xsd:dateTime ;
         project:requestEndTime         "2023-06-14T09:08:23"^^xsd:dateTime ;
         project:offerEndTime           "2023-06-21T09:08:23"^^xsd:dateTime ;
         project:hasAgreement           true ;
@@ -51,3 +51,44 @@ pod:4ddb1306-df85-4730-8545-14973be50cd2
         project:threshold              0.5 ;
         oac:Organisation               dpv:NonProfitOrganisation .
 
+pod:e0759307-91cf-4149-bbd3-e4c0bfda3d8e
+        rdf:type                       dct:Project ;
+        dct:creator                    <https://id.inrupt.com/ThirdParty> ;
+        dct:description                "Testing Project 1" ;
+        dct:issued                     "2023-07-23T19:28:25.019Z"^^xsd:dateTime ;
+        dct:title                      "Testing Project 1" ;
+        project:requestStartTime        "2023-07-24T19:28:25.019Z"^^xsd:dateTime ;
+        project:requestEndTime         "2023-07-31T19:28:25.019Z"^^xsd:dateTime ;
+        project:offerEndTime           "2023-08-07T19:28:25.019Z"^^xsd:dateTime ;
+        project:hasAgreement           true ;
+        project:hasProjectStatus       project:RequestDeliberation ;
+        project:threshold              0.5 ;
+        oac:Organisation               dpv:NonProfitOrganisation .
+
+pod:931b1c39-4a83-4927-b6a5-86b01ae42956
+        rdf:type                       dct:Project ;
+        dct:creator                    <https://id.inrupt.com/ThirdParty> ;
+        dct:description                "Testing Project 2" ;
+        dct:issued                     "2023-07-23T19:29:28.162Z"^^xsd:dateTime ;
+        dct:title                      "Testing Project 2" ;
+        project:requestStartTime       "2023-07-24T19:29:28.162Z"^^xsd:dateTime ;
+        project:requestEndTime         "2023-07-31T19:29:28.162Z"^^xsd:dateTime ;
+        project:offerEndTime           "2023-08-07T19:29:28.162Z"^^xsd:dateTime ;
+        project:hasAgreement           true ;
+        project:hasProjectStatus       project:RequestDeliberation ;
+        project:threshold              0.5 ;
+        oac:Organisation               dpv:NonProfitOrganisation .
+
+pod:937dea49-bc83-4824-9ede-1abfefefb59a
+        rdf:type                       dct:Project ;
+        dct:creator                    <https://id.inrupt.com/ThirdParty> ;
+        dct:description                "Testing Project 3" ;
+        dct:issued                     "2023-07-23T19:30:40.412Z"^^xsd:dateTime ;
+        dct:title                      "Testing Project 3" ;
+        project:requestStartTime       "2023-07-24T19:30:40.412Z"^^xsd:dateTime ;
+        project:requestEndTime         "2023-07-31T19:30:40.412Z"^^xsd:dateTime ;
+        project:offerEndTime           "2023-08-07T19:30:40.412Z"^^xsd:dateTime ;
+        project:hasAgreement           true ;
+        project:hasProjectStatus       project:RequestDeliberation ;
+        project:threshold              0.5 ;
+        oac:Organisation               dpv:NonProfitOrganisation .

@@ -10,7 +10,6 @@ import { ProfileComponent } from './profile/profile.component';
 import { SubmitRequestComponent } from './submit-request/submit-request.component';
 import { SubmitOfferComponent } from './submit-offer/submit-offer.component';
 import { AgreementListComponent } from './agreement-list/agreement-list.component';
-import { IndividualAgreementComponent } from './individual-agreement/individual-agreement.component';
 import { AppLayoutComponent } from './app-layout/app-layout.component';
 import { ProjectPageComponent } from './project-page/project-page.component';
 
@@ -26,7 +25,6 @@ const routes: Routes = [
       { path: 'home', component: HomeComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'agreements', component: AgreementListComponent },
-      { path: 'agreement', component: IndividualAgreementComponent },
       { path: 'submit-request', component: SubmitRequestComponent },
       { path: 'submit-offer', component: SubmitOfferComponent },
       { path: 'project', component: ProjectPageComponent }

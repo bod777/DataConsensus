@@ -23,7 +23,7 @@ export class MemberHomeComponent implements OnInit {
     isActive(project: Project) {
         let isActive = false;
         if (project.projectStatus !== "Completed") {
-            if (this.currentDate >= project.startTime && this.currentDate <= project.requestEndTime) {
+            if (this.currentDate >= project.requestStartTime && this.currentDate <= project.requestEndTime) {
                 isActive = true;
             }
             else {
@@ -46,9 +46,9 @@ export class MemberHomeComponent implements OnInit {
             (response) => {
                 const allProjects = response.data;
                 const processedProject = allProjects.map((project: Project) => {
-                    const lengthRequest = Number(project.requestTime);
-                    const lengthOffer = Number(project.offerTime);
-                    const startTime = new Date(project.deliberationStartTime);
+                    const lengthRequest = Number(project.requestEndTime);
+                    const lengthOffer = Number(project.offerEndTime);
+                    const startTime = new Date(project.requestStartTime);
                     const requestEndTime = new Date(startTime.getTime() + lengthRequest * 24 * 60 * 60 * 1000);
                     const offerEndTime = new Date(requestEndTime.getTime() + lengthOffer * 24 * 60 * 60 * 1000);
                     return {

@@ -1,36 +1,46 @@
 <div class="content">
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title>Member Profile</mat-card-title>
-            <mat-card-subtitle>WebID: {{ webID }}</mat-card-subtitle>
-        </mat-card-header>
+    <div class="card-container">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Member Profile</mat-card-title>
+                <mat-card-subtitle>WebID: {{ webID }}</mat-card-subtitle>
+            </mat-card-header>
 
-        <mat-card-content>
-            <form>
-                <div class="form-field-container">
-                    <mat-form-field [style.width.px]=800>
-                        <mat-label>Name</mat-label>
-                        <input matInput [(ngModel)]="name" name="name" required>
-                    </mat-form-field>
-                </div>
-                <div class="form-field-container">
-                    <mat-form-field [style.width.px]=800>
-                        <mat-label>Email</mat-label>
-                        <input matInput [(ngModel)]="email" name="email" required>
-                    </mat-form-field>
-                </div>
-                <div class="form-field-container">
-                    <mat-form-field [style.width.px]=800>
-                        <mat-label>Data Source</mat-label>
-                        <input matInput [(ngModel)]="dataSource" name="dataSource" required>
-                    </mat-form-field>
-                </div>
-            </form>
-        </mat-card-content>
+            <mat-card-content>
+                <form>
+                    <div class="form-field-container">
+                        <mat-form-field [style.width.px]=800>
+                            <mat-label>Name</mat-label>
+                            <input matInput [(ngModel)]="name" name="name" required>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-field-container">
+                        <mat-form-field [style.width.px]=800>
+                            <mat-label>Email</mat-label>
+                            <input matInput [(ngModel)]="email" name="email" required>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-field-container">
+                        <mat-form-field [style.width.px]=800>
+                            <mat-label>Data Source</mat-label>
+                            <input matInput [(ngModel)]="dataSource" name="dataSource" required>
+                        </mat-form-field>
+                    </div>
+                </form>
+            </mat-card-content>
 
-        <mat-card-actions class="button-container">
-            <button mat-raised-button color="primary" (click)="saveChanges()">Save</button>
-            <button mat-raised-button (click)="cancelChanges()">Cancel</button>
-        </mat-card-actions>
-    </mat-card>
+            <mat-card-actions class="button-container">
+                <button mat-raised-button color="primary" (click)="saveChanges()">Save</button>
+                <button mat-raised-button (click)="cancelChanges()">Cancel</button>
+            </mat-card-actions>
+            <mat-divider></mat-divider>
+            <mat-card-content>
+                <b>If you no longer want to be apart of the Data Consensus group, you can click the button below and we
+                    will delete your data.</b>
+            </mat-card-content>
+            <mat-card-actions class="button-container">
+                <button mat-raised-button (click)="deleteUser()">Delete User Data</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
 </div>

@@ -1,8 +1,13 @@
 .content {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    height: 75vh;
+    flex-wrap: wrap;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
 }
 
 .form-field-container {
@@ -16,4 +21,8 @@
 .button-container {
     display: flex;
     justify-content: center;
+}
+
+mat-divider {
+    margin: 30px;
 }

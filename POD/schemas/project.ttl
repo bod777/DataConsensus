@@ -38,21 +38,14 @@ project:hasProjectStatus a rdf:Property ;
 project:projectStatus a rdfs:Class ;
     rdfs:domain project:Project ;
     rdfs:label "Project Status" ;
-    owl:oneOf (project:Pending project:RequestDeliberation project:OfferDeliberation project:Completed) .
+    owl:oneOf (project:Pending project:RequestDeliberation project:OfferDeliberation project:ThirdPartyApprovalNeeded project:AdminApprovalNeeded project:Completed) .
 
 project:Pending a project:projectStatus .
 project:RequestDeliberation a project:projectStatus .
 project:OfferDeliberation a project:projectStatus .
+project:ThirdPartyApprovalNeeded a project:projectStatus .
+project:AdminApprovalNeeded a project:projectStatus .
 project:Completed a project:projectStatus .
-
-project:thresholdType a rdf:Property ;
-    rdfs:domain project:Project ;
-    rdfs:label "Project Status" ;
-    owl:oneOf (project:totalMembership project:totalVotes) .
-
-project:totalMembership a rdf:Property .
-
-project:totalVotes a rdf:Property .
 
 project:requestStartTime a rdf:Property ;
     rdfs:domain project:Project ;

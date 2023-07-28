@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
                 <mat-card-subtitle>Ends On: {{ item.untilTimeDuration }}</mat-card-subtitle>
             </mat-card-content>
             <mat-card-actions>
-                <button mat-raised-button color="primary" (click)="redirectToAgreementPage(item.uid)">View</button>
+                <button mat-raised-button color="primary" (click)="redirectToAgreementPage(item.isPartOf)">View</button>
             </mat-card-actions>
         </mat-card>
     </div>
@@ -31,6 +31,6 @@ export class AgreementCardComponent {
         console.log(agreementURL);
         const hashIndex = agreementURL.lastIndexOf("#");
         const policyID = agreementURL.substring(hashIndex + 1);
-        this.router.navigate([`/agreement`], { queryParams: { policyID: policyID } });
+        this.router.navigate([`/project`], { queryParams: { projectID: policyID, tab: "agreement" } });
     }
 }

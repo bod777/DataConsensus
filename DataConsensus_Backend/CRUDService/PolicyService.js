@@ -47,7 +47,7 @@ async function saveGivenSolidDataset(datasetURL, courseSolidDataset, session) {
 module.exports = {
 
     getPolicy: async function (req, session) {
-        let datasetURL = getDatasetUrl(req.type);
+        let datasetURL = getPolicyDataset(req.policyURL);
         const solidDataset = await getGivenSolidDataset(datasetURL, session);
         const policy = await getThing(solidDataset, req.policyURL);
         return policy;
@@ -421,7 +421,13 @@ module.exports = {
     },
 
     getPendingThirdPartyPolicies: async function () {
-
+        const requestsDataset = await getGivenSolidDataset(requestsList, session);
+        const offersDataset = await getGivenSolidDataset(offersList, session);
+        const requests = getThingAll(requestsDataset);
+        const offers = getThingAll(offersDataset);
+        let policies = requests.concat(offers);
+        let projectList = projects.map(item => item.url);
+        return projectList;
     },
 
     getPendingAdminPolicies: async function () {

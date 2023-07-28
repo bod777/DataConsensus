@@ -12,6 +12,7 @@ const UserRoute = require("./Routes/UserRoute.js");
 const PolicyRoute = require("./Routes/PolicyRoute.js");
 const VoteRoute = require("./Routes/VoteRoute.js");
 const CommentRoute = require("./Routes/CommentRoute.js");
+const ProjectRoute = require("./Routes/ProjectRoute.js")
 
 const api = process.env.API_URI;
 const port = process.env.PORT || 3000;

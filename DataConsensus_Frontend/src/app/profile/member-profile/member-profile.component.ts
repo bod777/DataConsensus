@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -10,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 export class MemberProfileComponent implements OnInit {
 
-    constructor(private userService: UserService, private _snackBar: MatSnackBar) { }
+    constructor(private userService: UserService, private _snackBar: MatSnackBar, private router: Router) { }
 
     webID: string = localStorage.getItem("webID") || "";
     name: string = "";
@@ -32,6 +33,21 @@ export class MemberProfileComponent implements OnInit {
     cancelChanges() {
         this.ngOnInit();
         window.location.reload();
+    }
+
+    deleteUser() {
+        this.userService.removeData(this.webID).subscribe(
+            (profile) => {
+                this._snackBar.open("User data deleted", "Close", { duration: 3000 });
+                localStorage.removeItem('webID');
+                localStorage.removeItem('userType');
+                localStorage.setItem('loggedIn', 'false');
+                this.router.navigateByUrl('/login');
+            },
+            (error) => {
+                this._snackBar.open("Error deleting data: " + error, "Close", { duration: 3000 });
+            }
+        )
     }
 
     ngOnInit() {

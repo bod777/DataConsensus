@@ -4,7 +4,7 @@ const voteService = require("../CRUDService/VoteService.js");
 const policyService = require("../CRUDService/PolicyService.js");
 const userService = require("../CRUDService/UserService.js");
 const { getPolicyDataset } = require("../HelperFunctions.js");
-const { Request, Offer } = require("../Models/Policy.js");
+const { Proposal } = require("../Models/Policy.js");
 const { Project } = require("../Models/Project.js");
 const { Vote, BinaryVote, PreferenceVote } = require("../Models/Vote.js");
 const offersList = process.env.OFFERS
@@ -170,13 +170,15 @@ module.exports = function (appSession) {
     */
     router.get("/request-result", async (req, res) => {
         const policyID = req.query.policyID;
+        // console.log(policyID);
         if (!policyID) {
             res.status(400).send({ message: "policyID is required." });
         }
         else {
             try {
                 const policyURL = `${requestsList}#${policyID}`;
-                policy = new Request();
+                // console.log(policyURL);
+                policy = new Proposal();
                 await policy.fetchPolicy(policyURL, appSession);
                 const policyJSON = policy.toJson();
                 const upvotes = await voteService.countVotesByRankPolicy(

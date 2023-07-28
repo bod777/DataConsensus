@@ -2,11 +2,10 @@ require("dotenv").config();
 const router = require("express").Router();
 const policyService = require("../CRUDService/PolicyService.js");
 const { grantAccess } = require("../AccessControl.js");
-const { Agreement, Request, Offer } = require("../Models/Policy.js");
+const { Agreement, Proposal } = require("../Models/Policy.js");
 const { DCTERMS } = require("@inrupt/vocab-common-rdf");
-const { extractTerm, getPolicyDataset } = require("../HelperFunctions.js");
+const { extractTerm } = require("../HelperFunctions.js");
 const { removeAccess } = require("../AccessControl.js");
-const { Trigger } = require("../Logic/Trigger.js");
 
 const agreementsList = process.env.AGREEMENTS;
 const requestsList = process.env.REQUESTS;
@@ -60,9 +59,8 @@ module.exports = function (appSession) {
             };
             try {
                 const policyURL = await policyService.createPolicy(policy, appSession);
-                const request = new Request();
+                const request = new Proposal();
                 await request.fetchPolicy(policyURL, appSession);
-                await Trigger.setDeliberation(request.toJson(), appSession);
                 res.send({ data: request.toJson(), message: "Request submitted successfully." });
             }
             catch (error) {
@@ -114,7 +112,7 @@ module.exports = function (appSession) {
         };
         try {
             const policyURL = await policyService.createPolicy(policy, appSession);
-            const offer = new Offer();
+            const offer = new Proposal();
             await offer.fetchPolicy(policyURL, appSession);
             res.send({ data: offer.toJson(), message: "Request submitted successfully." });
         }
@@ -155,7 +153,7 @@ module.exports = function (appSession) {
         try {
             await policyService.updatePolicyStatus({ policyURL, type: "Offer", actor: 'thirdPartyApproved', newStatus: status }, appSession);
             if (status == "Rejected") {
-                const offer = new Offer();
+                const offer = new Proposal();
                 const policy = await offer.fetchPolicy(policyURL, appSession);
                 const projectURL = policy.isPartOf;
                 await policyService.updateProject({ projectURL, status: "Completed" }, appSession);
@@ -191,12 +189,7 @@ module.exports = function (appSession) {
                 await policyService.updateProject({ projectURL, agreememt: false, status: "Completed" }, appSession);
             }
             let proposal;
-            if (type === "Offer") {
-                proposal = new Offer();
-            }
-            else if (type === "Request") {
-                proposal = new Request();
-            }
+            proposal = new Proposal();
             let policy = await proposal.fetchPolicy(policyURL, appSession);
             policy = await proposal.toJson();
             const organisationTerm = extractTerm(policy.organisation);
@@ -245,8 +238,7 @@ module.exports = function (appSession) {
             const requestURLs = await policyService.getpolicyURLs("Request", appSession);
             let requests = [];
             for (const requestURL of requestURLs) {
-                console.log(requestURL);
-                const fetchedRequest = new Request();
+                const fetchedRequest = new Proposal();
                 const request = await fetchedRequest.fetchPolicy(requestURL, appSession);
                 requests.push(fetchedRequest.toJson());
             }
@@ -266,7 +258,7 @@ module.exports = function (appSession) {
                     continue;
                 }
                 else {
-                    const fetchedOffer = new Offer();
+                    const fetchedOffer = new Proposal();
                     const offer = await fetchedOffer.fetchPolicy(offerURL, appSession);
                     offers.push(fetchedOffer.toJson());
                 }
@@ -284,6 +276,7 @@ module.exports = function (appSession) {
             let agreements = [];
             for (const agreementURL of agreementURLs) {
                 const fetchedAgreement = new Agreement();
+                console.log(agreementURL);
                 const agreement = await fetchedAgreement.fetchPolicy(agreementURL, appSession);
                 agreements.push(fetchedAgreement.toJson());
             }
@@ -301,14 +294,11 @@ module.exports = function (appSession) {
     router.get("/agreement", async function (req, res) {
         try {
             const policyURL = `${agreementsList}#${req.query.policyID}`;
+            console.log(policyURL);
             let fetchedPolicy = new Agreement();
-
-            if (fetchedPolicy) {
-                const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
-                res.send({ data: fetchedPolicy.toJson() });
-            } else {
-                res.status(400).send({ message: "Invalid policy type." });
-            }
+            await fetchedPolicy.fetchPolicy(policyURL, appSession);
+            console.log(fetchedPolicy.toJson());
+            res.send({ data: fetchedPolicy.toJson() });
         } catch (error) {
             console.error(error);
             res.status(500).send({ message: "Error in getting policies", error: error.message });
@@ -322,13 +312,9 @@ module.exports = function (appSession) {
     router.get("/request", async function (req, res) {
         try {
             const policyURL = `${requestsList}#${req.query.policyID}`;
-            let fetchedPolicy = new Request();
-            if (fetchedPolicy) {
-                const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
-                res.send({ data: fetchedPolicy.toJson() });
-            } else {
-                res.status(400).send({ message: "Invalid policy type." });
-            }
+            let fetchedPolicy = new Proposal();
+            const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
+            res.send({ data: fetchedPolicy.toJson() });
         } catch (error) {
             console.error(error);
             res.status(500).send({ message: "Error in getting policies", error: error.message });
@@ -341,13 +327,9 @@ module.exports = function (appSession) {
     router.get("/offer", async function (req, res) {
         try {
             const policyURL = `${offersList}#${req.query.policyID}`;
-            let fetchedPolicy = new Offer();
-            if (fetchedPolicy) {
-                const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
-                res.send({ data: fetchedPolicy.toJson() });
-            } else {
-                res.status(400).send({ message: "Invalid policy type." });
-            }
+            let fetchedPolicy = new Proposal();
+            const policy = await fetchedPolicy.fetchPolicy(policyURL, appSession);
+            res.send({ data: fetchedPolicy.toJson() });
         } catch (error) {
             console.error(error);
             res.status(500).send({ message: "Error in getting policies", error: error.message });
@@ -355,19 +337,41 @@ module.exports = function (appSession) {
     });
 
     router.get("/thirdparty-approval-needed", async function (req, res) {
-        const requestsURLs = await policyService.getpolicyURLs("Request", appSession);
         const offersURLs = await policyService.getpolicyURLs("Offer", appSession);
-        const policiesURLs = requestsURLs.concat(offersList);
         let policies = [];
-        for (const policyURL of policiesURLs) {
-            const fetchedPolicies = new Agreement();
-            const policy = await fetchedPolicies.fetchPolicy(policyURL, appSession);
-            policies.push(fetchedPolicies.toJson());
+        for (const policyURL of offersURLs) {
+            if (policyURL !== `${offersList}#rejection`) {
+                const fetchedPolicies = new Proposal();
+                await fetchedPolicies.fetchPolicy(policyURL, appSession);
+                policies.push(fetchedPolicies.toJson());
+            }
         }
+        const pendingPolicies = policies.filter(policy =>
+            policy.adminApproved === "Pending" &&
+            policy.thirdPartyApproved === "Pending" &&
+            policy.memberApproved === "Approved"
+        );
+        res.send({ message: "Success", data: pendingPolicies });
     });
 
     router.get("/admin-approval-needed", async function (req, res) {
-
+        const requestsURLs = await policyService.getpolicyURLs("Request", appSession);
+        const offersURLs = await policyService.getpolicyURLs("Offer", appSession);
+        const policiesURLs = requestsURLs.concat(offersURLs);
+        let policies = [];
+        for (const policyURL of policiesURLs) {
+            if (policyURL !== `${offersList}#rejection`) {
+                const fetchedPolicies = new Proposal();
+                await fetchedPolicies.fetchPolicy(policyURL, appSession);
+                policies.push(fetchedPolicies.toJson());
+            }
+        }
+        const pendingPolicies = policies.filter(policy =>
+            policy.adminApproved === "Pending" &&
+            policy.thirdPartyApproved === "Approved" &&
+            policy.memberApproved === "Approved"
+        );
+        res.send({ message: "Success", data: pendingPolicies });
     });
 
     return router;

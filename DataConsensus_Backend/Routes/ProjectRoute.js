@@ -12,30 +12,30 @@ module.exports = function (appSession) {
     });
 
     router.put("/update-project", async (req, res) => {
-        if (!req.body.projectURL) {
+        if (!req.body.projectID) {
             res.status(400).send({ message: "Project URL is required." });
-            return;
         }
+        else {
+            try {
+                projectURL = `${projectsList}#${req.body.projectID}`
+                const projectToUpdate = { projectURL };
 
-        try {
-            // Prepare the project object to be updated
-            const projectToUpdate = { projectURL: req.body.projectURL };
+                if (req.body.title) projectToUpdate.title = req.body.title;
+                if (req.body.description) projectToUpdate.description = req.body.description;
+                if (req.body.status) projectToUpdate.status = req.body.status;
+                if (req.body.startTime) projectToUpdate.requestStartTime = req.body.requestStartTime;
+                if (req.body.requestTime) projectToUpdate.requestEndTime = req.body.requestEndTime;
+                if (req.body.offerTime) projectToUpdate.offerEndTime = req.body.offerEndTime;
+                if (req.body.threshold) projectToUpdate.threshold = req.body.threshold;
+                if (req.body.agreement) projectToUpdate.agreement = req.body.agreement;
 
-            if (req.body.title) projectToUpdate.title = req.body.title;
-            if (req.body.description) projectToUpdate.description = req.body.description;
-            if (req.body.status) projectToUpdate.status = req.body.status;
-            if (req.body.startTime) projectToUpdate.requestStartTime = req.body.requestStartTime;
-            if (req.body.requestTime) projectToUpdate.requestEndTime = req.body.requestEndTime;
-            if (req.body.offerTime) projectToUpdate.offerEndTime = req.body.offerEndTime;
-            if (req.body.threshold) projectToUpdate.threshold = req.body.threshold;
-            if (req.body.agreement) projectToUpdate.agreement = req.body.agreement;
+                updatedProject = await policyService.updateProject(projectToUpdate, appSession);
 
-            updatedProject = await policyService.updateProject(projectToUpdate, appSession);
-
-            res.send({ data: updatedProject, message: "Project updated successfully." });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: "Error in updating project.", error: error.message });
+                res.send({ data: updatedProject, message: "Project updated successfully." });
+            } catch (error) {
+                console.error(error);
+                res.status(500).send({ message: "Error in updating project.", error: error.message });
+            }
         }
     });
 

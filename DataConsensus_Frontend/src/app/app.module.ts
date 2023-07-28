@@ -60,7 +60,6 @@ import { AdminProfileComponent } from './profile/admin-profile/admin-profile.com
 
 import { AgreementListComponent } from './agreement-list/agreement-list.component';
 import { AgreementCardComponent } from './features/agreement-card/agreement-card.component';
-import { IndividualAgreementComponent } from './individual-agreement/individual-agreement.component';
 
 import { SubmitRequestComponent } from './submit-request/submit-request.component';
 import { ProjectPageComponent } from './project-page/project-page.component';
@@ -96,7 +95,6 @@ import { TabsComponent } from './features/tabs/tabs.component';
         ProjectPageComponent,
         TabsComponent,
         AppLayoutComponent,
-        IndividualAgreementComponent,
         AgreementCardComponent,
         AgreementListComponent
     ],

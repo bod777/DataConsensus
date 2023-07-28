@@ -139,7 +139,7 @@ module.exports = {
         const solidDataset = await getGivenSolidDataset(datasetUrl, session);
 
         const users = getThingAll(solidDataset);
-        console.log("Member count: " + users.length);
+        // console.log("Member count: " + users.length);
         return users.length;
     },
 

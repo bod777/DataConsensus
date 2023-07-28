@@ -52,6 +52,25 @@ function extractTerm(URL) {
     return extractedValue;
 }
 
+function getPolicyType(policyURL) {
+    const segments = policyURL.split("/");
+    const filename = segments[segments.length - 1];
+    const policyType = filename.split(".")[0];
+    let type
+    switch (policyType) {
+        case offersList:
+            type = 'offer';
+            break;
+        case requestsList:
+            type = 'requests';
+            break;
+        case agreementsList:
+            type = 'agreements';
+            break;
+    }
+    return type;
+}
+
 function getPolicyDataset(policyURL) {
     const segments = policyURL.split("/");
     const filename = segments[segments.length - 1];
@@ -72,4 +91,4 @@ function getPolicyDataset(policyURL) {
 }
 
 
-module.exports = { getGivenSolidDataset, saveGivenSolidDataset, getDatasetUrl, extractTerm, getPolicyDataset };
+module.exports = { getGivenSolidDataset, saveGivenSolidDataset, getDatasetUrl, extractTerm, getPolicyDataset, getPolicyType };
