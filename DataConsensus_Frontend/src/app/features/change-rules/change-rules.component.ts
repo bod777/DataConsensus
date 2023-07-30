@@ -1,54 +1,51 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { PolicyService } from '../../services/policy.service';
 import { UserService } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Project } from 'src/app/model/project.interface';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-// import { FormControl } from '@angular/forms';
-// import {
-//     NgxMatDateFormats,
-//     NGX_MAT_DATE_FORMATS,
-// } from '@angular-material-components/datetime-picker';
+import { FormControl } from '@angular/forms';
+import { ThemePalette } from '@angular/material/core';
 
-// export const CUSTOM_DATE_FORMATS: NgxMatDateFormats = {
-//     parse: {
-//         dateInput: 'l, LTS',
-//     },
-//     display: {
-//         dateInput: 'ddd D MMM YYYY HH:mm',
-//         monthYearLabel: 'MMM YYYY',
-//         dateA11yLabel: 'LL',
-//         monthYearA11yLabel: 'MMMM YYYY',
-//     },
-// };
 
 @Component({
     selector: 'change-rules',
     templateUrl: './change-rules.component.html',
     styleUrls: ['./change-rules.component.css'],
-    // providers: [{ provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS }],
 })
 export class ChangeRulesComponent {
     @Input() project: any = {};
+    @ViewChild('picker', { static: true }) picker: any;
 
-    // public myDateControl = new FormControl(new Date());
+    public disabled = false;
+    public showSpinners = true;
+    public showSeconds = false;
+    public touchUi = false;
+    public enableMeridian = false;
+    public minDate: Date = new Date();
+    public maxDate: Date = new Date(`2029-12-31`);
+    public stepHour = 1;
+    public stepMinute = 1;
+    public stepSecond = 1;
+    public color: ThemePalette = 'primary';
+    public disableMinute = false;
+    public hideTime = false;
+
+    public options = [
+        { value: true, label: 'True' },
+        { value: false, label: 'False' }
+    ];
+
+    public listColors = ['primary', 'accent', 'warn'];
+
+    public stepHours = [1, 2, 3, 4, 5];
+    public stepMinutes = [1, 5, 10, 15, 20, 25];
+    public stepSeconds = [1, 5, 10, 15, 20, 25];
+
+    public dateControl1 = new FormControl(this.project.requestStartTime);
+    public dateControl2 = new FormControl(this.project.requestEndTime);
+    public dateControl3 = new FormControl(this.project.offerEndTime);
 
     constructor(private userService: UserService, private policyService: PolicyService, private _snackBar: MatSnackBar,) { }
-
-    addRequestStartTime(event: MatDatepickerInputEvent<Date>) {
-        console.log(event.value);
-        this.project.requestStartTime = event.value;
-    }
-
-    addRequestEndTime(event: MatDatepickerInputEvent<Date>) {
-        console.log(event.value);
-        this.project.requestEndTime = event.value;
-    }
-
-    addOfferEndTime(event: MatDatepickerInputEvent<Date>) {
-        console.log(event.value);
-        this.project.offerEndTime = event.value;
-    }
 
     changeRules() {
         this.policyService.changeRules(this.project).subscribe(
@@ -62,7 +59,10 @@ export class ChangeRulesComponent {
         );
         this.userService.getMemberCount().subscribe(
             (member: any) => {
-                this.project.cutoff = member.data * this.project.threshold;
+                this.project.cutoff = Math.ceil(member.data * this.project.threshold);
+                this.project.requestStartTime = this.dateControl1.value;
+                this.project.requestEndTime = this.dateControl2.value;
+                this.project.offerEndTime = this.dateControl3.value;
             }
         );
     }

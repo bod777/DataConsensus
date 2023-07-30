@@ -1,0 +1,33 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dpv: <https://w3id.org/dpv#> .
+@prefix user: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/user#> .
+
+<https://id.inrupt.com/DrJohnSmith> a user:User ;
+  foaf:name "Dr John Smith" ;
+  foaf:mbox "johnsmith@tcd.ie" ;
+  user:hasUserType user:ThirdParty ;
+  dpv:Organisation dpv:AcademicScientificOrganisation;
+  dct:description "[This is an example third party account for the user story 1.]" .
+
+<https://id.inrupt.com/thirdparty> a user:User ;
+  foaf:name "Test Third Party" ;
+  foaf:mbox "dataconsensusthirdparty@gmail.com" ;
+  user:hasUserType user:ThirdParty ;
+  dpv:Organisation dpv:AcademicScientificOrganisation;
+  dct:description "This is a test account for third party users." .
+
+<https://id.inrupt.com/InsuranceCompany> a user:User ;
+  foaf:name "Generic Insurance Company" ;
+  foaf:mbox "insurancecompany@example.com" ;
+  user:hasUserType user:ThirdParty ;
+  dpv:Organisation dpv:ForProfitOrganisation;
+  dct:description "[This is an example third party account for the user story 2.]" .
+
+<https://id.inrupt.com/FightDiabetesDublin> a user:User ;
+  foaf:name "Fight Diabetes Dublin" ;
+  foaf:mbox "fightdiabetesdublin@example.com" ;
+  user:hasUserType user:ThirdParty ;
+  dpv:Organisation dpv:NonProfitOrganisation;
+  dct:description "[This is an example third party account for the user story 3.]" .

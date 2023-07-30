@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
     selector: 'app-callback',
-    template: '<p>Loading...</p>',
+    templateUrl: './callback.component.html'
 })
 export class CallbackComponent implements OnInit {
     constructor(private route: ActivatedRoute, private router: Router, private userService: UserService) { }

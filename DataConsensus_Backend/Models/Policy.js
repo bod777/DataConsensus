@@ -8,8 +8,9 @@ const odrl = process.env.ODRL;
 const oac = process.env.OAC;
 
 class Policy {
-    constructor(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType) {
-        this.id = id;
+    constructor(URL, ID, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType) {
+        this.URL = URL;
+        this.ID = ID;
         this.creator = creator;
         this.policyCreationTime = policyCreationTime;
         this.partOf = partOf;
@@ -39,8 +40,9 @@ class Policy {
         return this;
     }
 
-    setPolicy(id, creator, policyCreationTime, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
-        this.id = id;
+    setPolicy(URL, ID, creator, policyCreationTime, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
+        this.URL = URL;
+        this.ID = ID;
         this.creator = creator;
         this.policyCreationTime = policyCreationTime;
         this.partOf = partOf;
@@ -67,8 +69,8 @@ class Policy {
 }
 
 class Agreement extends Policy {
-    constructor(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, references, thresholdType) {
-        super(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType);
+    constructor(URL, ID, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, references, thresholdType) {
+        super(URL, ID, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType);
         this.references = references;
     }
 
@@ -83,7 +85,8 @@ class Agreement extends Policy {
         const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint` }, session);
         const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint` }, session);
 
-        this.uid = solidThing.predicates[ODRL.uid]["namedNodes"][0];
+        this.URL = URL;
+        this.ID = URL.split('#')[1];
         this.creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
         this.policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
         this.isPartOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
@@ -123,7 +126,8 @@ class Agreement extends Policy {
 
     toJson() {
         return {
-            uid: this.uid,
+            URL: this.URL,
+            ID: this.ID,
             creator: this.creator,
             policyCreationTime: this.policyCreationTime,
             isPartOf: this.isPartOf,
@@ -151,8 +155,8 @@ class Agreement extends Policy {
 }
 
 class Proposal extends Policy {
-    constructor(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType) {
-        super(id, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType);
+    constructor(URL, ID, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType) {
+        super(URL, ID, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, technicalMeasures, organisationalMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, deliberationStartTime, requestTime, offerTime, threshold, thresholdType);
         this.thirdPartyApproved = thirdPartyStatus;
         this.memberApproved = memberStatus;
         this.adminApproved = adminStatus;
@@ -169,7 +173,8 @@ class Proposal extends Policy {
         const recipientConstraint = await policyService.getPolicy({ policyURL: `${URL}_recipientConstraint` }, session);
         const durationConstraint = await policyService.getPolicy({ policyURL: `${URL}_durationConstraint` }, session);
 
-        this.uid = solidThing.predicates[ODRL.uid]["namedNodes"][0];
+        this.URL = URL;
+        this.ID = URL.split('#')[1];
         this.creator = extractTerm(solidThing.predicates[DCTERMS.creator]["namedNodes"][0]);
         this.policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
         this.isPartOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
@@ -211,7 +216,8 @@ class Proposal extends Policy {
 
     toJson() {
         return {
-            uid: this.uid,
+            URL: this.URL,
+            ID: this.ID,
             creator: this.creator,
             policyCreationTime: this.policyCreationTime,
             isPartOf: this.isPartOf,

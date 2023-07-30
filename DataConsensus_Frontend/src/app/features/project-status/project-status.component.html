@@ -12,6 +12,9 @@
 <mat-chip *ngIf="projectStatus==='ThirdPartyApprovalNeeded'" style="background-color:pink">{{
     projectStatus |
     backendToFrontend}}</mat-chip>
-<mat-chip *ngIf="projectStatus==='Completed'" style="background-color:palegreen">{{
+<mat-chip *ngIf="projectStatus==='Closed'" style="background-color:palegreen">{{
+    projectStatus |
+    backendToFrontend}}</mat-chip>
+<mat-chip *ngIf="projectStatus==='Removed'" style="background-color:orangered">{{
     projectStatus |
     backendToFrontend}}</mat-chip>

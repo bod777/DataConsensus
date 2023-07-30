@@ -63,13 +63,15 @@ export class CommentSectionComponent implements OnInit {
     ngOnInit() {
         this.commentService.getComments(this.policyURL).subscribe(
             (comments: any) => {
-                console.log(comments.data);
+                // console.log(commentsdata);
                 comments.data.forEach((comment: Comment) => {
                     comment.timeCreated = new Date(comment.timeCreated);
                     comment.timeModerated = new Date(comment.timeModerated);
                 });
-                console.log(comments.data);
-                const relevantComments = comments.data;
+                let relevantComments = comments.data;
+                relevantComments = relevantComments.filter((comment: Comment) => {
+                    return comment.moderated !== true;
+                });
                 relevantComments.sort((a: any, b: any) => {
                     return a.timeCreated.getDate() - b.timeCreated.getDate();
                 });

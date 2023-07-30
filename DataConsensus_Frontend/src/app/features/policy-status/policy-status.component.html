@@ -9,6 +9,8 @@
         <mat-chip class="policy-status" *ngIf="policy.memberApproved==='Pending'"
             style="background-color:lightskyblue">{{
             policy.memberApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.memberApproved==='Blocked'" style="background-color:plum">{{
+            policy.memberApproved}}</mat-chip>
     </div>
     <div class="status-chip">
         <b>Third Party Status:</b>
@@ -20,6 +22,8 @@
             policy.thirdPartyApproved}}</mat-chip>
         <mat-chip class="policy-status" *ngIf="policy.thirdPartyApproved==='Pending'"
             style="background-color:lightskyblue">{{
+            policy.thirdPartyApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.thirdPartyApproved==='Blocked'" style="background-color:plum">{{
             policy.thirdPartyApproved}}</mat-chip>
     </div>
     <div class="status-chip">

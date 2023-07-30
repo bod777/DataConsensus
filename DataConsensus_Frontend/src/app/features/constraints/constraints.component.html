@@ -19,7 +19,7 @@
         to selling insights from the shared data.</mat-chip>
 </div>
 <p>
-    <b>Ends on:</b> {{ policy.untilTimeDuration }}
+    <b>Ends on:</b> {{ policy.untilTimeDuration | date:'dd/MM/yyyy hh:mma'}}
 </p>
 <p><b>Technical and Organisational Measures</b></p>
 <mat-chip-set aria-label="Measures selection">

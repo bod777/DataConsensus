@@ -4,5 +4,5 @@
 
 <https://id.inrupt.com/dataconsensusadmin> a user:User ;
   foaf:name "Bríd O'Donnell" ;
-  foaf:mbox "DataConsensus12345@gmail.com" ;
+  foaf:mbox "dataconsensus12345@gmail.com" ;
   user:hasUserType user:Admin .

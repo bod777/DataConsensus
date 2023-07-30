@@ -10,23 +10,11 @@
 @prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/requests.ttl#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
-request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_sellingInsightsConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      oac:isNotA ;
-        odrl:rightOperand  dpv:SellInsightsFromData .
-
 request:d1739b02-2e77-4930-ac2e-e41ad39ac985_purposeConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   oac:Purpose ;
         odrl:operator      odrl:isA ;
         odrl:rightOperand  dpv:NonCommercialResearch .
-
-request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_techOrgMeasureConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
-        odrl:operator      odrl:isAllOf ;
-        odrl:rightOperand  dpv:EncryptionInTransfer , dpv:ConsultationWithDPO , dpv:CodeOfConduct , dpv:IncidentReportingCommunication , dpv:DataProtectionTraining , dpv:ComplianceMonitoring , dpv:EncryptionAtRest , dpv:PasswordAuthentication .
 
 request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_techOrgMeasureConstraint
         rdf:type           odrl:Constraint ;
@@ -34,35 +22,12 @@ request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_techOrgMeasureConstraint
         odrl:operator      odrl:isAllOf ;
         odrl:rightOperand  dpv:EncryptionInTransfer , dpv:ConsultationWithDPO , dpv:CodeOfConduct , dpv:IncidentReportingCommunication , dpv:DataProtectionTraining , dpv:ComplianceMonitoring , dpv:EncryptionAtRest , dpv:PasswordAuthentication .
 
-request:75a8855d-de1e-4122-9c27-9e92cdd819f5_durationConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   dpv:UntilTimeDuration ;
-        odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2023-07-30T23:00:00.000Z"^^xsd:dateTime .
-
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
         odrl:rightOperand  "2024-12-31T00:00:00"^^xsd:dateTime .
 
-request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_purposeConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      odrl:isA ;
-        odrl:rightOperand  dpv:CommercialResearch .
-
-request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b
-        rdf:type                   odrl:Request ;
-        dct:creator                <https://id.inrupt.com/thirdparty> ;
-        dct:isPartOf               project:e0759307-91cf-4149-bbd3-e4c0bfda3d8e ;
-        dct:issued                 "2023-07-23T19:28:25.019Z"^^xsd:dateTime ;
-        odrl:permission            request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_permission ;
-        odrl:profile               oac: ;
-        odrl:uid                   request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b ;
-        policy:adminApproved       policy:Pending ;
-        policy:memberApproved      policy:Pending ;
-        policy:thirdPartyApproved  policy:Approved .
 
 request:d1739b02-2e77-4930-ac2e-e41ad39ac985_sellingDataConstraint
         rdf:type           odrl:Constraint ;
@@ -76,25 +41,11 @@ request:d1739b02-2e77-4930-ac2e-e41ad39ac985_durationConstraint
         odrl:operator      odrl:eq ;
         odrl:rightOperand  "2044-12-31T00:00:00"^^xsd:dateTime .
 
-request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_sellingInsightsConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      oac:isNotA ;
-        odrl:rightOperand  dpv:SellInsightsFromData .
-
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_recipientConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   oac:Recipient ;
         odrl:operator      odrl:isAnyOf ;
         odrl:rightOperand  <https://id.inrupt.com/DataConsensus> , <https://id.inrupt.com/InsuranceCompany> .
-
-request:75a8855d-de1e-4122-9c27-9e92cdd819f5_permission
-        rdf:type         odrl:Permission ;
-        odrl:action      dpv:Transform , dpv:Remove , dpv:Use , dpv:Store , dpv:Copy ;
-        odrl:assignee    <https://id.inrupt.com/DataConsensus> ;
-        odrl:assigner    <https://id.inrupt.com/thirdparty> ;
-        odrl:constraint  request:75a8855d-de1e-4122-9c27-9e92cdd819f5_purposeConstraint , request:75a8855d-de1e-4122-9c27-9e92cdd819f5_sellingInsightsConstraint , request:75a8855d-de1e-4122-9c27-9e92cdd819f5_techOrgMeasureConstraint , request:75a8855d-de1e-4122-9c27-9e92cdd819f5_sellingDataConstraint , request:75a8855d-de1e-4122-9c27-9e92cdd819f5_organisationConstraint , request:75a8855d-de1e-4122-9c27-9e92cdd819f5_recipientConstraint , request:75a8855d-de1e-4122-9c27-9e92cdd819f5_durationConstraint ;
-        odrl:target      dpvpd:MedicalHealth .
 
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_sellingDataConstraint
         rdf:type           odrl:Constraint ;
@@ -108,11 +59,6 @@ request:d1739b02-2e77-4930-ac2e-e41ad39ac985_sellingInsightsConstraint
         odrl:operator      odrl:isA ;
         odrl:rightOperand  dpv:SellInsightsFromData .
 
-request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_durationConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   dpv:UntilTimeDuration ;
-        odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2023-07-28T23:00:00.000Z"^^xsd:dateTime .
 
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_sellingInsightsConstraint
         rdf:type           odrl:Constraint ;
@@ -120,53 +66,11 @@ request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_sellingInsightsConstraint
         odrl:operator      odrl:isA ;
         odrl:rightOperand  dpv:SellInsightsToThirdParties .
 
-request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_durationConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   dpv:UntilTimeDuration ;
-        odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2023-07-28T23:00:00.000Z"^^xsd:dateTime .
-
-request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_organisationConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Organisation ;
-        odrl:operator      odrl:isA ;
-        odrl:rightOperand  dpv:NonGovernmentalOrganisation .
-
-request:75a8855d-de1e-4122-9c27-9e92cdd819f5_sellingInsightsConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      oac:isNotA ;
-        odrl:rightOperand  dpv:SellInsightsFromData .
-
-request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_recipientConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Recipient ;
-        odrl:operator      odrl:isAllOf ;
-        odrl:rightOperand  <https://id.inrupt.com/thirdparty> .
-
-request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_recipientConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Recipient ;
-        odrl:operator      odrl:isAllOf ;
-        odrl:rightOperand  <https://id.inrupt.com/thirdparty> .
-
 request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
         odrl:rightOperand  "2023-12-31T00:00:00"^^xsd:dateTime .
-
-request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_sellingDataConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      oac:isNotA ;
-        odrl:rightOperand  dpv:SellDataToThirdParties .
-
-request:75a8855d-de1e-4122-9c27-9e92cdd819f5_sellingDataConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      oac:isNotA ;
-        odrl:rightOperand  dpv:SellDataToThirdParties .
 
 request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_recipientConstraint
         rdf:type           odrl:Constraint ;
@@ -218,14 +122,6 @@ request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_purposeConstraint
         odrl:operator      odrl:isA ;
         odrl:rightOperand  dpv:CommercialResearch .
 
-request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_permission
-        rdf:type         odrl:Permission ;
-        odrl:action      dpv:Use , dpv:Remove , dpv:Store , dpv:Transform , dpv:Copy ;
-        odrl:assignee    <https://id.inrupt.com/DataConsensus> ;
-        odrl:assigner    <https://id.inrupt.com/thirdparty> ;
-        odrl:constraint  request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_techOrgMeasureConstraint , request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_sellingInsightsConstraint , request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_sellingDataConstraint , request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_durationConstraint , request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_purposeConstraint , request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_organisationConstraint , request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_recipientConstraint ;
-        odrl:target      dpvpd:MedicalHealth .
-
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_organisationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   oac:Organisation ;
@@ -238,71 +134,17 @@ request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_techOrgMeasureConstraint
         odrl:operator      odrl:isAllOf ;
         odrl:rightOperand  dpv:DataProtectionTraining , dpv:ConsultationWithDPO , dpv:IncidentManagementProcedures , dpv:CryptographicMethods , dpv:NeworkSecurityProtocols , dpv:CertificationSeal , dpv:EncryptionInTransfer , dpv:MultiFactorAuthentication , dpv:NDA , dpv:LoggingPolicies , dpv:CodeOfConduct , dpv:CybersecurityTraining , dpv:IncidentReportingCommunication , dpv:ComplianceMonitoring , dpv:EncryptionAtRest , dpv:PhysicalAssessControlMethod .
 
-request:75a8855d-de1e-4122-9c27-9e92cdd819f5_organisationConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Organisation ;
-        odrl:operator      odrl:isA ;
-        odrl:rightOperand  dpv:ForProfitOrganisation .
-
-request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_purposeConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      odrl:isA ;
-        odrl:rightOperand  dpv:CommercialResearch .
-
 request:d1739b02-2e77-4930-ac2e-e41ad39ac985_techOrgMeasureConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
         odrl:operator      odrl:isAllOf ;
         odrl:rightOperand  dpv:EncryptionInTransfer , dpv:OperatingSystemSecurity , dpv:PasswordAuthentication .
 
-request:75a8855d-de1e-4122-9c27-9e92cdd819f5_purposeConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      odrl:isA ;
-        odrl:rightOperand  dpv:AcademicResearch .
-
-request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c
-        rdf:type                   odrl:Request ;
-        dct:creator                <https://id.inrupt.com/thirdparty> ;
-        dct:isPartOf               project:931b1c39-4a83-4927-b6a5-86b01ae42956 ;
-        dct:issued                 "2023-07-23T19:29:28.162Z"^^xsd:dateTime ;
-        odrl:permission            request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_permission ;
-        odrl:profile               oac: ;
-        odrl:uid                   request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c ;
-        policy:adminApproved       policy:Pending ;
-        policy:memberApproved      policy:Approved ;
-        policy:thirdPartyApproved  policy:Approved .
-
-request:75a8855d-de1e-4122-9c27-9e92cdd819f5_recipientConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Recipient ;
-        odrl:operator      odrl:isAllOf ;
-        odrl:rightOperand  <https://id.inrupt.com/thirdparty> .
-
-request:75a8855d-de1e-4122-9c27-9e92cdd819f5_techOrgMeasureConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
-        odrl:operator      odrl:isAllOf ;
-        odrl:rightOperand  dpv:DesignStandard .
-
-request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_techOrgMeasureConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
-        odrl:operator      odrl:isAllOf ;
-        odrl:rightOperand  dpv:DesignStandard .
-
 request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_sellingInsightsConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   oac:Purpose ;
         odrl:operator      oac:isNotA ;
         odrl:rightOperand  dpv:SellInsightsFromData .
-
-request:4a3dd1fc-f853-4732-b799-9f1b1eaa0a9c_organisationConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Organisation ;
-        odrl:operator      odrl:isA ;
-        odrl:rightOperand  dpv:NonGovernmentalOrganisation .
 
 request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_permission
         rdf:type         odrl:Permission ;
@@ -312,12 +154,6 @@ request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_permission
         odrl:constraint  request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_organisationConstraint , request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_sellingInsightsConstraint , request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_durationConstraint , request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_techOrgMeasureConstraint , request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_sellingDataConstraint , request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_purposeConstraint , request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_recipientConstraint ;
         odrl:target      dpvpd:MedicalHealth .
 
-request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_sellingDataConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      oac:isNotA ;
-        odrl:rightOperand  dpv:SellDataToThirdParties .
-
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15
         rdf:type                   odrl:Request ;
         dct:creator                <https://id.inrupt.com/InsuranceCompany> ;
@@ -326,20 +162,8 @@ request:72013827-a31e-4a27-a7cb-0b86fa9ddf15
         odrl:permission            request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_permission ;
         odrl:profile               oac: ;
         odrl:uid                   request:72013827-a31e-4a27-a7cb-0b86fa9ddf15 ;
-        policy:adminApproved       policy:Approved ;
-        policy:memberApproved      policy:Approved ;
-        policy:thirdPartyApproved  policy:Approved .
-
-request:75a8855d-de1e-4122-9c27-9e92cdd819f5
-        rdf:type                   odrl:Request ;
-        dct:creator                <https://id.inrupt.com/thirdparty> ;
-        dct:isPartOf               project:937dea49-bc83-4824-9ede-1abfefefb59a ;
-        dct:issued                 "2023-07-23T19:30:40.412Z"^^xsd:dateTime ;
-        odrl:permission            request:75a8855d-de1e-4122-9c27-9e92cdd819f5_permission ;
-        odrl:profile               oac: ;
-        odrl:uid                   request:75a8855d-de1e-4122-9c27-9e92cdd819f5 ;
-        policy:adminApproved       policy:Pending ;
-        policy:memberApproved      policy:Pending ;
+        policy:adminApproved       policy:Blocked ;
+        policy:memberApproved      policy:Rejected ;
         policy:thirdPartyApproved  policy:Approved .
 
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_permission
@@ -373,11 +197,3 @@ request:d1739b02-2e77-4930-ac2e-e41ad39ac985
         policy:adminApproved       policy:Blocked ;
         policy:memberApproved      policy:Rejected ;
         policy:thirdPartyApproved  policy:Approved .
-
-request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_permission
-        rdf:type         odrl:Permission ;
-        odrl:action      dpv:Store , dpv:Copy , dpv:Remove , dpv:Use , dpv:Transform ;
-        odrl:assignee    <https://id.inrupt.com/DataConsensus> ;
-        odrl:assigner    <https://id.inrupt.com/thirdparty> ;
-        odrl:constraint  request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_purposeConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_techOrgMeasureConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_durationConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_organisationConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_recipientConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_sellingDataConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_sellingInsightsConstraint ;
-        odrl:target      dpvpd:MedicalHealth .

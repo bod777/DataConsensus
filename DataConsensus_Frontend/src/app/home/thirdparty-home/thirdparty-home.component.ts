@@ -20,7 +20,6 @@ export class ThirdPartyHomeComponent implements OnInit {
     user: string = localStorage.getItem('webID') || '';
     loading: boolean = true;
     public dataSource = new MatTableDataSource<Project>([]);
-    displayedColumns = ['title', 'creator', 'projectCreationTime', 'projectStatus', 'buttons']
 
     isRelevant(project: Project) {
         let isRelevant = false;
@@ -28,22 +27,6 @@ export class ThirdPartyHomeComponent implements OnInit {
             isRelevant = true;
         }
         return isRelevant;
-    }
-
-    navigateToProfile(webID: string) {
-        this.router.navigate(['/profile'], { queryParams: { webID: webID } });
-    }
-
-    @ViewChild(MatPaginator) set matPaginator(paginator: MatPaginator) {
-        this.dataSource.paginator = paginator;
-    }
-    @ViewChild(MatSort) set matSort(sort: MatSort) {
-        // this needs to be a setter to ensure sort is added AFTER it is defined in the template, otherwise it won't work
-        this.dataSource.sort = sort;
-    }
-
-    navigateToProject(projectID: string) {
-        this.router.navigate([`/project`], { queryParams: { projectID: projectID } });
     }
 
     ngOnInit() {
@@ -57,8 +40,8 @@ export class ThirdPartyHomeComponent implements OnInit {
                     project.offerEndTime = new Date(project.offerEndTime);
                     return project;
                 });
-                const activeProjects = projects.filter((project: Project) => this.isRelevant(project));
-                this.dataSource.data = activeProjects;
+                const relevantProjects = projects.filter((project: Project) => this.isRelevant(project));
+                this.dataSource.data = relevantProjects;
                 this.loading = false;
             },
             (error) => {

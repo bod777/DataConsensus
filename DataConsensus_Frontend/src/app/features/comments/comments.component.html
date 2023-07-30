@@ -5,7 +5,7 @@
         </mat-card-header>
         <mat-card-content>
             <p>{{comment.author}}</p>
-            <p>{{comment.timeCreated}}</p>
+            <p>{{comment.timeCreated | date:'dd/MM/yyyy hh:mma'}}</p>
         </mat-card-content>
         <mat-card-actions *ngIf="comment.author === user || isAdmin">
             <button mat-button *ngIf="isAdmin" (click)="moderateComment(comment)">Moderate</button>

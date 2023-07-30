@@ -36,7 +36,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatDatetimePickerModule, NgxMatTimepickerModule, NgxMatNativeDateModule } from '@angular-material-components/datetime-picker';
 
 // services
 import { UserService } from './services/user.service';
@@ -48,6 +48,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { MemberSignUpComponent } from './auth/member-signup/member-signup.component';
 import { ThirdPartySignUpComponent } from './auth/thirdparty-signup/thirdparty-signup.component';
+import { CallbackComponent } from './auth/callback/callback.component';
 
 import { AppLayoutComponent } from './app-layout/app-layout.component';
 import { MenuComponent } from './features/menu/menu.component';
@@ -78,6 +79,7 @@ import { PolicyStatusComponent } from './features/policy-status/policy-status.co
 import { ChangeRulesComponent } from './features/change-rules/change-rules.component';
 import { ConstraintsComponent } from './features/constraints/constraints.component';
 import { BackendToFrontendPipe } from './pipe/backend-to-frontend.pipe';
+import { HomeTableComponent } from './features/home-table/home-table.component';
 
 @NgModule({
     declarations: [
@@ -109,6 +111,8 @@ import { BackendToFrontendPipe } from './pipe/backend-to-frontend.pipe';
         ChangeRulesComponent,
         ConstraintsComponent,
         BackendToFrontendPipe,
+        HomeTableComponent,
+        CallbackComponent
     ],
     imports: [
         BrowserModule,
@@ -149,7 +153,8 @@ import { BackendToFrontendPipe } from './pipe/backend-to-frontend.pipe';
         MatSortModule,
         MatPaginatorModule,
         NgxMatDatetimePickerModule,
-        NgxMatTimepickerModule
+        NgxMatTimepickerModule,
+        NgxMatNativeDateModule
     ],
     exports: [
         MenuComponent,
@@ -161,7 +166,8 @@ import { BackendToFrontendPipe } from './pipe/backend-to-frontend.pipe';
         PolicyStatusComponent,
         ChangeRulesComponent,
         ConstraintsComponent,
-        MatPaginatorModule
+        MatPaginatorModule,
+        HomeTableComponent
     ],
     providers: [UserService, PolicyService, DatePipe,
         { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }

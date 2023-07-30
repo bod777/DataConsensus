@@ -15,7 +15,7 @@ agreement:639727b3-c8ca-47ea-ba3e-51fc68d05bd9
         rdf:type                    odrl:Agreement ;
         dct:creator                 <https://id.inrupt.com/odonneb4> ;
         dct:isPartOf                project:af993b9f-b8ba-4f3f-9f5e-26b6d37747ae ;
-        dct:issued                  "2023-06-08T18:13:37"^^xsd:dateTime ;
+        dct:issued                  "2023-06-13T18:13:37"^^xsd:dateTime ;
         dct:references              request:12d6eb50-f6e2-488c-8923-fb0c4d47749a ;
         odrl:permission             agreement:639727b3-c8ca-47ea-ba3e-51fc68d05bd9_permission ;
         odrl:profile                oac: ;
@@ -79,7 +79,7 @@ agreement:dc77aae7-e8bf-4514-a088-9d927b91b39e
         rdf:type                    odrl:Agreement ;
         dct:creator                 <https://id.inrupt.com/odonneb4> ;
         dct:isPartOf                project:4ddb1306-df85-4730-8545-14973be50cd2 ;
-        dct:issued                  "2023-06-08T18:13:37"^^xsd:dateTime ;
+        dct:issued                  "2023-06-23T18:13:37"^^xsd:dateTime ;
         dct:references              offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
         odrl:permission             agreement:dc77aae7-e8bf-4514-a088-9d927b91b39e_permission ;
         odrl:profile                oac: ;

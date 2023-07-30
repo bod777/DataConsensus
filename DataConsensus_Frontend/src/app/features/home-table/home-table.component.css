@@ -71,6 +71,10 @@ mat-tab-group {
     width: 100%;
 }
 
+mat-card-title {
+    text-align: center;
+}
+
 mat-card-header {
     margin-bottom: 20px;
     display: flex;

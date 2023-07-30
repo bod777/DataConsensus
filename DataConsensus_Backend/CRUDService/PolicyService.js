@@ -275,14 +275,9 @@ module.exports = {
             console.log(getUrl(policy, DCTERMS.creator));
             console.log(webID);
             if (webID === getUrl(policy, DCTERMS.creator) || isAdmin) {
-                console.log("check1");
-                console.log(policy);
-                console.log(getUrl(policy, `${policySchema}#memberApproved`));
                 if (getUrl(policy, `${policySchema}#memberApproved`) === `${policySchema}#Pending`) {
-                    console.log("check2");
-                    console.log(datasetURL);
                     if (datasetURL === requestsList) {
-                        this.updateProject({ projectURL: getUrl(policy, DCTERMS.isPartOf), status: "Completed" }, session);
+                        this.updateProject({ projectURL: getUrl(policy, DCTERMS.isPartOf), status: "Removed" }, session);
                     }
                     solidDataset = removeThing(solidDataset, policy);
                     solidDataset = removeThing(solidDataset, permissionThing);
@@ -330,7 +325,7 @@ module.exports = {
             await this.updatePolicyStatus(req, session);
         }
         if (projectURL !== "") {
-            await this.updateProject({ projectURL, agreement: false }, session);
+            await this.updateProject({ projectURL, agreement: false, status: "Removed" }, session);
         }
 
         solidDataset = removeThing(solidDataset, policy);

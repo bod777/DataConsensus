@@ -32,14 +32,17 @@
                             <b>Organisation type:</b> {{ project.organisation }}
                         </p>
                         <p>
-                            <b>Creation date:</b> {{ project.projectCreationTime | date:'dd/MM/yyyy' }}
+                            <b>Creation date:</b> {{ project.projectCreationTime | date:'dd/MM/yyyy
+                            hh:mma'}}
                         </p>
                         <p>
                             <b>Start time for deliberation on request:</b> {{ project.requestStartTime |
-                            date:'dd/MM/yyyy'}}
+                            date:'dd/MM/yyyy
+                            hh:mma'}}
                         </p>
                         <p>
-                            <b>End time for deliberation on request:</b> {{ project.requestEndTime | date:'dd/MM/yyyy'}}
+                            <b>End time for deliberation on request:</b> {{ project.requestEndTime | date:'dd/MM/yyyy
+                            hh:mma'}}
                         </p>
                         <div *ngIf="project.projectStatus==='OfferDeliberation'">
                             <p>
@@ -48,10 +51,7 @@
                             </p>
                         </div>
                         <p>
-                            <b>Passing threshold: </b> {{ (project.threshold * 100).toFixed(2) }}%
-                        </p>
-                        <p>
-                            <b>Cutoff: </b> {{ project.cutoff}}
+                            <b>Passing threshold: </b> {{ project.cutoff}} ({{ (project.threshold * 100).toFixed(2) }}%)
                         </p>
                         <b>Project Status:</b>
                         <project-status style="margin-left:30px; margin-right:30px"
@@ -86,12 +86,12 @@
                 <mat-card>
                     <mat-card-header>
                         <mat-card-title>{{ project.title }}</mat-card-title>
-                        <mat-card-subtitle>Request</mat-card-subtitle>
+                        <mat-card-subtitle>Request ID: {{request.ID}} </mat-card-subtitle>
                     </mat-card-header>
                     <policy-status [policy]="request"></policy-status>
                     <!-- RESULTS FOR REQUEST -->
                     <mat-card-content
-                        *ngIf="projectStatus === 'Completed' || projectStatus === 'OfferDeliberation' || projectStatus === 'AdminApprovalNeeded' || projectStatus === 'ThirdPartyApprovalNeeded'">
+                        *ngIf="projectStatus === 'Closed' || projectStatus === 'OfferDeliberation' || projectStatus === 'AdminApprovalNeeded' || projectStatus === 'ThirdPartyApprovalNeeded'">
                         <h3 class="instructions">Vote Results</h3>
                         <div class="request-results-container">
                             <div class="request-results-item">
@@ -131,7 +131,7 @@
                     <mat-card-content *ngIf="request.creator === user">
                         <mat-card-actions>
                             <mat-card-actions class="button-container">
-                                <button mat-raised-button color="warn" (click)="removeProposal(request.uid)">Remove
+                                <button mat-raised-button color="warn" (click)="removeProposal(request.URL)">Remove
                                     Request</button>
                             </mat-card-actions>
                         </mat-card-actions>
@@ -143,7 +143,7 @@
                     <mat-card-content>
                         <mat-divider></mat-divider>
                         <h3>Comments</h3>
-                        <comments [policyURL]="request.uid"></comments>
+                        <comments [policyURL]="request.URL"></comments>
                     </mat-card-content>
                 </mat-card>
             </mat-drawer-content>
@@ -152,7 +152,7 @@
                 <mat-card>
                     <mat-card-header>
                         <mat-card-title>{{ project.title }}</mat-card-title>
-                        <mat-card-subtitle>Offers</mat-card-subtitle>
+                        <mat-card-subtitle>{{offers.length}} Offers Proposed</mat-card-subtitle>
                     </mat-card-header>
                     <!-- PREFERENCE CARD -->
                     <div *ngIf="project.projectStatus==='OfferDeliberation'">
@@ -162,7 +162,7 @@
                     </div>
                     <!-- RESULTS FOR OFFER -->
                     <mat-card-content
-                        *ngIf="projectStatus === 'Completed' || projectStatus === 'Completed' || projectStatus === 'AdminApprovalNeeded' || projectStatus === 'ThirdPartyApprovalNeeded'">
+                        *ngIf="projectStatus === 'Closed' || projectStatus === 'AdminApprovalNeeded' || projectStatus === 'ThirdPartyApprovalNeeded'">
                         <div *ngIf="offerResult==='rejection'">
                             <p><b>All proposed offers rejected by members</b></p>
                         </div>
@@ -178,7 +178,7 @@
                     </mat-card-content>
                 </mat-card>
                 <mat-tab-group>
-                    <mat-tab *ngFor="let offer of offers" [label]="offer.id">
+                    <mat-tab *ngFor="let offer of offers" [label]="offer.ID">
                         <mat-card>
                             <policy-status [policy]="offer"></policy-status>
                             <mat-card-content>
@@ -187,7 +187,8 @@
                                         offer.creator }}</button>
                                 </p>
                                 <p>
-                                    <b>Creation date:</b> {{ offer.policyCreationTime }}
+                                    <b>Creation date:</b> {{ offer.policyCreationTime | date:'dd/MM/yyyy
+                                    hh:mma'}}
                                 </p>
                                 <mat-divider></mat-divider>
                                 <constraints [policy]="offer"></constraints>
@@ -196,14 +197,14 @@
                                     <mat-card-actions>
                                         <mat-card-actions class="button-container">
                                             <button mat-raised-button color="warn"
-                                                (click)="removeProposal(offer.uid)">Remove
+                                                (click)="removeProposal(offer.URL)">Remove
                                                 OFFER</button>
                                         </mat-card-actions>
                                     </mat-card-actions>
                                 </mat-card-content>
                                 <mat-divider></mat-divider>
                                 <h2>Comments</h2>
-                                <comments [policyURL]="offer.uid"></comments>
+                                <comments [policyURL]="offer.URL"></comments>
                             </mat-card-content>
                         </mat-card>
                     </mat-tab>
@@ -226,13 +227,14 @@
                                 agreement.creator }}</button>
                         </p>
                         <p>
-                            <b>Date in effect:</b> {{ agreement.policyCreationTime }}
+                            <b>Date in effect:</b> {{ agreement.policyCreationTime | date:'dd/MM/yyyy
+                            hh:mma'}}
                         </p>
                         <mat-divider></mat-divider>
                         <constraints [policy]="agreement"></constraints>
                     </mat-card-content>
                     <!-- REMOVE AGREEMENT BUTTON -->
-                    <mat-card-content *ngIf="project.projectStatus==='Completed' && userType==='ADMIN'">
+                    <mat-card-content *ngIf="project.projectStatus==='Closed' && userType==='ADMIN'">
                         <mat-card-actions>
                             <mat-card-actions class="button-container">
                                 <button mat-raised-button (click)="removeAgreement()" color="warn">Remove
@@ -243,7 +245,7 @@
                     <mat-card-content>
                         <mat-divider></mat-divider>
                         <h3>Comments</h3>
-                        <comments [policyURL]="agreement.uid"></comments>
+                        <comments [policyURL]="agreement.URL"></comments>
                     </mat-card-content>
                 </mat-card>
             </mat-drawer-content>

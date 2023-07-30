@@ -191,7 +191,7 @@ module.exports = function (appSession) {
                 const abstention = membersNumber - (upvotes + downvotes);
                 const threshold = policyJSON.threshold;
                 let result = false;
-                if (upvotes > (membersNumber * threshold)) {
+                if (upvotes > Math.ceil(membersNumber * threshold)) {
                     result = true;
                 }
                 if (result === true) {
@@ -237,7 +237,7 @@ module.exports = function (appSession) {
             results.push({ policyUrl: `${offersList}#rejection`, count: rejectVote });
             const sortedResults = results.sort((a, b) => b.count - a.count);
             const totalCount = sortedResults.reduce((total, policy) => total + policy.count, 0);
-            const cutoff = membersNumber * threshold;
+            const cutoff = Math.ceil(membersNumber * threshold);
             for (let i = 0; i < sortedResults.length; i++) {
                 const policyToUpdate = { policyURL: sortedResults[i].policyUrl, actor: "memberApproved" };
                 if (i === 0) {

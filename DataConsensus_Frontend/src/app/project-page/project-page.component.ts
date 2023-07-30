@@ -51,7 +51,7 @@ export class ProjectPageComponent implements OnInit {
     downvote() {
         this.downvoteState = true;
         this.upvoteState = false;
-        this.voteService.downvote(this.user, this.request.uid).subscribe(
+        this.voteService.downvote(this.user, this.request.URL).subscribe(
             (vote: any) => {
                 this._snackBar.open("Success", "Close", { duration: 3000 });
             },
@@ -64,7 +64,7 @@ export class ProjectPageComponent implements OnInit {
     upvote() {
         this.upvoteState = true;
         this.downvoteState = false;
-        this.voteService.upvote(this.user, this.request.uid).subscribe(
+        this.voteService.upvote(this.user, this.request.URL).subscribe(
             (vote: any) => {
                 this._snackBar.open("Success", "Close", { duration: 3000 });
             },
@@ -85,7 +85,7 @@ export class ProjectPageComponent implements OnInit {
         );
         this.userService.getMemberCount().subscribe(
             (member: any) => {
-                this.project.cutoff = member.data * this.project.threshold;
+                this.project.cutoff = Math.ceil(member.data * this.project.threshold);
             }
         );
     }
@@ -182,7 +182,7 @@ export class ProjectPageComponent implements OnInit {
                 this.project = project.data;
                 this.userService.getMemberCount().subscribe(
                     (member: any) => {
-                        this.project.cutoff = member.data * this.project.threshold;
+                        this.project.cutoff = Math.ceil(member.data * this.project.threshold);
                     }
                 );
                 this.projectStatus = this.project.projectStatus;
@@ -274,7 +274,6 @@ export class ProjectPageComponent implements OnInit {
                                 });
                                 offer.data.purpose = purposeOptions[offer.data.purpose] || offer.data.purpose;
                                 offer.data.organisation = organisationOptions[offer.data.organisation] || offer.data.organisation;
-                                offer.data.id = id;
                                 this.offers.push(offer.data);
                             },
                             (error) => {
@@ -284,7 +283,7 @@ export class ProjectPageComponent implements OnInit {
                         )
                     }
                 }
-                if (this.projectStatus !== "Completed") {
+                if (this.projectStatus !== "Closed") {
                     if (this.dateService.isDatePassed(this.project.requestStartTime)) {
                         // console.log("Request Deliberation");
                         this.projectStatus = "RequestDeliberation";
@@ -349,7 +348,7 @@ export class ProjectPageComponent implements OnInit {
                         }
                         else {
                             // console.log("Admin Approval Needed");
-                            this.toBeApproved = this.request.uid;
+                            this.toBeApproved = this.request.URL;
                             this.projectStatus = "AdminApprovalNeeded";
                         }
                         this.policyService.updateStatus(this.projectID, this.projectStatus).subscribe(
@@ -377,19 +376,21 @@ export class ProjectPageComponent implements OnInit {
                                 this._snackBar.open("Error in fetching request deliberation result: " + error, "Close", { duration: 3000 });
                             }
                         );
-                        this.voteService.getOfferResult(this.projectID).subscribe(
-                            (response) => {
-                                this.offerResult = response.winner;
-                                console.log("Offer Result: ", response);
-                                this._snackBar.open("Successfully fetched offer deliberation result", "Close", { duration: 3000 });
-                            },
-                            (error) => {
-                                console.log(error);
-                                this._snackBar.open("Error in fetching offer deliberation result: " + error, "Close", { duration: 3000 });
-                            }
-                        );
-                        this.agreementID = this.project.projectPolicies.agreements[0].split("#")[1] || "";
-                        if (this.agreementID !== "") {
+                        if (this.offers.length !== 0) {
+                            this.voteService.getOfferResult(this.projectID).subscribe(
+                                (response) => {
+                                    this.offerResult = response.winner;
+                                    // console.log("Offer Result: ", response);
+                                    this._snackBar.open("Successfully fetched offer deliberation result", "Close", { duration: 3000 });
+                                },
+                                (error) => {
+                                    console.log(error);
+                                    this._snackBar.open("Error in fetching offer deliberation result: " + error, "Close", { duration: 3000 });
+                                }
+                            );
+                        }
+                        if (this.project.hasAgreement) {
+                            this.agreementID = this.project.projectPolicies.agreements[0].split("#")[1] || "";
                             this.policyService.getAgreement(this.agreementID).subscribe(
                                 (policy) => {
                                     console.log(policy.data);

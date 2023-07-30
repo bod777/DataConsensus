@@ -20,23 +20,6 @@ export class AdminHomeComponent implements OnInit {
 
     loading: boolean = true;
     public dataSource = new MatTableDataSource<Project>([]);
-    displayedColumns = ['title', 'creator', 'projectCreationTime', 'projectStatus', 'buttons']
-
-    navigateToProfile(webID: string) {
-        this.router.navigate(['/profile'], { queryParams: { webID: webID } });
-    }
-
-    @ViewChild(MatPaginator) set matPaginator(paginator: MatPaginator) {
-        this.dataSource.paginator = paginator;
-    }
-    @ViewChild(MatSort) set matSort(sort: MatSort) {
-        // this needs to be a setter to ensure sort is added AFTER it is defined in the template, otherwise it won't work
-        this.dataSource.sort = sort;
-    }
-
-    navigateToProject(projectID: string) {
-        this.router.navigate([`/project`], { queryParams: { projectID: projectID } });
-    }
 
     ngOnInit() {
         this.policyService.getAllProjects().subscribe(
@@ -49,7 +32,9 @@ export class AdminHomeComponent implements OnInit {
                     project.offerEndTime = new Date(project.offerEndTime);
                     return project;
                 });
-
+                projects = projects.filter((project: Project) => {
+                    return project.projectStatus !== "Removed";
+                });
                 this.dataSource.data = projects;
                 this.loading = false;
             },
