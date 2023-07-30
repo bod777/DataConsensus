@@ -254,7 +254,7 @@ module.exports = {
     removeProposal: async function (req, session) {
         const webID = req.requester;
         const policyURL = req.policyURL;
-        const datasetURL = getPolicyDataset(policyURL); l
+        const datasetURL = getPolicyDataset(policyURL);
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         const policy = getThing(solidDataset, policyURL);
         const permissionThing = getThing(solidDataset, `${policyURL}_permission`);
@@ -271,10 +271,18 @@ module.exports = {
         else {
             // only the creator of the policy or an admin can delete it and only if the memberApproved is Pending
             const isAdmin = await userService.checkUserByType({ type: "ADMIN", webID }, session);
+            console.log("isAdmin", isAdmin);
+            console.log(getUrl(policy, DCTERMS.creator));
+            console.log(webID);
             if (webID === getUrl(policy, DCTERMS.creator) || isAdmin) {
-                if (policy.memberApproved === `${policySchema}#Pending`) {
+                console.log("check1");
+                console.log(policy);
+                console.log(getUrl(policy, `${policySchema}#memberApproved`));
+                if (getUrl(policy, `${policySchema}#memberApproved`) === `${policySchema}#Pending`) {
+                    console.log("check2");
+                    console.log(datasetURL);
                     if (datasetURL === requestsList) {
-                        this.updateProject({ projectURL: policy.project, status: "Completed" }, session);
+                        this.updateProject({ projectURL: getUrl(policy, DCTERMS.isPartOf), status: "Completed" }, session);
                     }
                     solidDataset = removeThing(solidDataset, policy);
                     solidDataset = removeThing(solidDataset, permissionThing);
@@ -321,8 +329,7 @@ module.exports = {
             };
             await this.updatePolicyStatus(req, session);
         }
-        if (projectURL !== null) {
-            // console.log("projectURL:", projectURL);
+        if (projectURL !== "") {
             await this.updateProject({ projectURL, agreement: false }, session);
         }
 
@@ -358,7 +365,7 @@ module.exports = {
             .addUrl(`${oac}Organisation`, `${dpv}${req.organisation}`)
             .addUrl(DCTERMS.creator, req.creator)
             .addDatetime(DCTERMS.issued, currentTime)
-            .addDatetime(`${projectSchema}#requestStartTime`, deliberationStartTime)
+            .addDatetime(`${projectSchema}#requestStartTime`, requestStartTime)
             .addDatetime(`${projectSchema}#requestEndTime`, requestEndTime)
             .addDatetime(`${projectSchema}#offerEndTime`, offerEndTime)
             .addDecimal(`${projectSchema}#threshold`, 0.5)
@@ -374,42 +381,43 @@ module.exports = {
 
     updateProject: async function (req, session) {
         let solidDataset = await getGivenSolidDataset(projectsList, session);
-
         let projectToUpdate = getThing(solidDataset, req.projectURL);
         if (projectToUpdate) {
-            if (req.status) {
+            if (req.status !== undefined) {
                 projectToUpdate = buildThing(projectToUpdate)
                     .setUrl(`${projectSchema}#hasProjectStatus`, `${projectSchema}#${req.status}`)
                     .build();
             }
-            if (req.title) {
+            if (req.title !== undefined) {
                 projectToUpdate = buildThing(projectToUpdate)
                     .setStringNoLocale(DCTERMS.title, req.title)
                     .build();
             }
-            if (req.description) {
+            if (req.description !== undefined) {
                 projectToUpdate = buildThing(projectToUpdate)
                     .setStringNoLocale(DCTERMS.description, req.description).build();
             }
-            if (req.requestStartTime) {
+            if (req.requestStartTime !== undefined) {
+                console.log(req.requestStartTime);
+                console.log(typeof req.requestStartTime);
                 projectToUpdate = buildThing(projectToUpdate)
-                    .setInteger(`${projectSchema}#requestStartTime`, req.startTime).build();
+                    .setDatetime(`${projectSchema}#requestStartTime`, new Date(req.requestStartTime)).build();
             }
-            if (req.requestEndTime) {
+            if (req.requestEndTime !== undefined) {
                 projectToUpdate = buildThing(projectToUpdate)
-                    .setInteger(`${projectSchema}#requestEndTime`, req.requestTime).build();
+                    .setDatetime(`${projectSchema}#requestEndTime`, new Date(req.requestEndTime)).build();
             }
-            if (req.offerEndTime) {
+            if (req.offerEndTime !== undefined) {
                 projectToUpdate = buildThing(projectToUpdate)
-                    .setInteger(`${projectSchema}#offerEndTime`, req.offerTime).build();
+                    .setDatetime(`${projectSchema}#offerEndTime`, new Date(req.offerEndTime)).build();
             }
-            if (req.threshold) {
+            if (req.threshold !== undefined) {
                 projectToUpdate = buildThing(projectToUpdate)
                     .setDecimal(`${projectSchema}#threshold`, req.threshold).build();
             }
-            if (req.agreememt) {
+            if (req.agreement !== undefined) {
                 projectToUpdate = buildThing(projectToUpdate)
-                    .setBoolean(`${projectSchema}#hasAgreement`, req.agreememt).build();
+                    .setBoolean(`${projectSchema}#hasAgreement`, req.agreement).build();
             }
             solidDataset = setThing(solidDataset, projectToUpdate);
             await saveGivenSolidDataset(projectsList, solidDataset, session);

@@ -11,7 +11,7 @@ export interface Project {
     requestStartTime: Date;
     requestEndTime: Date;
     offerEndTime: Date;
-    threshold: string;
+    threshold: number;
     projectPolicies: {
         requests: string[];
         offers: string[];

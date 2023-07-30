@@ -10,23 +10,28 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
     selector: 'agreement-list',
     template: `
     <h1>Agreements</h1>
-    <agreement-card [dataArray]="dataArray"></agreement-card>
+    <agreement-card *ngIf="!isLoading" [dataArray]="agreements"></agreement-card>
+    <mat-spinner *ngIf="isLoading" class="spinner"></mat-spinner>
   `,
     styleUrls: ['./agreement-list.component.css']
 })
 
 export class AgreementListComponent implements OnInit {
-    dataArray: any[] = [];
+    agreements: any[] = [];
+    isLoading: boolean = true;
 
-    constructor(private policyService: PolicyService) { }
+    constructor(private policyService: PolicyService, private _snackBar: MatSnackBar) { }
 
     ngOnInit() {
         this.policyService.getAllAgreements().subscribe(
             (data) => {
-                this.dataArray = data.data;
+                this.agreements = data.data;
+                this.isLoading = false;
             },
             (error) => {
                 console.log(error);
-            });
+                this._snackBar.open("Error fetching agreements. Try refreshing. Error:" + error, "Close", { duration: 30000 });
+            }
+        );
     }
 }

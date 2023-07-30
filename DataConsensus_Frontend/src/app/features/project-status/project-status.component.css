@@ -1,0 +1,16 @@
+.status-bar {
+    display: block;
+    justify-content: center;
+    justify-items: center;
+}
+
+.status-chip {
+    text-align: center;
+}
+
+mat-chip {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

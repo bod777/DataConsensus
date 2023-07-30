@@ -23,9 +23,9 @@ module.exports = function (appSession) {
                 if (req.body.title) projectToUpdate.title = req.body.title;
                 if (req.body.description) projectToUpdate.description = req.body.description;
                 if (req.body.status) projectToUpdate.status = req.body.status;
-                if (req.body.startTime) projectToUpdate.requestStartTime = req.body.requestStartTime;
-                if (req.body.requestTime) projectToUpdate.requestEndTime = req.body.requestEndTime;
-                if (req.body.offerTime) projectToUpdate.offerEndTime = req.body.offerEndTime;
+                if (req.body.requestStartTime) projectToUpdate.requestStartTime = req.body.requestStartTime;
+                if (req.body.requestEndTime) projectToUpdate.requestEndTime = req.body.requestEndTime;
+                if (req.body.offerEndTime) projectToUpdate.offerEndTime = req.body.offerEndTime;
                 if (req.body.threshold) projectToUpdate.threshold = req.body.threshold;
                 if (req.body.agreement) projectToUpdate.agreement = req.body.agreement;
 

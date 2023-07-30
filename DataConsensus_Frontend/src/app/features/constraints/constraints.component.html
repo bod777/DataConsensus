@@ -1,0 +1,31 @@
+<h2>Constraints</h2>
+<p>
+    <b>Organisation:</b> {{ policy.organisation }}
+</p>
+<p>
+    <b>Purpose:</b> {{ policy.purpose }}
+</p>
+<p>
+    <b>Other Permissions:</b>
+</p>
+<div class="permissions-div">
+    <mat-chip *ngIf="policy.sellingData===false" color="primary">
+        Not perrmitted to selling the data to other third parties.</mat-chip>
+    <mat-chip *ngIf="policy.sellingData===true" color="warn">
+        Perrmitted to selling the data to other third parties.</mat-chip>
+    <mat-chip *ngIf="policy.sellingInsights===false" color="primary">Not
+        perrmitted to selling insights from the shared data.</mat-chip>
+    <mat-chip *ngIf="policy.sellingInsights===true" color="warn">Perrmitted
+        to selling insights from the shared data.</mat-chip>
+</div>
+<p>
+    <b>Ends on:</b> {{ policy.untilTimeDuration }}
+</p>
+<p><b>Technical and Organisational Measures</b></p>
+<mat-chip-set aria-label="Measures selection">
+    <mat-chip *ngFor="let measure of policy.techOrgMeasures">{{measure}}</mat-chip>
+</mat-chip-set>
+<p><b>Recipients</b></p>
+<mat-chip-set aria-label="Recipients selection">
+    <mat-chip *ngFor="let recipient of policy.recipients">{{recipient}}</mat-chip>
+</mat-chip-set>

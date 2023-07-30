@@ -1,0 +1,48 @@
+<h3 class="instructions">Change the rules for this project</h3>
+<div>
+    <mat-form-field>
+        <mat-label>Request deliberation start time</mat-label>
+        <input matInput [(ngModel)]="project.requestStartTime" [matDatepicker]="picker1"
+            (dateInput)="addRequestStartTime($event)">
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+    <!-- <mat-form-field>
+        <mat-form-field>
+        <mat-label>Request deliberation start time</mat-label>
+        <input matInput [ngxMatDatetimePicker]="myPicker" placeholder="Enter date" [formControl]="myDateControl" />
+        <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker #myPicker [showSpinners]="true" [showSeconds]="false" [stepHour]="1" [stepMinute]="1"
+            [stepSecond]="1" [touchUi]="false">
+        </ngx-mat-datetime-picker>
+    </mat-form-field>
+
+    <div>{{ myDateControl.value }}</div> -->
+</div>
+<div>
+    <mat-form-field>
+        <mat-label>Request deliberation end time</mat-label>
+        <input matInput [(ngModel)]="project.requestEndTime" [matDatepicker]="picker2"
+            (dateInput)="addRequestEndTime($event)">
+        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+</div>
+<div>
+    <mat-form-field>
+        <mat-label>Offer deliberation end time</mat-label>
+        <input matInput [(ngModel)]="project.offerEndTime" [matDatepicker]="picker3"
+            (dateInput)="addOfferEndTime($event)">
+        <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+        <mat-datepicker #picker3></mat-datepicker>
+    </mat-form-field>
+</div>
+<div>
+    <mat-form-field>
+        <mat-label>Threshold (as a decimal)</mat-label>
+        <input matInput type="Number" step="0.01" [(ngModel)]="project.threshold">
+    </mat-form-field>
+</div>
+<mat-card-actions>
+    <button mat-raised-button color="primary" (click)="changeRules()">Change Rules</button>
+</mat-card-actions>

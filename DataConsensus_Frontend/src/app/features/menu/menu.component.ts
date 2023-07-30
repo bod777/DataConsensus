@@ -12,6 +12,7 @@ export class MenuComponent {
     constructor(private router: Router) { }
 
     userType: string = localStorage.getItem('userType') || "";
+    user: string = localStorage.getItem('webID') || "";
 
     navigateToHomePage() {
         this.router.navigateByUrl('/home');
@@ -20,7 +21,7 @@ export class MenuComponent {
         this.router.navigateByUrl('/agreements');
     }
     navigateToProfilePage() {
-        this.router.navigateByUrl('/profile');
+        this.router.navigate([`/profile`], { queryParams: { webID: this.user } });
     }
     navigateToSubmitRequest() {
         this.router.navigateByUrl('/submit-request');

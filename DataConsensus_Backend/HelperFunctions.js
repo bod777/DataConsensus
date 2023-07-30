@@ -72,22 +72,8 @@ function getPolicyType(policyURL) {
 }
 
 function getPolicyDataset(policyURL) {
-    const segments = policyURL.split("/");
-    const filename = segments[segments.length - 1];
-    const policyType = filename.split(".")[0];
-    let type
-    switch (policyType) {
-        case 'offers':
-            type = offersList;
-            break;
-        case 'requests':
-            type = requestsList;
-            break;
-        case 'agreements':
-            type = agreementsList;
-            break;
-    }
-    return type;
+    parts = policyURL.split("#");
+    return parts[0];
 }
 
 

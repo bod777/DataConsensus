@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -11,9 +11,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 export class MemberProfileComponent implements OnInit {
 
-    constructor(private userService: UserService, private _snackBar: MatSnackBar, private router: Router) { }
+    constructor(private userService: UserService, private _snackBar: MatSnackBar, private route: ActivatedRoute, private router: Router) { }
 
-    webID: string = localStorage.getItem("webID") || "";
+    user: string = localStorage.getItem("webID") || "";
+    webID: string = "";
     name: string = "";
     email: string = "";
     dataSource: string = "";
@@ -51,6 +52,9 @@ export class MemberProfileComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.route.queryParams.subscribe((params) => {
+            this.webID = params["webID"];
+        });
         this.userService.getMember(this.webID).subscribe(
             (profile) => {
                 this.webID = profile.data.webID;

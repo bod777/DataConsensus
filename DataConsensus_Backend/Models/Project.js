@@ -1,4 +1,5 @@
 const policyService = require("../CRUDService/PolicyService.js");
+const userService = require("../CRUDService/UserService.js");
 const { ODRL, DCTERMS, XSD } = require("@inrupt/vocab-common-rdf");
 const { extractTerm } = require("../HelperFunctions.js");
 
@@ -20,7 +21,6 @@ class Project {
         this.requestTime = requestTime;
         this.offerTime = offerTime;
         this.threshold = threshold;
-        this.thresholdType = thresholdType;
         this.projectPolicies = projectPolicies;
     }
 

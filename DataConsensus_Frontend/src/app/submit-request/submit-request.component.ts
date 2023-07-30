@@ -8,6 +8,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-submit-request',
@@ -17,7 +18,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 export class SubmitRequestComponent implements OnInit {
 
 
-    constructor(private policyService: PolicyService, private _snackBar: MatSnackBar) {
+    constructor(private policyService: PolicyService, private _snackBar: MatSnackBar, private router: Router) {
 
     }
 
@@ -30,6 +31,7 @@ export class SubmitRequestComponent implements OnInit {
     sellingData: boolean = false;
     sellingInsights: boolean = false;
     duration: number = Date.now();
+    request: any = {}
 
     addOnBlur = true;
     readonly separatorKeysCodes = [ENTER, COMMA] as const;
@@ -73,12 +75,14 @@ export class SubmitRequestComponent implements OnInit {
     submit() {
         this.policyService.submitRequest(this.webID, this.title, this.description, this.organisationType, this.purpose, this.sellingData, this.sellingInsights, this.techOrgMeasures, this.recipients, this.duration).subscribe(
             (profile) => {
+                this.request = profile.data;
                 this._snackBar.open("Request submitted successfully", "Close", { duration: 3000 });
             },
             (error) => {
                 this._snackBar.open("Error submitting request: " + error, "Close", { duration: 3000 });
             }
         );
+        this.router.navigate(['/project'], { queryParams: { projectID: this.request.isPartOf } })
     }
 
     cancelChanges() {

@@ -9,3 +9,12 @@
 h1 {
     text-align: center;
 }
+
+mat-spinner {
+    margin: auto;
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,40 @@
+<mat-card-content class="status-bar">
+    <div class="status-chip">
+        <b>Member Status: &nbsp;&nbsp;&nbsp;&nbsp;</b>
+        <mat-chip class="policy-status" *ngIf="policy.memberApproved==='Rejected'"
+            style="background-color:darksalmon">{{
+            policy.memberApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.memberApproved==='Approved'" style="background-color:palegreen">{{
+            policy.memberApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.memberApproved==='Pending'"
+            style="background-color:lightskyblue">{{
+            policy.memberApproved}}</mat-chip>
+    </div>
+    <div class="status-chip">
+        <b>Third Party Status:</b>
+        <mat-chip class="policy-status" *ngIf="policy.thirdPartyApproved==='Rejected'"
+            style="background-color:darksalmon">{{
+            policy.thirdPartyApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.thirdPartyApproved==='Approved'"
+            style="background-color:palegreen">{{
+            policy.thirdPartyApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.thirdPartyApproved==='Pending'"
+            style="background-color:lightskyblue">{{
+            policy.thirdPartyApproved}}</mat-chip>
+    </div>
+    <div class="status-chip">
+        <b>Admin Status: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+        <mat-chip class="policy-status" *ngIf="policy.adminApproved==='Rejected'" style="background-color:darksalmon">{{
+            policy.adminApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.adminApproved==='Approved'" style="background-color:palegreen">{{
+            policy.adminApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.adminApproved==='Pending'"
+            style="background-color:lightskyblue">{{
+            policy.adminApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.adminApproved==='Blocked'" style="background-color:plum">{{
+            policy.adminApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.adminApproved==='Removed'" style="background-color:red">{{
+            policy.adminApproved}}
+        </mat-chip>
+    </div>
+</mat-card-content>

@@ -1,6 +1,8 @@
 .content {
+    display: flex;
     flex-direction: column;
-    height: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .page-header {
@@ -9,26 +11,12 @@
     text-align: center;
 }
 
-.mat-grid-list {
-    height: 50vh;
-    margin-top: 5vh;
-    margin-left: 10vw;
-    margin-right: 10vw;
-}
-
-.mat-grid-tile {
-    height: 100%;
-    margin-top: 0px !important;
-    padding-top: 0px !important;
-}
-
-.mat-mdc-card {
-    width: 95%;
+.mat-card {
+    width: 90%;
     text-align: center;
-    align-self: baseline;
 }
 
-.button-list {
-    display: block;
-    width: 100%;
+.card-container {
+    display: flex;
+    justify-content: center;
 }

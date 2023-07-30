@@ -1,1 +1,9 @@
-<p>preference-voting works!</p>
+<div class="preferences-div">
+    <div cdkDropList class="rank-list" (cdkDropListDropped)="onDrop($event)">
+        <div class="rank-chip" *ngFor="let item of offerRanking" cdkDrag>{{ item.id
+            }}</div>
+    </div>
+</div>
+<mat-card-actions>
+    <button mat-raised-button color="primary" (click)="submitRanking()">Submit Ranking</button>
+</mat-card-actions>

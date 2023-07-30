@@ -48,6 +48,106 @@ pod:cf434eef-6c3c-47cf-8416-5496112a9a5b
         vote:hasVoter     <https://id.inrupt.com/jeffwinger> ;
         vote:voteRank     2 .
 
+pod:af4f241f-d524-4c46-b716-033349e283f6
+        rdf:type          vote:Vote ;
+        dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued        "2023-07-26T15:23:20.773Z"^^xsd:dateTime ;
+        dct:modified      "2023-07-27T17:21:40.343Z"^^xsd:dateTime ;
+        vote:hasPolicy    offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
+        vote:hasVoteType  vote:PreferenceVote ;
+        vote:hasVoter     <https://id.inrupt.com/troybarnes> ;
+        vote:voteRank     1 .
+
+pod:6e58b0e1-a144-4cab-b7f8-9b8bb10406fe
+        rdf:type          vote:Vote ;
+        dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued        "2023-07-27T14:27:17.108Z"^^xsd:dateTime ;
+        dct:modified      "2023-07-27T17:21:40.866Z"^^xsd:dateTime ;
+        vote:hasPolicy    offer:rejection ;
+        vote:hasVoteType  vote:PreferenceVote ;
+        vote:hasVoter     <https://id.inrupt.com/troybarnes> ;
+        vote:voteRank     2 .
+
+pod:98145575-3596-4670-ad2b-e1e27238ebc6
+        rdf:type          vote:Vote ;
+        dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued        "2023-07-26T15:23:20.773Z"^^xsd:dateTime ;
+        dct:modified      "2023-07-27T17:21:40.343Z"^^xsd:dateTime ;
+        vote:hasPolicy    offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
+        vote:hasVoteType  vote:PreferenceVote ;
+        vote:hasVoter     <https://id.inrupt.com/sconnor> ;
+        vote:voteRank     1 .
+
+pod:1b6103f8-3773-440b-b0c7-25ad430692e1
+        rdf:type          vote:Vote ;
+        dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued        "2023-07-27T14:27:17.108Z"^^xsd:dateTime ;
+        dct:modified      "2023-07-27T17:21:40.866Z"^^xsd:dateTime ;
+        vote:hasPolicy    offer:rejection ;
+        vote:hasVoteType  vote:PreferenceVote ;
+        vote:hasVoter     <https://id.inrupt.com/sconnor> ;
+        vote:voteRank     2 .
+
+pod:3bf22eeb-f1b6-4292-b09f-edec89b45b87
+        rdf:type          vote:Vote ;
+        dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued        "2023-07-26T15:23:20.773Z"^^xsd:dateTime ;
+        dct:modified      "2023-07-27T17:21:40.343Z"^^xsd:dateTime ;
+        vote:hasPolicy    offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
+        vote:hasVoteType  vote:PreferenceVote ;
+        vote:hasVoter     <https://id.inrupt.com/brittaperry> ;
+        vote:voteRank     1 .
+
+pod:a127ac42-a358-433f-980c-63bfd70ca495
+        rdf:type          vote:Vote ;
+        dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued        "2023-07-27T14:27:17.108Z"^^xsd:dateTime ;
+        dct:modified      "2023-07-27T17:21:40.866Z"^^xsd:dateTime ;
+        vote:hasPolicy    offer:rejection ;
+        vote:hasVoteType  vote:PreferenceVote ;
+        vote:hasVoter     <https://id.inrupt.com/brittaperry> ;
+        vote:voteRank     2 .
+
+pod:6cba48b8-de9e-45a2-a45f-e5a3c2b90dd7
+        rdf:type          vote:Vote ;
+        dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued        "2023-07-26T15:23:20.773Z"^^xsd:dateTime ;
+        dct:modified      "2023-07-27T17:21:40.343Z"^^xsd:dateTime ;
+        vote:hasPolicy    offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
+        vote:hasVoteType  vote:PreferenceVote ;
+        vote:hasVoter     <https://id.inrupt.com/jconnor> ;
+        vote:voteRank     1 .
+
+pod:54a41b5f-fd29-4103-8727-c0540704b861
+        rdf:type          vote:Vote ;
+        dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued        "2023-07-27T14:27:17.108Z"^^xsd:dateTime ;
+        dct:modified      "2023-07-27T17:21:40.866Z"^^xsd:dateTime ;
+        vote:hasPolicy    offer:rejection ;
+        vote:hasVoteType  vote:PreferenceVote ;
+        vote:hasVoter     <https://id.inrupt.com/jconnor> ;
+        vote:voteRank     2 .
+
+pod:3a0d884a-def0-40ab-aa90-d2d6806d2803
+        rdf:type          vote:Vote ;
+        dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued        "2023-07-26T15:23:20.773Z"^^xsd:dateTime ;
+        dct:modified      "2023-07-27T17:21:40.343Z"^^xsd:dateTime ;
+        vote:hasPolicy    offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
+        vote:hasVoteType  vote:PreferenceVote ;
+        vote:hasVoter     <https://id.inrupt.com/eripley> ;
+        vote:voteRank     1 .
+
+pod:80b946ee-7014-4e85-a43e-8d8dc55867b5
+        rdf:type          vote:Vote ;
+        dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
+        dct:issued        "2023-07-27T14:27:17.108Z"^^xsd:dateTime ;
+        dct:modified      "2023-07-27T17:21:40.866Z"^^xsd:dateTime ;
+        vote:hasPolicy    offer:rejection ;
+        vote:hasVoteType  vote:PreferenceVote ;
+        vote:hasVoter     <https://id.inrupt.com/eripley> ;
+        vote:voteRank     2 .
+
 pod:8dc552ab-5680-4e83-a4b9-87e589a3a6e5
         rdf:type          vote:Vote ;
         dct:isPartOf      project:4ddb1306-df85-4730-8545-14973be50cd2 ;
@@ -56,7 +156,7 @@ pod:8dc552ab-5680-4e83-a4b9-87e589a3a6e5
         vote:hasPolicy    offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
         vote:hasVoteType  vote:PreferenceVote ;
         vote:hasVoter     <https://id.inrupt.com/jeffwinger> ;
-        vote:voteRank     2 .
+        vote:voteRank     1 .
 
 pod:5d3c04b2-c124-42f9-99bc-5b896b0b49cb
         rdf:type          vote:Vote ;
@@ -66,7 +166,7 @@ pod:5d3c04b2-c124-42f9-99bc-5b896b0b49cb
         vote:hasPolicy    offer:rejection ;
         vote:hasVoteType  vote:PreferenceVote ;
         vote:hasVoter     <https://id.inrupt.com/jeffwinger> ;
-        vote:voteRank     1 .
+        vote:voteRank     2 .
 
 pod:eacf15cd-029b-4952-a1c0-85deedc94473
         rdf:type          vote:Vote ;
@@ -76,7 +176,7 @@ pod:eacf15cd-029b-4952-a1c0-85deedc94473
         vote:hasPolicy    offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
         vote:hasVoteType  vote:PreferenceVote ;
         vote:hasVoter     <https://id.inrupt.com/janedoe> ;
-        vote:voteRank     2 .
+        vote:voteRank     1 .
 
 pod:44286034-8384-414e-88fa-8df88b429119
         rdf:type          vote:Vote ;
@@ -86,7 +186,7 @@ pod:44286034-8384-414e-88fa-8df88b429119
         vote:hasPolicy    offer:rejection ;
         vote:hasVoteType  vote:PreferenceVote ;
         vote:hasVoter     <https://id.inrupt.com/janedoe> ;
-        vote:voteRank     1 .
+        vote:voteRank     2 .
 
 pod:75caed18-2828-4738-9d27-eba8047672a1
         rdf:type          vote:Vote ;

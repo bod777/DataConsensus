@@ -1,0 +1,17 @@
+<div class="card-container">
+    <mat-card *ngFor="let agreement of dataArray">
+        <mat-card-header>
+            <mat-card-title>{{ agreement.title }}</mat-card-title>
+            <mat-card-subtitle>Third Party: <button mat-button (click)="navigateToProfile(agreement.assignee)"> {{
+                    agreement.assignee }}</button></mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <p>{{ agreement.description }}</p>
+            <mat-card-subtitle>Ends On: {{ agreement.untilTimeDuration | date:'dd/MM/yyyy' }}</mat-card-subtitle>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary"
+                (click)="redirectToAgreementPage(agreement.isPartOf)">View</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

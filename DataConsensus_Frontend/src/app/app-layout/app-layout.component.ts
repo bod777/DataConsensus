@@ -11,10 +11,12 @@ export class AppLayoutComponent implements OnInit {
 
   constructor(private router: Router) { }
 
-  userType: string | null = "undefined";
+  userType: string = localStorage.getItem('userType') || '';
+  isLoggedIn: boolean = localStorage.getItem('isLoggedIn') === 'true' || false;
 
   async ngOnInit() {
-    this.userType = localStorage.getItem('userType');
-    console.log("User type: " + this.userType)
+    if (this.isLoggedIn === false) {
+      this.router.navigate(['/login']);
+    }
   }
 }

@@ -1,39 +1,41 @@
 <div class="content">
     <h1 class="page-header">Admin Dashboard</h1>
-    <mat-grid-list cols="2">
-        <mat-grid-tile colspan="1">
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>Pending Deliberations</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <button mat-stroked-button class="button-list" color="primary"
-                        *ngFor="let project of pendingProjects"
-                        (click)="navigateToProject(project)">{{project.title}}</button>
-                </mat-card-content>
-            </mat-card>
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>Active Deliberations</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <button mat-stroked-button class="button-list" color="primary" (click)="navigateToProject(project)"
-                        *ngFor="let project of activeProjects">{{project.title}}</button>
-                </mat-card-content>
-            </mat-card>
-        </mat-grid-tile>
-        <mat-grid-tile colspan="1" rowspan="1">
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>Activities</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>View and edit your profile</p>
-                </mat-card-content>
-                <mat-card-actions>
-                    <button mat-raised-button color="primary" routerLink="/member/profile">View Profile</button>
-                </mat-card-actions>
-            </mat-card>
-        </mat-grid-tile>
-    </mat-grid-list>
+    <div class="card-container">
+        <mat-card *ngIf="!loading">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+                <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+                    <td mat-cell *matCellDef="let project"> {{project.title}} </td>
+                </ng-container>
+                <ng-container matColumnDef="creator">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Requester </th>
+                    <td mat-cell *matCellDef="let project"> <button mat-button
+                            (click)="navigateToProfile(project.creator)">{{ project.creator }}</button></td>
+                </ng-container>
+                <ng-container matColumnDef="projectCreationTime">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Created
+                        At </th>
+                    <td mat-cell *matCellDef="let project"> {{project.projectCreationTime | date:'dd/MM/yyyy'}} </td>
+                </ng-container>
+                <ng-container matColumnDef="projectStatus">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                    <td mat-cell *matCellDef="let project">
+                        <project-status [hasAgreement]="false" [isActiveAgreement]="false"
+                            [projectStatus]="project.projectStatus"></project-status>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="buttons">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
+                    <td mat-cell *matCellDef="let project"> <button mat-raised-button
+                            (click)="navigateToProject(project.projectID)" color="primary">View</button> </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+        </mat-card>
+        <div *ngIf="loading">
+            <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
+        </div>
+    </div>
 </div>

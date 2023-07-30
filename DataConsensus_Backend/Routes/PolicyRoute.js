@@ -129,7 +129,9 @@ module.exports = function (appSession) {
     */
     router.delete("/remove-proposal", async (req, res) => {
         try {
-            await policyService.removeProposal({ policyURL: req.body.policyURL, requester: req.body.webID }, appSession);
+            const { policyID, webID, policyType } = req.query;
+            console.log(`${policyType}#${policyID}`);
+            await policyService.removeProposal({ policyURL: `${policyType}#${policyID}`, requester: webID }, appSession);
             res.send({ message: "Proposal removed successfully" });
         } catch (error) {
             console.error(error);
@@ -169,10 +171,9 @@ module.exports = function (appSession) {
         Expected req.body variables:
         policyURL: string
         status: string
-        type: string
     */
     router.put("/admin-approved", async (req, res) => {
-        const { policyURL, status, type } = req.body;
+        const { policyURL, status } = req.body;
 
         if (!policyURL) {
             res.status(400).send({ message: "URL is required." });
@@ -180,7 +181,7 @@ module.exports = function (appSession) {
         }
 
         try {
-            const updatedPolicy = await policyService.updatePolicyStatus({ policyURL, type: type, actor: 'adminApproved', newStatus: status }, appSession);
+            const updatedPolicy = await policyService.updatePolicyStatus({ policyURL, actor: 'adminApproved', newStatus: status }, appSession);
             const projectURL = updatedPolicy.predicates[DCTERMS.isPartOf]["namedNodes"][0];
             if (status == "Approved") {
                 await policyService.updateProject({ projectURL, agreememt: true, status: "Completed" }, appSession);
@@ -222,7 +223,8 @@ module.exports = function (appSession) {
 
     router.delete("/remove-approval", async (req, res) => {
         try {
-            const thirdparty = await policyService.removeAgreement(req.body.policyURL, appSession);
+            console.log(`${agreementsList}#${req.query.policyID}`);
+            const thirdparty = await policyService.removeAgreement(`${agreementsList}#${req.query.policyID}`, appSession);
             removeAccess(thirdparty, appSession);
             res.send({ message: "Agreement removed successfully" });
         } catch (error) {
@@ -294,10 +296,10 @@ module.exports = function (appSession) {
     router.get("/agreement", async function (req, res) {
         try {
             const policyURL = `${agreementsList}#${req.query.policyID}`;
-            console.log(policyURL);
+            // console.log(policyURL);
             let fetchedPolicy = new Agreement();
             await fetchedPolicy.fetchPolicy(policyURL, appSession);
-            console.log(fetchedPolicy.toJson());
+            // console.log(fetchedPolicy.toJson());
             res.send({ data: fetchedPolicy.toJson() });
         } catch (error) {
             console.error(error);

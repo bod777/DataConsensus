@@ -1,0 +1,5 @@
+<mat-chip *ngIf="hasAgreement===false" style="background-color:lightcoral">No Agreement</mat-chip>
+<mat-chip *ngIf="hasAgreement===true && isActiveAgreement === true" style="background-color:palegreen">Agreement
+    Currently Active</mat-chip>
+<mat-chip *ngIf="hasAgreement===true && isActiveAgreement === false" style="background-color:palegreen">Agreement No
+    Longer Active</mat-chip>

@@ -33,7 +33,7 @@ offer:ff284cf0-2c7b-4718-b261-698119c2408c_permission
         odrl:action      dpv:Remove , dpv:Copy , dpv:Store , dpv:Transform , dpv:Use ;
         odrl:assignee    <https://id.inrupt.com/FightDiabetesDublin> ;
         odrl:assigner    <https://id.inrupt.com/DataConsensus> ;
-        odrl:constraint  offer:ff284cf0-2c7b-4718-b261-698119c2408c_purposeConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_recipientConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_techOrgMeasureConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingDataConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_durationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_organisationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingInsightsConstraint ;
+        odrl:constraint  offer:ff284cf0-2c7b-4718-b261-698119c2408c_purposeConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_recipientConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingDataConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_techOrgMeasureConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_durationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_organisationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingInsightsConstraint ;
         odrl:target      dpvpd:MedicalHealth .
 
 offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingInsightsConstraint
@@ -48,17 +48,17 @@ offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_sellingDataConstraint
         odrl:operator      oac:isNotA ;
         odrl:rightOperand  dpv:SellDataToThirdParties .
 
-offer:87c44b67-78f9-4e08-801f-9f098379bd04_organisationConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Organisation ;
-        odrl:operator      odrl:isA ;
-        odrl:rightOperand  dpv:AcademicScientificOrganisation .
-
 offer:64555f2b-efee-485d-abef-3542ca867ebf_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
         odrl:rightOperand  "2023-10-10T00:00:00"^^xsd:dateTime .
+
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_organisationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Organisation ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:AcademicScientificOrganisation .
 
 offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_recipientConstraint
         rdf:type           odrl:Constraint ;
@@ -66,19 +66,8 @@ offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_recipientConstraint
         odrl:operator      odrl:isAllOf ;
         odrl:rightOperand  <https://id.inrupt.com/DrJohnSmith> .
 
-offer:87c44b67-78f9-4e08-801f-9f098379bd04_techOrgMeasureConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
-        odrl:operator      odrl:isAllOf ;
-        odrl:rightOperand  dpv:CybersecurityTraining , dpv:DataProtectionTraining , dpv:CodeOfConduct .
-
-offer:rejection  rdf:type  odrl:Offer .
-
-offer:64555f2b-efee-485d-abef-3542ca867ebf_sellingDataConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      oac:isNotA ;
-        odrl:rightOperand  dpv:SellDataToThirdParties .
+offer:rejection  rdf:type      odrl:Offer ;
+        policy:memberApproved  policy:Rejected .
 
 offer:64555f2b-efee-485d-abef-3542ca867ebf
         rdf:type                   odrl:Offer ;
@@ -91,6 +80,18 @@ offer:64555f2b-efee-485d-abef-3542ca867ebf
         policy:adminApproved       policy:Pending ;
         policy:memberApproved      policy:Pending ;
         policy:thirdPartyApproved  policy:Pending .
+
+offer:64555f2b-efee-485d-abef-3542ca867ebf_sellingDataConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellDataToThirdParties .
+
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_techOrgMeasureConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  dpv:CodeOfConduct , dpv:DataProtectionTraining , dpv:CybersecurityTraining .
 
 offer:64555f2b-efee-485d-abef-3542ca867ebf_organisationConstraint
         rdf:type           odrl:Constraint ;
@@ -144,7 +145,7 @@ offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_techOrgMeasureConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
         odrl:operator      odrl:isAllOf ;
-        odrl:rightOperand  dpv:CodeOfConduct , dpv:DataProtectionTraining , dpv:CybersecurityTraining , dpv:ConsultationWithDPO , dpv:MultiFactorAuthentication .
+        odrl:rightOperand  dpv:MultiFactorAuthentication , dpv:ConsultationWithDPO , dpv:CybersecurityTraining , dpv:DataProtectionTraining , dpv:CodeOfConduct .
 
 offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingInsightsConstraint
         rdf:type           odrl:Constraint ;
@@ -152,13 +153,11 @@ offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingInsightsConstraint
         odrl:operator      oac:isNotA ;
         odrl:rightOperand  dpv:SellInsightsFromData .
 
-offer:87c44b67-78f9-4e08-801f-9f098379bd04_permission
-        rdf:type         odrl:Permission ;
-        odrl:action      dpv:Transform , dpv:Use , dpv:Store , dpv:Copy , dpv:Remove ;
-        odrl:assignee    <https://id.inrupt.com/DataConsensus> ;
-        odrl:assigner    <https://id.inrupt.com/DrJohnSmith> ;
-        odrl:constraint  offer:87c44b67-78f9-4e08-801f-9f098379bd04_purposeConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_durationConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_recipientConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingInsightsConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_techOrgMeasureConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingDataConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_organisationConstraint ;
-        odrl:target      dpvpd:MedicalHealth .
+offer:ff284cf0-2c7b-4718-b261-698119c2408c_organisationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Organisation ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:NonProfitOrganisation .
 
 offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingDataConstraint
         rdf:type           odrl:Constraint ;
@@ -166,11 +165,13 @@ offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingDataConstraint
         odrl:operator      oac:isNotA ;
         odrl:rightOperand  dpv:SellDataToThirdParties .
 
-offer:ff284cf0-2c7b-4718-b261-698119c2408c_organisationConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Organisation ;
-        odrl:operator      odrl:isA ;
-        odrl:rightOperand  dpv:NonProfitOrganisation .
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_permission
+        rdf:type         odrl:Permission ;
+        odrl:action      dpv:Transform , dpv:Use , dpv:Store , dpv:Copy , dpv:Remove ;
+        odrl:assignee    <https://id.inrupt.com/DataConsensus> ;
+        odrl:assigner    <https://id.inrupt.com/DrJohnSmith> ;
+        odrl:constraint  offer:87c44b67-78f9-4e08-801f-9f098379bd04_purposeConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_durationConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_recipientConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingInsightsConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_sellingDataConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_techOrgMeasureConstraint , offer:87c44b67-78f9-4e08-801f-9f098379bd04_organisationConstraint ;
+        odrl:target      dpvpd:MedicalHealth .
 
 offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_sellingInsightsConstraint
         rdf:type           odrl:Constraint ;
@@ -218,11 +219,11 @@ offer:64555f2b-efee-485d-abef-3542ca867ebf_permission
         odrl:constraint  offer:64555f2b-efee-485d-abef-3542ca867ebf_organisationConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_durationConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_purposeConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_sellingDataConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_techOrgMeasureConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_sellingInsightsConstraint , offer:64555f2b-efee-485d-abef-3542ca867ebf_recipientConstraint ;
         odrl:target      dpvpd:MedicalHealth .
 
-offer:87c44b67-78f9-4e08-801f-9f098379bd04_recipientConstraint
+offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_durationConstraint
         rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Recipient ;
-        odrl:operator      odrl:isAllOf ;
-        odrl:rightOperand  <https://id.inrupt.com/DataConsensus> , <https://id.inrupt.com/DrJohnSmith> .
+        odrl:leftOperand   dpv:UntilTimeDuration ;
+        odrl:operator      odrl:eq ;
+        odrl:rightOperand  "2023-10-10T00:00:00"^^xsd:dateTime .
 
 offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_organisationConstraint
         rdf:type           odrl:Constraint ;
@@ -230,11 +231,11 @@ offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_organisationConstraint
         odrl:operator      odrl:isA ;
         odrl:rightOperand  dpv:AcademicScientificOrganisation .
 
-offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_durationConstraint
+offer:87c44b67-78f9-4e08-801f-9f098379bd04_recipientConstraint
         rdf:type           odrl:Constraint ;
-        odrl:leftOperand   dpv:UntilTimeDuration ;
-        odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2023-10-10T00:00:00"^^xsd:dateTime .
+        odrl:leftOperand   oac:Recipient ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  <https://id.inrupt.com/DrJohnSmith> , <https://id.inrupt.com/DataConsensus> .
 
 offer:ff284cf0-2c7b-4718-b261-698119c2408c_purposeConstraint
         rdf:type           odrl:Constraint ;
@@ -258,4 +259,4 @@ offer:ff284cf0-2c7b-4718-b261-698119c2408c_recipientConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   oac:Recipient ;
         odrl:operator      odrl:isAnyOf ;
-        odrl:rightOperand  <https://id.inrupt.com/DataConsensus> , <https://id.inrupt.com/FightDiabetesDublin> .
+        odrl:rightOperand  <https://id.inrupt.com/FightDiabetesDublin> , <https://id.inrupt.com/DataConsensus> .

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatCardModule } from '@angular/material/card';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'thirdparty-profile',
@@ -11,9 +11,10 @@ import { MatCardModule } from '@angular/material/card';
 
 export class ThirdPartyProfileComponent implements OnInit {
 
-    constructor(private userService: UserService, private _snackBar: MatSnackBar) { }
+    constructor(private userService: UserService, private _snackBar: MatSnackBar, private route: ActivatedRoute) { }
 
-    webID: string = localStorage.getItem("webID") || "";
+    user: string = localStorage.getItem("webID") || "";
+    webID: string = "";
     name: string = "";
     email: string = "";
     organisationType: string = "";
@@ -31,10 +32,14 @@ export class ThirdPartyProfileComponent implements OnInit {
     }
 
     cancelChanges() {
-
+        this.ngOnInit();
+        window.location.reload();
     }
 
     ngOnInit() {
+        this.route.queryParams.subscribe((params) => {
+            this.webID = params["webID"];
+        });
         this.userService.getThirdParty(this.webID).subscribe(
             (profile) => {
                 console.log(profile);
@@ -43,7 +48,6 @@ export class ThirdPartyProfileComponent implements OnInit {
                 this.email = profile.data.email;
                 this.organisationType = profile.data.orgType;
                 this.description = profile.data.description;
-                console.log(this.organisationType);
             },
             (error) => {
                 this._snackBar.open("Error retrieving profile: " + error, "Close", { duration: 3000 });

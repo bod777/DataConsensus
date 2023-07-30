@@ -125,5 +125,49 @@ export class PolicyService {
         });
         return this.http.put('http://localhost:3000/api/v1/project/update-project', { projectID, status }, { headers });
     }
-}
 
+    removeAgreement(policyID: string): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        const params = new HttpParams().set('policyID', policyID)
+        return this.http.delete('http://localhost:3000/api/v1/policy/remove-approval', { headers, params });
+    }
+
+    removeProposal(policyURL: string, webID: string): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        console.log(policyURL);
+        const parts = policyURL.split('#');
+        const policyID = parts[1];
+        const policyType = parts[0];
+        const params = new HttpParams().set('policyID', policyID).set('webID', webID).set('policyType', policyType);
+        return this.http.delete('http://localhost:3000/api/v1/policy/remove-proposal', { headers, params });
+    }
+
+    adminApproval(policyURL: string, status: string): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        return this.http.put('http://localhost:3000/api/v1/policy/admin-approved', { policyURL, status }, { headers });
+    }
+
+    thirdPartyApproval(policyURL: string, status: string): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        return this.http.put('http://localhost:3000/api/v1/policy/thirdparty-approved', { policyURL, status }, { headers });
+    }
+
+    changeRules(project: Project): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        console.log(project.requestEndTime);
+        console.log(typeof project.requestEndTime);
+        return this.http.put('http://localhost:3000/api/v1/project/update-project', {
+            projectID: project.projectID, requestEndTime: project.requestEndTime, requestStartTime: project.requestStartTime, offerEndTime: project.offerEndTime, threshold: project.threshold
+        }, { headers });
+    }
+}

@@ -1,0 +1,17 @@
+<mat-chip *ngIf="projectStatus==='Pending'" style="background-color:darksalmon">{{
+    projectStatus |
+    backendToFrontend}}</mat-chip>
+<mat-chip *ngIf="projectStatus==='RequestDeliberation'" style="background-color:plum">{{
+    projectStatus |
+    backendToFrontend}}</mat-chip>
+<mat-chip *ngIf="projectStatus==='OfferDeliberation'" style="background-color:aquamarine">{{
+    projectStatus |
+    backendToFrontend}}</mat-chip>
+<mat-chip *ngIf="projectStatus==='AdminApprovalNeeded'" style="background-color:peru">{{ projectStatus |
+    backendToFrontend }}</mat-chip>
+<mat-chip *ngIf="projectStatus==='ThirdPartyApprovalNeeded'" style="background-color:pink">{{
+    projectStatus |
+    backendToFrontend}}</mat-chip>
+<mat-chip *ngIf="projectStatus==='Completed'" style="background-color:palegreen">{{
+    projectStatus |
+    backendToFrontend}}</mat-chip>

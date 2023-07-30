@@ -33,6 +33,10 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { DatePipe } from '@angular/common';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTreeModule } from '@angular/material/tree';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 
 // services
 import { UserService } from './services/user.service';
@@ -67,10 +71,13 @@ import { SubmitOfferComponent } from './submit-offer/submit-offer.component';
 
 import { CommentSectionComponent } from './features/comments/comments.component';
 import { PreferenceVotingComponent } from './features/preference-voting/preference-voting.component';
-import { RequestCardComponent } from './features/request-card/request-card.component';
 import { TabsComponent } from './features/tabs/tabs.component';
-
-
+import { ProjectStatusComponent } from './features/project-status/project-status.component';
+import { AgreementStatusComponent } from './features/agreement-status/agreement-status.component';
+import { PolicyStatusComponent } from './features/policy-status/policy-status.component';
+import { ChangeRulesComponent } from './features/change-rules/change-rules.component';
+import { ConstraintsComponent } from './features/constraints/constraints.component';
+import { BackendToFrontendPipe } from './pipe/backend-to-frontend.pipe';
 
 @NgModule({
     declarations: [
@@ -89,14 +96,19 @@ import { TabsComponent } from './features/tabs/tabs.component';
         AdminProfileComponent,
         CommentSectionComponent,
         PreferenceVotingComponent,
-        RequestCardComponent,
         SubmitRequestComponent,
         SubmitOfferComponent,
         ProjectPageComponent,
         TabsComponent,
         AppLayoutComponent,
         AgreementCardComponent,
-        AgreementListComponent
+        AgreementListComponent,
+        ProjectStatusComponent,
+        AgreementStatusComponent,
+        PolicyStatusComponent,
+        ChangeRulesComponent,
+        ConstraintsComponent,
+        BackendToFrontendPipe,
     ],
     imports: [
         BrowserModule,
@@ -132,13 +144,24 @@ import { TabsComponent } from './features/tabs/tabs.component';
         MatTableModule,
         MatSidenavModule,
         DragDropModule,
-        MatTreeModule
+        MatTreeModule,
+        MatSliderModule,
+        MatSortModule,
+        MatPaginatorModule,
+        NgxMatDatetimePickerModule,
+        NgxMatTimepickerModule
     ],
     exports: [
         MenuComponent,
         CommentSectionComponent,
         AgreementCardComponent,
-        TabsComponent
+        TabsComponent,
+        ProjectStatusComponent,
+        AgreementStatusComponent,
+        PolicyStatusComponent,
+        ChangeRulesComponent,
+        ConstraintsComponent,
+        MatPaginatorModule
     ],
     providers: [UserService, PolicyService, DatePipe,
         { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }

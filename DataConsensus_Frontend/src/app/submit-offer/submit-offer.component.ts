@@ -31,6 +31,7 @@ export class SubmitOfferComponent {
     sellingData: boolean = false;
     sellingInsights: boolean = false;
     duration: number = Date.now();
+    offer: any = {};
 
     addOnBlur = true;
     readonly separatorKeysCodes = [ENTER, COMMA] as const;
@@ -74,7 +75,9 @@ export class SubmitOfferComponent {
     submit() {
         this.policyService.submitOffer(this.webID, this.projectURL, this.requester, this.organisationType, this.purpose, this.sellingData, this.sellingInsights, this.techOrgMeasures, this.recipients, this.duration).subscribe(
             (profile) => {
+                this.offer = profile.data;
                 this._snackBar.open("Offer submitted successfully", "Close", { duration: 3000 });
+                this.router.navigate(['/project'], { queryParams: { projectID: this.offer.isPartOf } })
             },
             (error) => {
                 this._snackBar.open("Error submitting offer: " + error, "Close", { duration: 3000 });

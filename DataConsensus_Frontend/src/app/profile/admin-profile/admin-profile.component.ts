@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'admin-profile',
@@ -10,12 +11,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 export class AdminProfileComponent implements OnInit {
 
-    constructor(private userService: UserService, private _snackBar: MatSnackBar) { }
+    constructor(private userService: UserService, private _snackBar: MatSnackBar, private route: ActivatedRoute) { }
 
-    webID: string = localStorage.getItem("webID") || "";
+    user: string = localStorage.getItem("webID") || "";
+    webID: string = "";
     name: string = "";
     email: string = "";
-    dataSource: string = "";
 
     saveChanges() {
         this.userService.updateAdmin(this.webID, this.name, this.email).subscribe(
@@ -33,6 +34,9 @@ export class AdminProfileComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.route.queryParams.subscribe((params) => {
+            this.webID = params["webID"];
+        });
         this.userService.getAdmin(this.webID).subscribe(
             (profile) => {
                 this.webID = profile.data.webID;

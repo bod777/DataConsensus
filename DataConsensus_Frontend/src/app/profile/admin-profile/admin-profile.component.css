@@ -1,8 +1,20 @@
-.container {
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.card-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 70vh;
+}
+
+mat-card {
+    display: flex;
+    width: 70%;
+    margin-right: 15%;
+    margin-left: 15%;
 }
 
 .form-field-container {
@@ -10,10 +22,14 @@
 }
 
 .mat-form-field {
-    width: 600px;
+    width: 700px;
 }
 
 .button-container {
     display: flex;
     justify-content: center;
+}
+
+mat-divider {
+    margin: 30px;
 }

@@ -1,18 +1,21 @@
 <div class="content">
     <div class="card-container">
-        <mat-drawer-container class="example-container">
+        <mat-drawer-container>
             <mat-drawer mode="side" opened>
                 <mat-button-toggle-group class="sidebar" name="tab" [(ngModel)]="tab" aria-label="Font Style">
                     <mat-button-toggle class="sidebar-panel" value="overview">Overview</mat-button-toggle>
-                    <mat-button-toggle class="sidebar-panel" value="request">Request</mat-button-toggle>
-                    <mat-button-toggle *ngIf="project.projectPolicies.offers.length > 0" class="sidebar-panel"
+                    <mat-button-toggle *ngIf="requestID!==''" class="sidebar-panel"
+                        value="request">Request</mat-button-toggle>
+                    <mat-button-toggle *ngIf="offers.length>0" class="sidebar-panel"
                         value="offer">Offers</mat-button-toggle>
                     <mat-button-toggle *ngIf="project.hasAgreement===true" class="sidebar-panel"
                         value="agreement">Agreement</mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-drawer>
+            <!-- OVERVIEW -->
             <mat-drawer-content *ngIf="tab === 'overview'">
                 <mat-card>
+                    <p>{{offers}}</p>
                     <mat-card-header>
                         <mat-card-title>{{ project.title }}</mat-card-title>
                         <mat-card-subtitle>Overview</mat-card-subtitle>
@@ -22,126 +25,85 @@
                             <b>Description:</b> {{ project.description }}
                         </p>
                         <p>
-                            <b>Third Party Requester:</b> {{ project.creator }}
+                            <b>Third Party Requester:</b> <button mat-button
+                                (click)="navigateToProfile(project.creator)">{{ project.creator }}</button>
                         </p>
                         <p>
                             <b>Organisation type:</b> {{ project.organisation }}
                         </p>
                         <p>
-                            <b>Creation date:</b> {{ project.projectCreationTime }}
+                            <b>Creation date:</b> {{ project.projectCreationTime | date:'dd/MM/yyyy' }}
                         </p>
                         <p>
-                            <b>Passing threshold:</b> {{ project.threshold }}
+                            <b>Start time for deliberation on request:</b> {{ project.requestStartTime |
+                            date:'dd/MM/yyyy'}}
+                        </p>
+                        <p>
+                            <b>End time for deliberation on request:</b> {{ project.requestEndTime | date:'dd/MM/yyyy'}}
+                        </p>
+                        <div *ngIf="project.projectStatus==='OfferDeliberation'">
+                            <p>
+                                <b>End time for deliberation on counter offers:</b> {{ project.offerEndTime |
+                                date:'dd/MM/yyyy'}}
+                            </p>
+                        </div>
+                        <p>
+                            <b>Passing threshold: </b> {{ (project.threshold * 100).toFixed(2) }}%
+                        </p>
+                        <p>
+                            <b>Cutoff: </b> {{ project.cutoff}}
                         </p>
                         <b>Project Status:</b>
-                        <mat-chip *ngIf="project.projectStatus==='Pending'" style="background-color:darksalmon">{{
-                            project.projectStatus}}</mat-chip>
-                        <mat-chip *ngIf="project.projectStatus==='Request'" style="background-color:plum">{{
-                            project.projectStatus}}</mat-chip>
-                        <mat-chip *ngIf="project.projectStatus==='Offer'" style="background-color:aquamarine">{{
-                            project.projectStatus}}</mat-chip>
-                        <mat-chip *ngIf="project.projectStatus==='Completed'" style="background-color:palegreen">{{
-                            project.projectStatus}}</mat-chip>
+                        <project-status style="margin-left:30px; margin-right:30px"
+                            [projectStatus]="project.projectStatus"></project-status>
+                        <agreement-status [hasAgreement]="project.hasAgreement"
+                            [isActiveAgreement]="isActiveAgreement"></agreement-status>
                     </mat-card-content>
-                    <!-- approve for admin -->
-                    <mat-card-content *ngif="project.projectStatus==='AdminApprovalNeeded'">
+                    <!-- ADMIN CHANGE RULES -->
+                    <mat-card-content *ngIf="project.projectStatus==='Pending' && userType === 'ADMIN'">
+                        <mat-divider></mat-divider>
+                        <change-rules [project]="project"></change-rules>
+                    </mat-card-content>
+                    <!-- ADMIN APPROVAL BUTTON -->
+                    <mat-card-content *ngIf="project.projectStatus==='AdminApprovalNeeded' && userType === 'ADMIN'">
                         <h3 class="instructions">Do you approve of this policy?</h3>
-                        <mat-button-toggle-group class="voting-div">
-                            <mat-button-toggle class="upvote-button" mat-icon-button matTooltip="Upvote"
-                                (click)="upvote()" [checked]="upvoteState" aria-label="Upvote">
-                                <mat-icon>thumb_up</mat-icon>
-                            </mat-button-toggle>
-                            <span class="gap"></span>
-                            <mat-button-toggle class="downvote-button" color="primary" mat-icon-button
-                                (click)="downvote()" matTooltip="Downvote" [checked]="downvoteState"
-                                aria-label="Downvote">
-                                <mat-icon>thumb_down</mat-icon>
-                            </mat-button-toggle>
-                        </mat-button-toggle-group>
+                        <button mat-raised-button color="primary" (click)="adminApprove()">Approve</button>
+                        <button mat-raised-button color="warn" (click)="adminReject()">Reject</button>
                     </mat-card-content>
-                    <!-- approve for third party -->
-                    <mat-card-content *ngif="project.projectStatus==='ThirdPartyApprovalNeeded'">
-                        <h3 class="instructions">Do you approve of this policy?</h3>
-                        <mat-button-toggle-group class="voting-div">
-                            <mat-button-toggle class="upvote-button" mat-icon-button matTooltip="Upvote"
-                                (click)="upvote()" [checked]="upvoteState" aria-label="Upvote">
-                                <mat-icon>thumb_up</mat-icon>
-                            </mat-button-toggle>
-                            <span class="gap"></span>
-                            <mat-button-toggle class="downvote-button" color="primary" mat-icon-button
-                                (click)="downvote()" matTooltip="Downvote" [checked]="downvoteState"
-                                aria-label="Downvote">
-                                <mat-icon>thumb_down</mat-icon>
-                            </mat-button-toggle>
-                        </mat-button-toggle-group>
-                    </mat-card-content>
-                    <!-- remove agreement for admin -->
-                    <mat-card-content *ngif="project.projectStatus==='Completed' && isAdmin">
-                        <mat-card-actions>
-                            <mat-card-actions class="button-container">
-                                <button mat-raised-button (click)="removeAgreement()">Remove Agreement</button>
-                            </mat-card-actions>
-                        </mat-card-actions>
-                    </mat-card-content>
-                    <!-- remove proposal for creator -->
-                    <!-- NEED TO WORK OUT  -->
-                    <mat-card-content *ngif=".creator === user">
-                        <mat-card-actions>
-                            <mat-card-actions class="button-container">
-                                <button mat-raised-button (click)="removeAgreement()">Remove Agreement</button>
-                            </mat-card-actions>
-                        </mat-card-actions>
+                    <!-- THIRD PARTY APPROVAL BUTTON -->
+                    <mat-card-content
+                        *ngIf="project.projectStatus==='ThirdPartyApprovalNeeded' && user === project.creator">
+                        <h3 class="instructions">Do you approve of the counter offer to your request proposed by
+                            the
+                            members?</h3>
+                        <button mat-raised-button color="primary" (click)="thirdPartyApprove()">Approve</button>
+                        <button mat-raised-button color="warn" (click)="thirdPartyReject()">Reject</button>
                     </mat-card-content>
                 </mat-card>
             </mat-drawer-content>
+            <!-- REQUEST TAB -->
             <mat-drawer-content *ngIf="tab === 'request'">
                 <mat-card>
                     <mat-card-header>
                         <mat-card-title>{{ project.title }}</mat-card-title>
                         <mat-card-subtitle>Request</mat-card-subtitle>
                     </mat-card-header>
-                    <mat-card-content class="status-bar">
-                        <div class="status-chip">
-                            <b>Member Status: &nbsp;&nbsp;&nbsp;&nbsp;</b>
-                            <mat-chip class="policy-status" *ngIf="request.memberApproved==='Rejected'"
-                                style="background-color:darksalmon">{{
-                                request.memberApproved}}</mat-chip>
-                            <mat-chip class="policy-status" *ngIf="request.memberApproved==='Approved'"
-                                style="background-color:palegreen">{{
-                                request.memberApproved}}</mat-chip>
-                            <mat-chip class="policy-status" *ngIf="request.memberApproved==='Pending'"
-                                style="background-color:lightskyblue">{{
-                                request.memberApproved}}</mat-chip>
-                        </div>
-                        <div class="status-chip">
-                            <b>Third Party Status:</b>
-                            <mat-chip class="policy-status" *ngIf="request.thirdPartyApproved==='Rejected'"
-                                style="background-color:darksalmon">{{
-                                request.thirdPartyApproved}}</mat-chip>
-                            <mat-chip class="policy-status" *ngIf="request.thirdPartyApproved==='Approved'"
-                                style="background-color:palegreen">{{
-                                request.thirdPartyApproved}}</mat-chip>
-                            <mat-chip class="policy-status" *ngIf="request.thirdPartyApproved==='Pending'"
-                                style="background-color:lightskyblue">{{
-                                request.thirdPartyApproved}}</mat-chip>
-                        </div>
-                        <div class="status-chip">
-                            <b>Admin Status: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
-                            <mat-chip class="policy-status" *ngIf="request.adminApproved==='Rejected'"
-                                style="background-color:darksalmon">{{
-                                request.adminApproved}}</mat-chip>
-                            <mat-chip class="policy-status" *ngIf="request.adminApproved==='Approved'"
-                                style="background-color:palegreen">{{
-                                request.adminApproved}}</mat-chip>
-                            <mat-chip class="policy-status" *ngIf="request.adminApproved==='Pending'"
-                                style="background-color:lightskyblue">{{
-                                request.adminApproved}}</mat-chip>
-                            <mat-chip class="policy-status" *ngIf="request.adminApproved==='Blocked'"
-                                style="background-color:plum">{{
-                                request.adminApproved}}</mat-chip>
+                    <policy-status [policy]="request"></policy-status>
+                    <!-- RESULTS FOR REQUEST -->
+                    <mat-card-content
+                        *ngIf="projectStatus === 'Completed' || projectStatus === 'OfferDeliberation' || projectStatus === 'AdminApprovalNeeded' || projectStatus === 'ThirdPartyApprovalNeeded'">
+                        <h3 class="instructions">Vote Results</h3>
+                        <div class="request-results-container">
+                            <div class="request-results-item">
+                                <p><b>Upvotes:</b> {{ requestUpvotes }}</p>
+                            </div>
+                            <div class="request-results-item">
+                                <p><b>Downvotes:</b> {{ requestDownvotes }}</p>
+                            </div>
                         </div>
                     </mat-card-content>
-                    <mat-card-content *ngif="projectStatus==='Request'">
+                    <!-- MEMBER VOTING CARD -->
+                    <mat-card-content *ngIf="userType==='MEMBER' && projectStatus==='RequestDeliberation'">
                         <h3 class="instructions">Do you approve of this request?</h3>
                         <mat-button-toggle-group class="voting-div">
                             <mat-button-toggle class="upvote-button" mat-icon-button matTooltip="Upvote"
@@ -156,76 +118,60 @@
                             </mat-button-toggle>
                         </mat-button-toggle-group>
                     </mat-card-content>
-                    <mat-card-content *ngif="projectStatus==='Request'||projectStatus==='Pending'">
+                    <!-- SUBMIT OFFER BUTTON -->
+                    <mat-card-content
+                        *ngIf="userType==='MEMBER' && (project.projectStatus==='RequestDeliberation'||projectStatus==='Pending')">
                         <mat-divider></mat-divider>
                         <mat-card-actions>
-                            <button mat-button (click)="navigateToSubmitOffer()">Submit Offer</button>
+                            <button mat-raised-button color="primary" (click)="navigateToSubmitOffer()">Submit
+                                Offer</button>
                         </mat-card-actions>
                     </mat-card-content>
-                    <!-- <mat-card-content ngif="projectStatus === 'Completed' || projectStatus === 'Offer'">
-                        <mat-divider></mat-divider>
-                        <p>{{requestResult}}</p>
-                    </mat-card-content> -->
-                    <mat-card-content>
-                        <mat-divider></mat-divider>
-                        <h2>Constraints</h2>
-                        <p>
-                            <b>Organisation:</b> {{ request.organisation }}
-                        </p>
-                        <p>
-                            <b>Purpose:</b> {{ request.purpose }}
-                        </p>
-                        <p>
-                            <b>Other Permissions:</b>
-                        </p>
-                        <div class="permissions-div">
-                            <mat-chip *ngIf="request.sellingData===false" color="primary">
-                                Not perrmitted to selling the data to other third parties.</mat-chip>
-                            <mat-chip *ngIf="request.sellingData===true" color="warn">
-                                Perrmitted to selling the data to other third parties.</mat-chip>
-                            <mat-chip *ngIf="request.sellingInsights===false" color="primary">Not
-                                perrmitted to selling insights from the shared data.</mat-chip>
-                            <mat-chip *ngIf="request.sellingInsights===true" color="warn">Perrmitted
-                                to selling insights from the shared data.</mat-chip>
-                        </div>
-                        <p>
-                            <b>Ends on:</b> {{ request.untilTimeDuration }}
-                        </p>
-                        <p><b>Technical and Organisational Measures</b></p>
-                        <mat-chip-set aria-label="Measures selection">
-                            <mat-chip *ngFor="let measure of request.techOrgMeasures">{{measure}}</mat-chip>
-                        </mat-chip-set>
-                        <p><b>Recipients</b></p>
-                        <mat-chip-set aria-label="Recipients selection">
-                            <mat-chip *ngFor="let recipient of request.recipients">{{recipient}}</mat-chip>
-                        </mat-chip-set>
+                    <!-- REMOVE REQUEST -->
+                    <mat-card-content *ngIf="request.creator === user">
+                        <mat-card-actions>
+                            <mat-card-actions class="button-container">
+                                <button mat-raised-button color="warn" (click)="removeProposal(request.uid)">Remove
+                                    Request</button>
+                            </mat-card-actions>
+                        </mat-card-actions>
                     </mat-card-content>
                     <mat-card-content>
                         <mat-divider></mat-divider>
-                        <h2>Comments</h2>
+                        <constraints [policy]="request"></constraints>
+                    </mat-card-content>
+                    <mat-card-content>
+                        <mat-divider></mat-divider>
+                        <h3>Comments</h3>
                         <comments [policyURL]="request.uid"></comments>
                     </mat-card-content>
                 </mat-card>
             </mat-drawer-content>
+            <!-- OFFERS TAB -->
             <mat-drawer-content *ngIf="tab === 'offer'">
                 <mat-card>
                     <mat-card-header>
                         <mat-card-title>{{ project.title }}</mat-card-title>
                         <mat-card-subtitle>Offers</mat-card-subtitle>
                     </mat-card-header>
-                    <mat-card-content *ngif="projectStatus==='Offer'">
-                        <h3> Rank the offers: </h3>
-                        <div class="preferences-div">
-                            <div cdkDropList class="rank-list" (cdkDropListDropped)="onDrop($event)">
-                                <div class="rank-chip" *ngFor="let item of offerRanking" cdkDrag>{{ item.id
-                                    }}</div>
-                            </div>
+                    <!-- PREFERENCE CARD -->
+                    <div *ngIf="project.projectStatus==='OfferDeliberation'">
+                        <h3 class="instructions"> Rank the offers: </h3>
+                        <app-preference-voting [offerRanking]="this.offerRanking"
+                            [projectID]="this.projectID"></app-preference-voting>
+                    </div>
+                    <!-- RESULTS FOR OFFER -->
+                    <mat-card-content
+                        *ngIf="projectStatus === 'Completed' || projectStatus === 'Completed' || projectStatus === 'AdminApprovalNeeded' || projectStatus === 'ThirdPartyApprovalNeeded'">
+                        <div *ngIf="offerResult==='rejection'">
+                            <p><b>All proposed offers rejected by members</b></p>
                         </div>
-                        <mat-card-actions>
-                            <button mat-raised-button color="primary" (click)="submitRanking()">Submit Ranking</button>
-                        </mat-card-actions>
+                        <div *ngIf="offerResult!=='rejection'">
+                            <p><b>Members have approved a counter offer to the third party request.</b></p>
+                            <p><b>Winning offer: </b>{{offerResult}}</p>
+                        </div>
                     </mat-card-content>
-                    <mat-card-content *ngif="projectStatus==='Request'||projectStatus==='Pending'">
+                    <mat-card-content *ngIf="projectStatus==='RequestDeliberation'||projectStatus==='Pending'">
                         <mat-card-actions>
                             <button mat-button (click)="navigateToSubmitOffer()">Submit Offer</button>
                         </mat-card-actions>
@@ -234,80 +180,27 @@
                 <mat-tab-group>
                     <mat-tab *ngFor="let offer of offers" [label]="offer.id">
                         <mat-card>
-                            <mat-card-content class="status-bar">
-                                <div class="status-chip">
-                                    <b>Member Status: &nbsp;&nbsp;&nbsp;&nbsp;</b>
-                                    <mat-chip class="policy-status" *ngIf="request.memberApproved==='Rejected'"
-                                        style="background-color:darksalmon">{{
-                                        request.memberApproved}}</mat-chip>
-                                    <mat-chip class="policy-status" *ngIf="request.memberApproved==='Approved'"
-                                        style="background-color:palegreen">{{
-                                        request.memberApproved}}</mat-chip>
-                                    <mat-chip class="policy-status" *ngIf="request.memberApproved==='Pending'"
-                                        style="background-color:lightskyblue">{{
-                                        request.memberApproved}}</mat-chip>
-                                </div>
-                                <div class="status-chip">
-                                    <b>Third Party Status:</b>
-                                    <mat-chip class="policy-status" *ngIf="request.thirdPartyApproved==='Rejected'"
-                                        style="background-color:darksalmon">{{
-                                        request.thirdPartyApproved}}</mat-chip>
-                                    <mat-chip class="policy-status" *ngIf="request.thirdPartyApproved==='Approved'"
-                                        style="background-color:palegreen">{{
-                                        request.thirdPartyApproved}}</mat-chip>
-                                    <mat-chip class="policy-status" *ngIf="request.thirdPartyApproved==='Pending'"
-                                        style="background-color:lightskyblue">{{
-                                        request.thirdPartyApproved}}</mat-chip>
-                                </div>
-                                <div class="status-chip">
-                                    <b>Admin Status: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
-                                    <mat-chip class="policy-status" *ngIf="request.adminApproved==='Rejected'"
-                                        style="background-color:darksalmon">{{
-                                        request.adminApproved}}</mat-chip>
-                                    <mat-chip class="policy-status" *ngIf="request.adminApproved==='Approved'"
-                                        style="background-color:palegreen">{{
-                                        request.adminApproved}}</mat-chip>
-                                    <mat-chip class="policy-status" *ngIf="request.adminApproved==='Pending'"
-                                        style="background-color:lightskyblue">{{
-                                        request.adminApproved}}</mat-chip>
-                                    <mat-chip class="policy-status" *ngIf="request.adminApproved==='Blocked'"
-                                        style="background-color:plum">{{
-                                        request.adminApproved}}</mat-chip>
-                                </div>
-                            </mat-card-content>
+                            <policy-status [policy]="offer"></policy-status>
                             <mat-card-content>
                                 <p>
-                                    <b>Proposer:</b> {{ offer.creator }}
+                                    <b>Proposer:</b> <button mat-button (click)="navigateToProfile(offer.creator)">{{
+                                        offer.creator }}</button>
                                 </p>
                                 <p>
-                                    <b>Organisation:</b> {{ offer.organisation }}
+                                    <b>Creation date:</b> {{ offer.policyCreationTime }}
                                 </p>
-                                <p>
-                                    <b>Purpose:</b> {{ offer.purpose }}
-                                </p>
-                                <p>
-                                    <b>Other Permissions:</b>
-                                </p>
-                                <mat-chip *ngIf="offer.sellingData===false" color="primary">
-                                    Not perrmitted to selling the data to other third parties.</mat-chip>
-                                <mat-chip *ngIf="offer.sellingData===true" color="warn">
-                                    Perrmitted to selling the data to other third parties.</mat-chip>
-                                <mat-chip *ngIf="offer.sellingInsights===false" color="primary">Not
-                                    perrmitted to
-                                    selling insights from the shared data.</mat-chip>
-                                <mat-chip *ngIf="offer.sellingInsights===true" color="warn">Perrmitted to
-                                    selling insights from the shared data.</mat-chip>
-                                <p>
-                                    <b>Ends on:</b> {{ offer.untilTimeDuration }}
-                                </p>
-                                <p><b>Technical and Organisational Measures</b></p>
-                                <mat-chip-set aria-label="Measures selection">
-                                    <mat-chip *ngFor="let measure of offer.techOrgMeasures">{{measure}}</mat-chip>
-                                </mat-chip-set>
-                                <p><b>Recipients</b></p>
-                                <mat-chip-set aria-label="Recipients selection">
-                                    <mat-chip *ngFor="let recipient of offer.recipients">{{recipient}}</mat-chip>
-                                </mat-chip-set>
+                                <mat-divider></mat-divider>
+                                <constraints [policy]="offer"></constraints>
+                                <!-- REMOVE OFFER -->
+                                <mat-card-content *ngIf="offer.creator === user">
+                                    <mat-card-actions>
+                                        <mat-card-actions class="button-container">
+                                            <button mat-raised-button color="warn"
+                                                (click)="removeProposal(offer.uid)">Remove
+                                                OFFER</button>
+                                        </mat-card-actions>
+                                    </mat-card-actions>
+                                </mat-card-content>
                                 <mat-divider></mat-divider>
                                 <h2>Comments</h2>
                                 <comments [policyURL]="offer.uid"></comments>
@@ -316,6 +209,7 @@
                     </mat-tab>
                 </mat-tab-group>
             </mat-drawer-content>
+            <!-- AGREEMENT TAB -->
             <mat-drawer-content *ngIf="tab === 'agreement'">
                 <mat-card>
                     <mat-card-header>
@@ -327,46 +221,28 @@
                             <b>Project description:</b> {{ agreement.description }}
                         </p>
                         <p>
-                            <b>Project creator:</b> {{ agreement.creator }}
+                            <b>Approved By Admin:</b> <button mat-button
+                                (click)="navigateToProfile(agreement.creator)">{{
+                                agreement.creator }}</button>
                         </p>
                         <p>
-                            <b>Creation date:</b> {{ agreement.policyCreationTime }}
+                            <b>Date in effect:</b> {{ agreement.policyCreationTime }}
                         </p>
                         <mat-divider></mat-divider>
-                        <h2>Constraints</h2>
-                        <p>
-                            <b>Organisation:</b> {{ agreement.organisation }}
-                        </p>
-                        <p>
-                            <b>Purpose:</b> {{ agreement.purpose }}
-                        </p>
-                        <p>
-                            <b>Other Permissions:</b>
-                        </p>
-                        <div class="permissions-div">
-                            <mat-chip *ngIf="agreement.sellingData===false" color="primary">
-                                Not perrmitted to selling the data to other third parties.</mat-chip>
-                            <mat-chip *ngIf="agreement.sellingData===true" color="warn">
-                                Perrmitted to selling the data to other third parties.</mat-chip>
-                            <mat-chip *ngIf="agreement.sellingInsights===false" color="primary">Not
-                                perrmitted to selling insights from the shared data.</mat-chip>
-                            <mat-chip *ngIf="agreement.sellingInsights===true" color="warn">Perrmitted
-                                to selling insights from the shared data.</mat-chip>
-                        </div>
-                        <p>
-                            <b>Ends on:</b> {{ agreement.untilTimeDuration }}
-                        </p>
-                        <p><b>Technical and Organisational Measures</b></p>
-                        <mat-chip-set aria-label="Measures selection">
-                            <mat-chip *ngFor="let measure of agreement.techOrgMeasures">{{measure}}</mat-chip>
-                        </mat-chip-set>
-                        <p><b>Recipients</b></p>
-                        <mat-chip-set aria-label="Recipients selection">
-                            <mat-chip *ngFor="let recipient of agreement.recipients">{{recipient}}</mat-chip>
-                        </mat-chip-set>
-
+                        <constraints [policy]="agreement"></constraints>
+                    </mat-card-content>
+                    <!-- REMOVE AGREEMENT BUTTON -->
+                    <mat-card-content *ngIf="project.projectStatus==='Completed' && userType==='ADMIN'">
+                        <mat-card-actions>
+                            <mat-card-actions class="button-container">
+                                <button mat-raised-button (click)="removeAgreement()" color="warn">Remove
+                                    Agreement</button>
+                            </mat-card-actions>
+                        </mat-card-actions>
+                    </mat-card-content>
+                    <mat-card-content>
                         <mat-divider></mat-divider>
-                        <h2>Comments</h2>
+                        <h3>Comments</h3>
                         <comments [policyURL]="agreement.uid"></comments>
                     </mat-card-content>
                 </mat-card>

@@ -226,7 +226,7 @@ module.exports = function (appSession) {
             await project.fetchProject(projectURL, appSession);
             const threshold = project.toJson().threshold;
             let results = [];
-            let winner = `${offersList}#rejection`;
+            let winner = `rejection`;
             for (const offer of projectOffers) {
                 const firstPreference = await voteService.countVotesByRankPolicy(
                     { policyURL: offer, rank: 1 },
@@ -248,7 +248,7 @@ module.exports = function (appSession) {
                 await policyService.updatePolicyStatus(policyToUpdate, appSession);
             }
             if (sortedResults[0].count > cutoff) {
-                winner = sorted[0].policyUrl;
+                winner = sortedResults[0].policyUrl.split('#')[1];
             }
             res.send({ sortedResults, winner, totalCount, cutoff, membersNumber, threshold });
         }
