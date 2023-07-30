@@ -194,14 +194,6 @@ module.exports = function (appSession) {
                 if (upvotes > Math.ceil(membersNumber * threshold)) {
                     result = true;
                 }
-                if (result === true) {
-                    const projectToUpdate = { policyURL, actor: "memberApproved", newStatus: "Approved" };
-                    updatedProject = await policyService.updatePolicyStatus(projectToUpdate, appSession);
-                }
-                else {
-                    const projectToUpdate = { policyURL, actor: "memberApproved", newStatus: "Rejected" };
-                    updatedProject = await policyService.updatePolicyStatus(projectToUpdate, appSession);
-                }
                 res.send({ result, upvotes, downvotes, abstention, membersNumber, threshold });
             }
             catch (error) {

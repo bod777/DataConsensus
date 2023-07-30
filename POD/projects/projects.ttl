@@ -21,6 +21,7 @@ pod:82e7f5d0-662b-4ec0-adb1-b3e52ff32a03
         project:requestEndTime    "2023-06-17T14:05:13"^^xsd:dateTime ;
         project:requestStartTime  "2023-06-10T14:05:13"^^xsd:dateTime ;
         project:threshold         0.5 ;
+        project:membershipCount   14 ;
         oac:Organisation          dpv:ForProfitOrganisation .
 
 pod:4ddb1306-df85-4730-8545-14973be50cd2
@@ -35,6 +36,7 @@ pod:4ddb1306-df85-4730-8545-14973be50cd2
         project:requestEndTime    "2023-06-14T09:08:23"^^xsd:dateTime ;
         project:requestStartTime  "2023-06-07T09:08:23"^^xsd:dateTime ;
         project:threshold         0.5 ;
+        project:membershipCount   14 ;
         oac:Organisation          dpv:NonProfitOrganisation .
 
 pod:af993b9f-b8ba-4f3f-9f5e-26b6d37747ae
@@ -49,4 +51,5 @@ pod:af993b9f-b8ba-4f3f-9f5e-26b6d37747ae
         project:requestEndTime    "2023-06-12T17:58:31"^^xsd:dateTime ;
         project:requestStartTime  "2023-06-05T17:58:31"^^xsd:dateTime ;
         project:threshold         0.5 ;
+        project:membershipCount   14 ;
         oac:Organisation          dpv:AcademicScientificOrganisation .

@@ -1,11 +1,17 @@
 <div class="content">
     <h1 class="page-header">Third Party Dashboard</h1>
     <div class="card-container">
-        <mat-card *ngIf="!loading">
-            <home-table [dataSource]="dataSource"></home-table>
-        </mat-card>
-        <div *ngIf="loading">
-            <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
+        <div *ngIf="dataSource.data.length!==0">
+            <h3>Your Projects</h3>
+            <mat-card *ngIf="!loading">
+                <home-table [dataSource]="dataSource"></home-table>
+            </mat-card>
+            <div *ngIf="loading">
+                <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
+            </div>
+        </div>
+        <div>
+            <b>No projects belonging to third party</b>
         </div>
     </div>
 </div>

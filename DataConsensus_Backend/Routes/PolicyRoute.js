@@ -144,6 +144,34 @@ module.exports = function (appSession) {
         policyURL: string
         status: string
     */
+    router.put("/members-approved", async (req, res) => {
+        const { policyURL, status } = req.body;
+
+        if (!URL) {
+            res.status(400).send({ message: "Request URL is required." });
+            return;
+        }
+
+        try {
+            await policyService.updatePolicyStatus({ policyURL, actor: 'memberApproved', newStatus: status }, appSession);
+            if (status == "Rejected") {
+                const offer = new Proposal();
+                const policy = await offer.fetchPolicy(policyURL, appSession);
+                const projectURL = policy.isPartOf;
+                await policyService.updateProject({ projectURL, status: "Completed" }, appSession);
+            }
+            res.send({ message: "Offer response by third party received." });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: "Error in approving the offer.", error: error.message });
+        }
+    });
+
+    /*      
+        Expected req.body variables:
+        policyURL: string
+        status: string
+    */
     router.put("/thirdparty-approved", async (req, res) => {
         const { policyURL, status } = req.body;
 
