@@ -19,7 +19,7 @@ module.exports = {
     addVote: async function (req, session) {
         let datasetURL = votesList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
-
+        // console.log(req);
         const existingVotes = getThingAll(solidDataset);
         let existingVote = null;
         for (const vote of existingVotes) {
@@ -31,21 +31,24 @@ module.exports = {
             }
         }
         if (existingVote) {
+            // console.log("existingVote", existingVote);
             existingVote = buildThing(existingVote)
                 .setDatetime(DCTERMS.modified, new Date())
                 .setInteger(`${voteSchema}#voteRank`, req.voteRank)
                 .build();
         } else {
+            // console.log("newVote");
             const voteID = uuidv4();
-            const voteURI = `${datasetURL}#${voteID}`;
+            const voteURL = `${datasetURL}#${voteID}`;
+            // console.log(voteURL);
             let voteType;
             if (req.isPreference) {
                 voteType = `${voteSchema}#PreferenceVote`;
             } else {
                 voteType = `${voteSchema}#BinaryVote`;
             }
-
-            existingVote = buildThing(createThing({ url: voteURI }))
+            // console.log(voteType);
+            existingVote = buildThing(createThing({ url: voteURL }))
                 .addUrl(RDF.type, `${voteSchema}#Vote`)
                 .addUrl(`${voteSchema}#hasVoteType`, voteType)
                 .addUrl(`${voteSchema}#hasVoter`, req.voter)
@@ -55,8 +58,9 @@ module.exports = {
                 .setDatetime(DCTERMS.modified, new Date())
                 .addInteger(`${voteSchema}#voteRank`, req.voteRank)
                 .build();
+            // console.log("existing vote built");
         }
-        console.log("existingVote", existingVote);
+        // console.log("existingVote", existingVote);
         solidDataset = setThing(solidDataset, existingVote);
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
     },

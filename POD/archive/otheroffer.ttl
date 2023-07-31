@@ -1,7 +1,7 @@
 
 offer:64555f2b-efee-485d-abef-3542ca867ebf
         rdf:type                   odrl:Offer ;
-        dct:creator                <https://id.inrupt.com/JeffWinger> ;
+        dct:creator                <https://id.inrupt.com/eripley> ;
         dct:isPartOf               project:82e7f5d0-662b-4ec0-adb1-b3e52ff32a03 ;
         dct:issued                 "2023-07-17T15:10:16"^^xsd:dateTime ;
         odrl:permission            offer:64555f2b-efee-485d-abef-3542ca867ebf_permission ;
@@ -132,7 +132,7 @@ offer:4aaeb920-bdb4-48cc-9f41-644c6206433f_recipientConstraint
 
 offer:87c44b67-78f9-4e08-801f-9f098379bd04
         rdf:type                   odrl:Offer ;
-        dct:creator                <https://id.inrupt.com/AnnieEddison> ;
+        dct:creator                <https://id.inrupt.com/picard> ;
         dct:isPartOf               project:82e7f5d0-662b-4ec0-adb1-b3e52ff32a03 ;
         dct:issued                 "2023-07-17T15:11:19"^^xsd:dateTime ;
         odrl:permission            offer:87c44b67-78f9-4e08-801f-9f098379bd04_permission ;
@@ -148,8 +148,6 @@ offer:87c44b67-78f9-4e08-801f-9f098379bd04_recipientConstraint
         odrl:leftOperand   oac:Recipient ;
         odrl:operator      odrl:isAllOf ;
         odrl:rightOperand  <https://id.inrupt.com/DrJohnSmith> , <https://id.inrupt.com/DataConsensus> .
-
-    
 
 offer:87c44b67-78f9-4e08-801f-9f098379bd04_organisationConstraint
         rdf:type           odrl:Constraint ;
@@ -167,7 +165,7 @@ offer:87c44b67-78f9-4e08-801f-9f098379bd04_durationConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2023-10-10T00:00:00"^^xsd:dateTime .
+        odrl:rightOperand  "2024-10-10T00:00:00"^^xsd:dateTime .
 
 
 offer:87c44b67-78f9-4e08-801f-9f098379bd04_purposeConstraint

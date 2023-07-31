@@ -47,16 +47,16 @@ module.exports = function (appSession) {
         policyURL: string
     */
     router.post("/upvote", async (req, res) => {
-        const { voter, policyURL, projectURL } = req.body;
-
+        const { voter, policyURL, projectID } = req.body;
+        // console.log(req.body);
         const vote = {
             voter: voter,
             policyURL: policyURL,
             voteRank: 1,
             isPreference: false,
-            projectURL: projectURL
+            projectURL: `${projectsList}#${projectID}`
         };
-
+        // console.log(vote);
         try {
             await voteService.addVote(vote, appSession);
             res.send({ message: "Vote added successfully." });

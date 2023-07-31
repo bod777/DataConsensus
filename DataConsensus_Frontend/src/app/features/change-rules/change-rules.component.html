@@ -1,6 +1,7 @@
 <h3 class="instructions">Change the rules for this project</h3>
 <div>
     <mat-form-field>
+        <mat-label>Choose the date and time deliberation on the request will begin.</mat-label>
         <input matInput [(ngModel)]="project.requestStartTime" [ngxMatDatetimePicker]="picker"
             placeholder="Choose a date" [formControl]="dateControl1" [min]="minDate" [max]="maxDate"
             [disabled]="disabled">
@@ -13,6 +14,7 @@
 </div>
 <div>
     <mat-form-field>
+        <mat-label>Choose the date and time deliberation on the request will conclude.</mat-label>
         <input matInput [(ngModel)]="project.requestEndTime" [ngxMatDatetimePicker]="picker2"
             placeholder="Choose a date" [formControl]="dateControl2" [min]="minDate" [max]="maxDate"
             [disabled]="disabled">
@@ -25,6 +27,7 @@
 </div>
 <div>
     <mat-form-field>
+        <mat-label>Choose the date and time deliberation on any counter offers will conclude.</mat-label>
         <input matInput [(ngModel)]="project.offerEndTime" [ngxMatDatetimePicker]="picker3" placeholder="Choose a date"
             [formControl]="dateControl3" [min]="minDate" [max]="maxDate" [disabled]="disabled">
         <ngx-mat-datepicker-toggle matSuffix [for]="picker3"></ngx-mat-datepicker-toggle>
@@ -36,7 +39,7 @@
 </div>
 <div>
     <mat-form-field>
-        <mat-label>Threshold (as a decimal)</mat-label>
+        <mat-label>Select a threshold (as a decimal) that must be passed to approve a policy.</mat-label>
         <input matInput type="Number" step="0.01" [(ngModel)]="project.threshold">
     </mat-form-field>
 </div>

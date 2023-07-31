@@ -188,3 +188,107 @@ request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_permission
         odrl:assigner    <https://id.inrupt.com/thirdparty> ;
         odrl:constraint  request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_purposeConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_techOrgMeasureConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_durationConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_organisationConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_recipientConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_sellingDataConstraint , request:da1126e1-1d7c-42c4-9f7c-b180b3946a4b_sellingInsightsConstraint ;
         odrl:target      dpvpd:MedicalHealth .
+
+
+
+
+request:eeb9b173-340c-4a94-8bcd-c0e221bd20ad_durationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   dpv:UntilTimeDuration ;
+        odrl:operator      odrl:eq ;
+        odrl:rightOperand  "2024-07-29T23:00:00.000Z"^^xsd:dateTime .
+
+request:eeb9b173-340c-4a94-8bcd-c0e221bd20ad_organisationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Organisation ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:GovernmentalOrganisation .
+
+request:eeb9b173-340c-4a94-8bcd-c0e221bd20ad_recipientConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Recipient ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  <https://id.inrupt.com/thirdparty> .
+
+request:eeb9b173-340c-4a94-8bcd-c0e221bd20ad
+        rdf:type                   odrl:Request ;
+        dct:creator                <https://id.inrupt.com/thirdparty> ;
+        dct:isPartOf               project:5281310f-eebb-4db5-9d7a-ade492ec2bf1 ;
+        dct:issued                 "2023-07-30T22:31:08.336Z"^^xsd:dateTime ;
+        odrl:permission            request:eeb9b173-340c-4a94-8bcd-c0e221bd20ad_permission ;
+        odrl:profile               oac: ;
+        odrl:uid                   request:eeb9b173-340c-4a94-8bcd-c0e221bd20ad ;
+        policy:adminApproved       policy:Pending ;
+        policy:memberApproved      policy:Pending ;
+        policy:thirdPartyApproved  policy:Approved .
+
+request:eeb9b173-340c-4a94-8bcd-c0e221bd20ad_purposeConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:AcademicResearch .
+
+
+
+request:03cd0023-484c-4e4e-b23a-d4bc418f2900
+        rdf:type                   odrl:Request ;
+        dct:creator                <https://id.inrupt.com/thirdparty> ;
+        dct:isPartOf               project:706c070b-94fa-4017-9bc3-5b4f68a3e033 ;
+        dct:issued                 "2023-07-16T22:31:07.958ZZ"^^xsd:dateTime ;
+        odrl:permission            request:03cd0023-484c-4e4e-b23a-d4bc418f2900_permission ;
+        odrl:profile               oac: ;
+        odrl:uid                   request:03cd0023-484c-4e4e-b23a-d4bc418f2900 ;
+        policy:adminApproved       policy:Pending ;
+        policy:memberApproved      policy:Pending ;
+        policy:thirdPartyApproved  policy:Approved .
+
+request:03cd0023-484c-4e4e-b23a-d4bc418f2900_permission
+        rdf:type         odrl:Permission ;
+        odrl:action      dpv:Store , dpv:Use , dpv:Transform , dpv:Remove , dpv:Copy ;
+        odrl:assignee    <https://id.inrupt.com/DataConsensus> ;
+        odrl:assigner    <https://id.inrupt.com/thirdparty> ;
+        odrl:constraint  request:03cd0023-484c-4e4e-b23a-d4bc418f2900_techOrgMeasureConstraint , request:03cd0023-484c-4e4e-b23a-d4bc418f2900_sellingInsightsConstraint , request:03cd0023-484c-4e4e-b23a-d4bc418f2900_purposeConstraint , request:03cd0023-484c-4e4e-b23a-d4bc418f2900_sellingDataConstraint , request:03cd0023-484c-4e4e-b23a-d4bc418f2900_organisationConstraint , request:03cd0023-484c-4e4e-b23a-d4bc418f2900_recipientConstraint , request:03cd0023-484c-4e4e-b23a-d4bc418f2900_durationConstraint ;
+        odrl:target      dpvpd:MedicalHealth .
+
+request:03cd0023-484c-4e4e-b23a-d4bc418f2900_purposeConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:AcademicResearch .
+
+request:03cd0023-484c-4e4e-b23a-d4bc418f2900_sellingDataConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellDataToThirdParties .
+
+request:03cd0023-484c-4e4e-b23a-d4bc418f2900_sellingInsightsConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Purpose ;
+        odrl:operator      oac:isNotA ;
+        odrl:rightOperand  dpv:SellInsightsFromData .
+
+request:03cd0023-484c-4e4e-b23a-d4bc418f2900_durationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   dpv:UntilTimeDuration ;
+        odrl:operator      odrl:eq ;
+        odrl:rightOperand  "2024-07-29T23:00:00.000Z"^^xsd:dateTime .
+
+request:03cd0023-484c-4e4e-b23a-d4bc418f2900_organisationConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Organisation ;
+        odrl:operator      odrl:isA ;
+        odrl:rightOperand  dpv:GovernmentalOrganisation .
+
+
+request:03cd0023-484c-4e4e-b23a-d4bc418f2900_recipientConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:Recipient ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  <https://id.inrupt.com/thirdparty> .
+
+request:03cd0023-484c-4e4e-b23a-d4bc418f2900_techOrgMeasureConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
+        odrl:operator      odrl:isAllOf ;
+        odrl:rightOperand  dpv:MultiFactorAuthentication , dpv:ConsultationWithDPO , dpv:CodeOfConduct , dpv:ProfessionalTraining , dpv:CryptographicMethods , dpv:LoggingPolicies , dpv:EncryptionInTransfer , dpv:DataProtectionTraining , dpv:EncryptionAtRest , dpv:MonitoringPolicies , dpv:NDA , dpv:ComplianceMonitoring , dpv:NeworkSecurityProtocols .

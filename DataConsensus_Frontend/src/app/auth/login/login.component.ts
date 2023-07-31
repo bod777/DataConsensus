@@ -30,11 +30,11 @@ export class LoginComponent {
     }
 
     async redirectToMemberSignUp() {
-        this.route.navigate(['/memberSignUp']);
+        this.route.navigate(['/member-signup']);
     }
 
     async redirectToThirdPartySignUp() {
-        this.route.navigate(['/thirdPartySignUp']);
+        this.route.navigate(['/thirdparty-signup']);
     }
 
     async confirmLogin() {

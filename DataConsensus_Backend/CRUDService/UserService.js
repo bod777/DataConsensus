@@ -144,7 +144,7 @@ module.exports = {
         const filteredUsers = users.filter(user => {
             return new Date(user.predicates[DCTERMS.issued]["literals"]["http://www.w3.org/2001/XMLSchema#dateTime"][0]) <= new Date(date);
         });
-        return filteredUsers.length;
+        return filteredUsers.length + 1;
     },
 
     addNewData: async function (fileURL, appSession, userSession) {

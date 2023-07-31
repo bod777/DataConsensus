@@ -12,44 +12,58 @@
 pod:82e7f5d0-662b-4ec0-adb1-b3e52ff32a03
         rdf:type                  project:Project ;
         dct:creator               <https://id.inrupt.com/InsuranceCompany> ;
-        dct:description           "An insurnance company request" ;
+        dct:description           "The third party is an insurance company interested in accessing the CGM data to gain insights into glucose patterns and develop risk assessment models for their policyholders. They aim to analyze the data to identify patterns that could help them understand the relationship between glucose levels and health outcomes, particularly in individuals with diabetes. The insurance company intends to use this information to refine their underwriting processes, design personalized insurance products, and provide policyholders with incentives for managing their glucose levels effectively. \nTo ensure the privacy and security of the data, the insurance company has implemented stringent data protection measures. Their staff has undergone comprehensive data protection and cybersecurity training and all have signed NDAs. The company also has a designated data protection officer responsible for overseeing compliance with privacy regulations. They commit to using the data solely for the purposes outlined above and will not sell or share it with any unauthorized parties. \nThe insurance company employs robust security protocols to store and transfer the data securely. This includes encryption during storage and transmission, with industry-leading cryptography. There are also network security protocols, on-site physical security control and multi-factor authentication. There are many procedures in place to protect data. Regular compliance monitoring procedures and a certification system are in place to ensure ongoing adherence to data protection regulations. In the event of any unauthorized data processing or data loss incidents, the company has a well-defined plan for managing and reporting the incident. \nThe patient group carefully evaluates the request, engaging in thorough deliberations amongst themselves on the DataConsensus platform. While the constraints outlined above are stringent and well-thought out, a number of members don’t trust the intentions of the insurance company and successfully convince a majority of members that with this data, the insurance company could increase insurance premiums. Therefore, the group rejected the request." ;
         dct:issued                "2023-06-09T14:05:13"^^xsd:dateTime ;
-        dct:title                 "UserStory2" ;
+        dct:title                 "Developing Risk Assessment Models for Diabetes Patients" ;
         project:hasAgreement      false ;
         project:hasProjectStatus  project:Closed ;
+        project:membershipCount   14 ;
         project:offerEndTime      "2023-06-24T14:05:13"^^xsd:dateTime ;
         project:requestEndTime    "2023-06-17T14:05:13"^^xsd:dateTime ;
         project:requestStartTime  "2023-06-10T14:05:13"^^xsd:dateTime ;
         project:threshold         0.5 ;
-        project:membershipCount   14 ;
         oac:Organisation          dpv:ForProfitOrganisation .
 
 pod:4ddb1306-df85-4730-8545-14973be50cd2
         rdf:type                  dct:Project ;
-        dct:creator               <https://id.inrupt.com/FightDiabetesDublin> ;
-        dct:description           "A new nonprofit organization looking to improve healthcare resources for people with diabetes." ;
+        dct:creator               <https://id.inrupt.com/thirdParty> ;
+        dct:description           "The third party is a new nonprofit organization looking to improve healthcare resources for people with diabetes. Their mission is relatively broad and the exact aim of their research is not stated. \nAs they are a new organization with limited resources, they have opted for more relaxed data protection measures. They do not have a designated data protection officer and do not have training or a code of conduct for their staff to follow. They do have standard operating system security and password authentication but cannot guarantee encryption at rest. They do commit to not selling the data or sharing it with unauthorized parties. They have also requested a ridiculously long duration for the research (20 years). " ;
         dct:issued                "2023-06-06T09:08:23"^^xsd:dateTime ;
-        dct:title                 "UserStory3" ;
+        dct:title                 "Improving Healthcare Resources for People with Diabetes in Dublin" ;
         project:hasAgreement      true ;
-        project:hasProjectStatus  project:Closed ;
+        project:hasProjectStatus  project:OfferDeliberation ;
+        project:membershipCount   14 ;
         project:offerEndTime      "2023-06-21T09:08:23"^^xsd:dateTime ;
         project:requestEndTime    "2023-06-14T09:08:23"^^xsd:dateTime ;
         project:requestStartTime  "2023-06-07T09:08:23"^^xsd:dateTime ;
         project:threshold         0.5 ;
-        project:membershipCount   14 ;
         oac:Organisation          dpv:NonProfitOrganisation .
 
 pod:af993b9f-b8ba-4f3f-9f5e-26b6d37747ae
         rdf:type                  dct:Project ;
         dct:creator               <https://id.inrupt.com/DrJohnSmith> ;
-        dct:description           "To use CGM data to explore how glucose levels vary throughout the day" ;
+        dct:description           "To use CGM data to explore how glucose levels vary throughout the day. The third party is a respected academic research institution. They are hoping to leverage the CGM data to gain insights into glucose patterns in different populations. Specifically, they would like to explore how glucose levels vary throughout the day. The institution aims to publish research papers based on this research, contribute to scientific knowledge, and provide evidence-based recommendations for people with diabetes. \nThe data will only be used for the purpose of the research outlined above. The staff of the institution have data protection training and follow an ethical code of conduct. The institution also employs a data protection officer. The academic research institution will not sell the data. The data will be stored and transferred securely using encryption and access to the data will only be granted through password authentication. There are also compliance monitoring procedures and a plan in place for incident reporting if there is any unauthorized data processing. \nGiven the thorough constraints listed above, the trusted reputation of the organization and the altruistic purpose of the research, the patient group quickly approved their request with little concern. \nOnce granted access by the application's users, the academic research institution accesses the pseudo-anonymised data from the DataConsensus pod. The data will then be analyzed using statistical methods, machine learning algorithms, and other research techniques to identify patterns, associations, and trends. At the data agreed upon, any duplicate data files of the pod data will be destroyed. \n" ;
         dct:issued                "2023-06-04T17:58:31"^^xsd:dateTime ;
-        dct:title                 "UserStory1" ;
+        dct:title                 "Analyzing Glucose Variability Throughout the Day" ;
         project:hasAgreement      true ;
         project:hasProjectStatus  project:Closed ;
+        project:membershipCount   14 ;
         project:offerEndTime      "2023-06-19T17:58:31"^^xsd:dateTime ;
         project:requestEndTime    "2023-06-12T17:58:31"^^xsd:dateTime ;
         project:requestStartTime  "2023-06-05T17:58:31"^^xsd:dateTime ;
         project:threshold         0.5 ;
-        project:membershipCount   14 ;
         oac:Organisation          dpv:AcademicScientificOrganisation .
+
+pod:4653ed52-a317-4ee4-8819-b2d09bdfac4a
+        rdf:type                  project:Project ;
+        dct:creator               <https://id.inrupt.com/thirdparty> ;
+        dct:description           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." ;
+        dct:issued                "2023-07-23T22:31:07.958Z"^^xsd:dateTime ;
+        dct:title                 "Understanding the habits of diabetes patients" ;
+        project:hasAgreement      false ;
+        project:hasProjectStatus  project:OfferDeliberation ;
+        project:offerEndTime      "2023-08-07T22:31:07.958Z"^^xsd:dateTime ;
+        project:requestEndTime    "2023-07-31T12:04:07.958Z"^^xsd:dateTime ;
+        project:requestStartTime  "2023-07-24T12:04:07.958Z"^^xsd:dateTime ;
+        project:threshold         0.5 ;
+        oac:Organisation          dpv:GovernmentalOrganisation .

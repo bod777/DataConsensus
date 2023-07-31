@@ -46,20 +46,64 @@ pod:fc278b4e-5b20-47e9-87b9-b3e52cb8f4ed
 
 pod:350ca22a-6a46-4b2b-a611-27f2ffe1d589
         rdf:type              comment:Comment ;
-        dct:issued           "2023-06-23T12:34:56Z"^^xsd:dateTime ;
+        dct:issued           "2023-06-15T12:34:56Z"^^xsd:dateTime ;
         dct:creator           <https://id.inrupt.com/picard> ;
-        dct:modified          "2023-06-24T14:35:56Z"^^xsd:dateTime ;
+        dct:modified          "2023-06-15T12:34:56Z"^^xsd:dateTime ;
         dct:references        offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
-        comment:hasModerator  <https://id.inrupt.com/odonneb4> ;
-        comment:text          "This is a great policy!" ;
+        comment:text          "Thanks for proposing this offer, I feel a lot safer with the new security measures." ;
         comment:wasModerated  false .
 
 
 pod:7f74b6b7-f701-45a5-a9c4-be25ab91c170
         rdf:type              comment:Comment ;
-        dct:issued           "2023-06-20T12:34:56Z"^^xsd:dateTime ;
+        dct:issued           "2023-06-15T16:44:56Z"^^xsd:dateTime ;
         dct:creator           <https://id.inrupt.com/odonneb4> ;
-        dct:modified          "2023-06-27T12:34:56Z"^^xsd:dateTime ;
+        dct:modified          "2023-06-15T16:44:56Z"^^xsd:dateTime ;
         dct:references        offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
-        comment:text          "I have some questions about this policy." ;
+        comment:text          "The new security measures are great, hopefully the requester will accept them." ;
+        comment:wasModerated  false .
+
+pod:b361019e-09e7-4e80-89ce-731cedc2ac67
+        rdf:type              comment:Comment ;
+        dct:issued           "2023-06-15T17:06:56Z"^^xsd:dateTime ;
+        dct:creator           <https://id.inrupt.com/benchang> ;
+        dct:modified          "2023-06-15T17:06:56Z"^^xsd:dateTime ;
+        dct:references        offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
+        comment:text          "This is a great policy!" ;
+        comment:wasModerated  false .
+
+pod:1fdd2ee6-53fc-498e-a868-fb5c22197044
+        rdf:type              comment:Comment ;
+        dct:issued           "2023-06-08T15:31:56Z"^^xsd:dateTime ;
+        dct:creator           <https://id.inrupt.com/starbuck> ;
+        dct:modified          "2023-06-08T15:31:56Z"^^xsd:dateTime ;
+        dct:references        request:d1739b02-2e77-4930-ac2e-e41ad39ac985  ;
+        comment:text          "While I like the idea of the project, the lack of technical measures is really concerning." ;
+        comment:wasModerated  false .
+
+pod:74dc973b-ba64-4e96-bf6c-dde19cc3c0f1
+        rdf:type              comment:Comment ;
+        dct:issued           "2023-06-09T15:31:56Z"^^xsd:dateTime ;
+        dct:creator           <https://id.inrupt.com/picard> ;
+        dct:modified          "2023-06-09T15:31:56Z"^^xsd:dateTime ;
+        dct:references        request:d1739b02-2e77-4930-ac2e-e41ad39ac985  ;
+        comment:text          "I think the requester means well but I don't think they have the technical know-how to pull this off." ;
+        comment:wasModerated  false .
+
+pod:817b6675-401c-4bd9-a6c9-22f987956799
+        rdf:type              comment:Comment ;
+        dct:issued           "2023-06-10T10:12:01Z"^^xsd:dateTime ;
+        dct:creator           <https://id.inrupt.com/jimkirk> ;
+        dct:modified          "2023-06-10T10:12:01Z"^^xsd:dateTime ;
+        dct:references        request:d1739b02-2e77-4930-ac2e-e41ad39ac985  ;
+        comment:text          "The project sounds exciting but they don't even have a code of conduct." ;
+        comment:wasModerated  false .
+
+pod:6d552cde-5afd-43e0-941a-3daa2ac1d1fd
+        rdf:type              comment:Comment ;
+        dct:issued           "2023-06-05T13:12:01Z"^^xsd:dateTime ;
+        dct:creator           <https://id.inrupt.com/eripley> ;
+        dct:modified          "2023-06-10T13:12:01Z"^^xsd:dateTime ;
+        dct:references        request:12d6eb50-f6e2-488c-8923-fb0c4d47749a  ;
+        comment:text          "I like support academic research projects like this." ;
         comment:wasModerated  false .

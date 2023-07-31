@@ -19,7 +19,7 @@ export class MemberSignUpComponent implements OnInit {
     dataSource: string = "";
 
     navigateToHomePage() {
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/login');
     }
 
     async submitForm() {
@@ -27,7 +27,7 @@ export class MemberSignUpComponent implements OnInit {
         localStorage.setItem('email', this.email);
         localStorage.setItem('dataSource', this.dataSource);
 
-        window.location.href = "http://localhost:3000/api/v1/auth/memberSignUp";
+        window.location.href = "http://localhost:3000/api/v1/auth/member-signup";
     }
 
     async ngOnInit() {

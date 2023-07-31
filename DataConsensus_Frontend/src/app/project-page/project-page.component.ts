@@ -51,7 +51,7 @@ export class ProjectPageComponent implements OnInit {
     downvote() {
         this.downvoteState = true;
         this.upvoteState = false;
-        this.voteService.downvote(this.user, this.request.URL).subscribe(
+        this.voteService.downvote(this.user, this.request.URL, this.projectID).subscribe(
             (vote: any) => {
                 this._snackBar.open("Success", "Close", { duration: 3000 });
             },
@@ -64,7 +64,7 @@ export class ProjectPageComponent implements OnInit {
     upvote() {
         this.upvoteState = true;
         this.downvoteState = false;
-        this.voteService.upvote(this.user, this.request.URL).subscribe(
+        this.voteService.upvote(this.user, this.request.URL, this.projectID).subscribe(
             (vote: any) => {
                 this._snackBar.open("Success", "Close", { duration: 3000 });
             },
@@ -396,11 +396,12 @@ export class ProjectPageComponent implements OnInit {
                     );
                 }
                 // Fetching offer results after the initial results fetch
-                if (this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation" && this.projectStatus !== "OfferDeliberation" && this.offers.length !== 0) {
+                if (this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation" && this.projectStatus !== "OfferDeliberation" && offerURLs.length !== 0) {
+                    console.log("Getting offer results")
                     this.voteService.getOfferResult(this.projectID, this.project.offerEndTime.toISOString()).subscribe(
                         (response) => {
                             this.offerResult = response.winner;
-                            // console.log("Offer Result: ", response);
+                            console.log("Offer Result: ", response);
                             this._snackBar.open("Successfully fetched offer deliberation result", "Close", { duration: 3000 });
                         },
                         (error) => {

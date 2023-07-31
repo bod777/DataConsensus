@@ -20,14 +20,27 @@
     <mat-grid-tile rowspan="1">
         <mat-form-field [style.width.px]=327>
             <mat-label>Data Source</mat-label>
-            <input matInput type="text" [(ngModel)]="dataSource" required>
+            <input matInput type="text" [(ngModel)]="dataSource" required
+                matTooltip="Please copy the pod location (URL) of your entries.csv exported from NightScout.">
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>
         <mat-form-field [style.width.px]=327>
-            <mat-label>Solid Input Provider</mat-label>
-            <input matInput type="text" [(ngModel)]="loginInput" required>
+            <mat-label>Solid Pod Provider</mat-label>
+            <input matInput type="text" [(ngModel)]="loginInput" required
+                matTooltip="Please input your identity provider.">
         </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="2">
+        <mat-card>
+            <mat-card-content>
+                <p>By logging in through your webID below, you will be allowing this application to access the above
+                    datasource and add it to the DataConsensus' group's data. This compiled and pseudo-anonymised data
+                    is
+                    accessible by any third party with active
+                    agreements. You will be able to delete your account and remove your data at any time.</p>
+            </mat-card-content>
+        </mat-card>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
         <button mat-raised-button color="primary" (click)="submitForm()">Confirm</button>

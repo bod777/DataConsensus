@@ -9,18 +9,18 @@ export class VoteService {
 
     constructor(private http: HttpClient) { }
 
-    upvote(voter: string, policyURL: string): Observable<any> {
+    upvote(voter: string, policyURL: string, projectID: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        return this.http.post('http://localhost:3000/api/v1/vote/upvote', { voter, policyURL }, { headers });
+        return this.http.post('http://localhost:3000/api/v1/vote/upvote', { voter, policyURL, projectID }, { headers });
     }
 
-    downvote(voter: string, policyURL: string): Observable<any> {
+    downvote(voter: string, policyURL: string, projectID: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        return this.http.post('http://localhost:3000/api/v1/vote/downvote', { voter, policyURL }, { headers });
+        return this.http.post('http://localhost:3000/api/v1/vote/downvote', { voter, policyURL, projectID }, { headers });
     }
 
     getVote(voter: string, policyID: string): Observable<any> {

@@ -22,7 +22,7 @@ export class ThirdPartySignUpComponent implements OnInit {
     description: string = "";
 
     navigateToHomePage() {
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/login');
     }
 
     submitForm() {
@@ -31,7 +31,7 @@ export class ThirdPartySignUpComponent implements OnInit {
         localStorage.setItem('organisationType', this.organisationType);
         localStorage.setItem('description', this.description);
 
-        window.location.href = "http://localhost:3000/api/v1/auth/thirdPartySignUp";
+        window.location.href = "http://localhost:3000/api/v1/auth/thirdparty-signup";
     }
 
     ngOnInit() {
