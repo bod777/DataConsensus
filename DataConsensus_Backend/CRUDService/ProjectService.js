@@ -56,15 +56,12 @@ module.exports = {
     },
 
     getProject: async function (projectURL, session) {
-        // console.log("Project URL", projectURL);
         const projectThing = await this.getSolidThing(projectURL, session);
         const projectRequests = await this.getRelatedPolicies(projectThing, requestsList, session);
         const projectOffers = await this.getRelatedPolicies(projectThing, offersList, session);
         const projectAgreements = await this.getRelatedPolicies(projectThing, agreementsList, session);
         const projectPolicies = { requests: projectRequests, offers: projectOffers, agreements: projectAgreements };
-        // console.log("Project Policies", projectPolicies);
         const project = await this.formatProject(projectThing, projectPolicies, session);
-        // console.log("Project", project);
         return project;
     },
 
@@ -97,6 +94,7 @@ module.exports = {
             const projectAgreements = await this.getRelatedPolicies(item, agreementsList, session);
             const projectPolicies = { requests: projectRequests, offers: projectOffers, agreements: projectAgreements };
             const project = await this.formatProject(item, projectPolicies, session);
+
             return project;
         });
         const projectList = await Promise.all(projectPromises);
@@ -105,13 +103,13 @@ module.exports = {
 
     getRelatedPolicies: async function (project, dataset, session) {
         const policyService = require("../CRUDService/PolicyService.js");
-        // console.log("Project ", project);
+        // console.log("Project ", project.url);
         const policyDataset = await getGivenSolidDataset(dataset, session);
+        // console.log("Policy Dataset ", policyDataset);
         const policies = getThingAll(policyDataset);
-        const policiesArray = policies;
         // console.log("Policies ", policies)
         let projectPolicies = [];
-        let policySolidThings = policiesArray.filter((policy) => getUrl(policy, DCTERMS.isPartOf) === project.url);
+        let policySolidThings = policies.filter((policy) => getUrl(policy, DCTERMS.isPartOf) === project.url);
         // console.log("Policy Solid Things", policySolidThings);
         policyURLs = policySolidThings.map((policy) => policy.url);
         // console.log("Policy URLs", policyURLs);

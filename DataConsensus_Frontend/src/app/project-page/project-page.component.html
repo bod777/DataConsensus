@@ -1,12 +1,9 @@
 <div class="content">
     <div class="card-container">
-        <div *ngIf="loading && !broken">
+        <div *ngIf="loading">
             <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
         </div>
-        <div *ngIf="broken">
-            <h3 class="instructions">Error. Please refresh the page.</h3>
-        </div>
-        <mat-drawer-container *ngIf="!loading && !broken">
+        <mat-drawer-container *ngIf="!loading">
             <mat-drawer mode="side" opened>
                 <mat-button-toggle-group class="sidebar" name="tab" [(ngModel)]="tab" aria-label="Font Style">
                     <mat-button-toggle class="sidebar-panel" value="overview">Overview</mat-button-toggle>

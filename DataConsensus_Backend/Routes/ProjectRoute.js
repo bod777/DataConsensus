@@ -53,6 +53,7 @@ module.exports = function (appSession) {
             const projects = await projectService.getProjects(appSession);
             const updatedProjects = projects.map(async project => await updateProjectStatus(project));
             const projectList = await Promise.all(updatedProjects);
+            // console.log(projectList);
             res.send({ data: projectList });
         } catch (error) {
             console.error(error);
@@ -69,6 +70,7 @@ module.exports = function (appSession) {
             const projectURL = `${projectsList}#${req.query.projectID}`;
             const fetchedProject = await projectService.getProject(projectURL, appSession);
             const updatedProjects = await updateProjectStatus(fetchedProject);
+            // console.log(updatedProjects);
             res.send({ data: updatedProjects });
         } catch (error) {
             console.error(error);

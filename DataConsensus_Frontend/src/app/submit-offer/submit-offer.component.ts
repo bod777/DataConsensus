@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { interval } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -21,6 +22,8 @@ export class SubmitOfferComponent {
     }
 
     loading: boolean = true;
+    progress: number = 0;
+    showProgressBar: boolean = false;
     requestsList = "https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/requests.ttl#";
     requestID: string = "";
     projectURL: string = "";
@@ -74,6 +77,16 @@ export class SubmitOfferComponent {
     ];
 
     submit() {
+        this.showProgressBar = true;
+        const interval$ = interval(500);
+        const subscription = interval$.subscribe(() => {
+            this.progress += 10;
+            if (this.progress >= 100) {
+                this.showProgressBar = false;
+                subscription.unsubscribe();
+                this.progress = 0;
+            }
+        });
         this.policyService.submitOffer(this.webID, this.projectURL, this.requester, this.organisationType, this.purpose, this.sellingData, this.sellingInsights, this.techOrgMeasures, this.recipients, this.duration).subscribe(
             (profile) => {
                 this.offer = profile.data;

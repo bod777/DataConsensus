@@ -19,7 +19,6 @@ export class ProjectPageComponent implements OnInit {
     constructor(private voteService: VoteService, private userService: UserService, private dateService: DateService, private commentService: CommentService, private route: ActivatedRoute, private router: Router, private policyService: PolicyService, private _snackBar: MatSnackBar, public datepipe: DatePipe) { }
 
     loading: boolean = true;
-    broken: boolean = false;
     user: string = localStorage.getItem("webID") || "";
     userType: string = localStorage.getItem("userType") || "";
     tab: string = 'overview';
@@ -213,9 +212,8 @@ export class ProjectPageComponent implements OnInit {
                             },
                             (error) => {
                                 if (error.status !== "No votes found") {
-                                    console.log(error);
+                                    console.error(error);
                                     this._snackBar.open("Error fetching existing vote: " + error, "Close");
-                                    this.broken = true;
                                 }
                             }
                         );
@@ -244,7 +242,6 @@ export class ProjectPageComponent implements OnInit {
                                 },
                                 (error) => {
                                     this._snackBar.open("Error retrieving offer preference: " + error, "Close");
-                                    this.broken = true;
                                 }
                             );
                         }
@@ -264,6 +261,7 @@ export class ProjectPageComponent implements OnInit {
                         this.project.projectPolicies.agreements[0].threshold = Number(this.project.projectPolicies.agreements[0].threshold);
                         this.agreement = this.project.projectPolicies.agreements[0];
                     }
+                    console.log(this.project);
                     this.loading = false;
                 }
 
@@ -279,7 +277,6 @@ export class ProjectPageComponent implements OnInit {
                         (error) => {
                             console.log(error);
                             this._snackBar.open("Error in fetching request deliberation result: " + error, "Close");
-                            this.broken = true;
                         }
                     );
                 }
@@ -293,13 +290,12 @@ export class ProjectPageComponent implements OnInit {
                         (error) => {
                             console.log(error);
                             this._snackBar.open("Error in fetching offer deliberation result. Try Refreshing. Error: " + error.message, "Close");
-                            this.broken = true;
                         }
                     );
                 }
             },
             (error) => {
-                this._snackBar.open("Error retrieving project. Try refreshing. Error:" + error, "Close", { duration: 30000 });
+                this._snackBar.open("Error retrieving project. Try refreshing. Error:" + error, "Close");
             }
         );
     }

@@ -4,10 +4,10 @@
 @prefix oac:     <https://w3id.org/oac#> .
 @prefix odrl:    <http://www.w3.org/ns/odrl/2/> .
 @prefix policy:  <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy.ttl#> .
-@prefix project: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/projects/projects.ttl#> .
+@prefix project: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/projects.ttl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/requests.ttl#> .
+@prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/requests.ttl#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 request:d1739b02-2e77-4930-ac2e-e41ad39ac985_purposeConstraint

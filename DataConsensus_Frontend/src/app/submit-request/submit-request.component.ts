@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { interval } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -22,6 +23,8 @@ export class SubmitRequestComponent implements OnInit {
 
     }
 
+    showProgressBar: boolean = false;
+    progress: number = 0;
     webID: string = localStorage.getItem('webID') || "";
     title: string = "";
     description: string = "";
@@ -73,6 +76,16 @@ export class SubmitRequestComponent implements OnInit {
     ];
 
     submit() {
+        this.showProgressBar = true;
+        const interval$ = interval(500);
+        const subscription = interval$.subscribe(() => {
+            this.progress += 10;
+            if (this.progress >= 100) {
+                this.showProgressBar = false;
+                subscription.unsubscribe();
+                this.progress = 0;
+            }
+        });
         this.policyService.submitRequest(this.webID, this.title, this.description, this.organisationType, this.purpose, this.sellingData, this.sellingInsights, this.techOrgMeasures, this.recipients, this.duration).subscribe(
             (profile) => {
                 this.request = profile.data;

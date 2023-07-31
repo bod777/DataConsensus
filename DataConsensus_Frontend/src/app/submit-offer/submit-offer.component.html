@@ -60,6 +60,8 @@
             <mat-card-actions class="button-container" style="padding-bottom: 100px;">
                 <button mat-raised-button color="primary" (click)="submit()">Save</button>
                 <button mat-raised-button (click)="cancelChanges()">Cancel</button>
+                <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"
+                    *ngIf="showProgressBar"></mat-progress-spinner>
             </mat-card-actions>
         </div>
     </mat-card>
