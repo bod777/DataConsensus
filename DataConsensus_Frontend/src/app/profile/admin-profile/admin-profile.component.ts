@@ -17,6 +17,7 @@ export class AdminProfileComponent implements OnInit {
     webID: string = "";
     name: string = "";
     email: string = "";
+    issued: Date = new Date();
 
     saveChanges() {
         this.userService.updateAdmin(this.webID, this.name, this.email).subscribe(
@@ -42,6 +43,7 @@ export class AdminProfileComponent implements OnInit {
                 this.webID = profile.data.webID;
                 this.name = profile.data.name;
                 this.email = profile.data.email;
+                this.issued = new Date(profile.data.issued);
             },
             (error) => {
                 this._snackBar.open("Error retrieving profile: " + error, "Close", { duration: 3000 });

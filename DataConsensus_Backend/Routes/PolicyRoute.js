@@ -130,7 +130,7 @@ module.exports = function (appSession) {
     router.delete("/remove-proposal", async (req, res) => {
         try {
             const { policyID, webID, policyType } = req.query;
-            console.log(`${policyType}#${policyID}`);
+            // console.log(`${policyType}#${policyID}`);
             await policyService.removeProposal({ policyURL: `${policyType}#${policyID}`, requester: webID }, appSession);
             res.send({ message: "Proposal removed successfully" });
         } catch (error) {

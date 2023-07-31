@@ -56,7 +56,7 @@ export class ProjectPageComponent implements OnInit {
                 this._snackBar.open("Success", "Close", { duration: 3000 });
             },
             (error) => {
-                this._snackBar.open("Error retrieving project: " + error, "Close", { duration: 3000 });
+                this._snackBar.open("Error retrieving project: " + error, "Close");
             }
         );
     }
@@ -69,23 +69,7 @@ export class ProjectPageComponent implements OnInit {
                 this._snackBar.open("Success", "Close", { duration: 3000 });
             },
             (error) => {
-                this._snackBar.open("Error retrieving project: " + error, "Close", { duration: 3000 });
-            }
-        );
-    }
-
-    changeRules() {
-        this.policyService.changeRules(this.project).subscribe(
-            (response) => {
-                this._snackBar.open("Successfully changed rules", "Close", { duration: 3000 });
-            },
-            (error) => {
-                this._snackBar.open("Error in changing rules: " + error, "Close", { duration: 3000 });
-            }
-        );
-        this.userService.getMemberCount().subscribe(
-            (member: any) => {
-                this.project.cutoff = Math.ceil(member.data * this.project.threshold);
+                this._snackBar.open("Error retrieving project: " + error, "Close");
             }
         );
     }
@@ -147,7 +131,7 @@ export class ProjectPageComponent implements OnInit {
                 this._snackBar.open("Successfully removed agreement", "Close", { duration: 3000 });
             },
             (error) => {
-                this._snackBar.open("Error in removing agreement: " + error, "Close", { duration: 3000 });
+                this._snackBar.open("Error in removing agreement: " + error, "Close");
             }
         );
     }
@@ -158,7 +142,7 @@ export class ProjectPageComponent implements OnInit {
                 this._snackBar.open("Successfully removed agreement", "Close", { duration: 3000 });
             },
             (error) => {
-                this._snackBar.open("Error in removing agreement: " + error, "Close", { duration: 3000 });
+                this._snackBar.open("Error in removing agreement: " + error, "Close");
             }
         );
     }
@@ -180,9 +164,14 @@ export class ProjectPageComponent implements OnInit {
         this.policyService.getProject(this.projectID).subscribe(
             (project: any) => {
                 this.project = project.data;
-                this.userService.getMemberCount().subscribe(
+                this.userService.getMemberCount(this.project.requestEndTime).subscribe(
                     (member: any) => {
-                        this.project.cutoff = Math.ceil(member.data * this.project.threshold);
+                        this.project.requestCutoff = Math.ceil(member.data * this.project.threshold);
+                    }
+                );
+                this.userService.getMemberCount(this.project.offerEndTime).subscribe(
+                    (member: any) => {
+                        this.project.offerCutoff = Math.ceil(member.data * this.project.threshold);
                     }
                 );
                 this.projectStatus = this.project.projectStatus;
@@ -211,7 +200,7 @@ export class ProjectPageComponent implements OnInit {
                         },
                         (error) => {
                             console.log(error);
-                            this._snackBar.open("Error retrieving request: " + error, "Close", { duration: 3000 });
+                            this._snackBar.open("Error retrieving request: " + error, "Close");
                         }
                     );
 
@@ -239,7 +228,7 @@ export class ProjectPageComponent implements OnInit {
                             (error) => {
                                 if (error.status !== "No votes found") {
                                     console.log(error);
-                                    this._snackBar.open("Error fetching existing vote: " + error, "Close", { duration: 3000 });
+                                    this._snackBar.open("Error fetching existing vote: " + error, "Close");
                                 }
                             }
                         );
@@ -257,7 +246,7 @@ export class ProjectPageComponent implements OnInit {
                                 this.offerRanking = vote.data;
                             },
                             (error) => {
-                                this._snackBar.open("Error retrieving offer preference: " + error, "Close", { duration: 3000 });
+                                this._snackBar.open("Error retrieving offer preference: " + error, "Close");
                             }
                         );
                     }
@@ -278,7 +267,7 @@ export class ProjectPageComponent implements OnInit {
                             },
                             (error) => {
                                 console.log(error);
-                                this._snackBar.open("Error retrieving offer: " + error, "Close", { duration: 3000 });
+                                this._snackBar.open(`Error retrieving offer ${id}: ${error}`, "Close");
                             }
                         )
                     }
@@ -287,27 +276,27 @@ export class ProjectPageComponent implements OnInit {
                     this.projectStatus = "RequestDeliberation";
                     this.policyService.updateStatus(this.projectID, this.projectStatus).subscribe(
                         (response) => {
-                            this._snackBar.open("Successfully updated project status to RequestDeliberation", "Close", { duration: 3000 });
+                            this._snackBar.open(`Successfully updated project status to ${this.projectStatus}`, "Close", { duration: 3000 });
                         },
                         (error) => {
                             console.log(error);
-                            this._snackBar.open("Error updated project status: " + error, "Close", { duration: 3000 });
+                            this._snackBar.open(`Error in updating project status to ${this.projectStatus}. Error: ${error}`, "Close");
                         }
                     );
                 }
                 if (this.projectStatus === "RequestDeliberation" && this.dateService.isDatePassed(this.project.requestEndTime)) {
                     // GETTING THE REQUEST DELIBERATION RESULT FOR THE FIRST TIME
-                    this.voteService.getRequestResult(this.requestID).subscribe(
+                    this.voteService.getRequestResult(this.requestID, this.project.requestEndTime.toISOString()).subscribe(
                         (response) => {
                             this.requestResult = response.result;
                             this.requestDownvotes = response.downvotes;
                             this.requestUpvotes = response.upvotes;
                             this.requestAbstentions = response.abstentions;
-                            this._snackBar.open("Successfully fetched request deliberation result", "Close", { duration: 3000 });
+                            this._snackBar.open("Successfully fetched initial request deliberation result", "Close", { duration: 3000 });
                         },
                         (error) => {
                             console.log(error);
-                            this._snackBar.open("Error in fetching request deliberation result: " + error, "Close", { duration: 3000 });
+                            this._snackBar.open("Error in fetching initial request deliberation result: " + error, "Close");
                         }
                     );
                     // UPDATING THe PROJECT STATUS
@@ -327,21 +316,21 @@ export class ProjectPageComponent implements OnInit {
                         },
                         (error) => {
                             console.log(error);
-                            this._snackBar.open("Error updated project status: " + error, "Close", { duration: 3000 });
+                            this._snackBar.open(`Error in updating project status to ${this.projectStatus}. Error: ${error}`, "Close");
                         }
                     );
                 }
 
                 if (this.projectStatus === "OfferDeliberation" && this.dateService.isDatePassed(this.project.offerEndTime)) {
                     // GETTING THE REQUEST DELIBERATION RESULT FOR THE FIRST TIME
-                    this.voteService.getOfferResult(this.projectID).subscribe(
+                    this.voteService.getOfferResult(this.projectID, this.project.offerEndTime.toISOString()).subscribe(
                         (response) => {
                             this.offerResult = response.winner;
-                            this._snackBar.open("Successfully fetched offer deliberation results", "Close", { duration: 3000 });
+                            this._snackBar.open("Successfully fetched initial offer deliberation results", "Close", { duration: 3000 });
                         },
                         (error) => {
                             console.log(error);
-                            this._snackBar.open("Error in fetching offer deliberation results: " + error, "Close", { duration: 3000 });
+                            this._snackBar.open("Error in fetching initial offer deliberation results: " + error, "Close");
                         }
                     );
                     // UPDATING THe PROJECT STATUS
@@ -354,15 +343,16 @@ export class ProjectPageComponent implements OnInit {
                     }
                     this.policyService.updateStatus(this.projectID, this.projectStatus).subscribe(
                         (response) => {
-                            this._snackBar.open("Successfully updated project status to OfferDeliberation", "Close", { duration: 3000 });
+                            this._snackBar.open(`Successfully updated project status to ${this.projectStatus}`, "Close", { duration: 3000 });
                         },
                         (error) => {
                             console.log(error);
-                            this._snackBar.open("Error updated project status: " + error, "Close", { duration: 3000 });
+                            this._snackBar.open(`Error in updating project status to ${this.projectStatus}. Error: ${error}`, "Close");
                         }
                     );
                 }
                 if (this.project.hasAgreement) {
+                    this.isActiveAgreement = true;
                     this.agreementID = this.project.projectPolicies.agreements[0].split("#")[1] || "";
                     this.policyService.getAgreement(this.agreementID).subscribe(
                         (policy) => {
@@ -374,47 +364,50 @@ export class ProjectPageComponent implements OnInit {
                         },
                         (error) => {
                             console.log(error);
-                            this._snackBar.open("Error in fetching agreement: " + error, "Close", { duration: 3000 });
+                            this._snackBar.open("Error in fetching agreement. Try refreshing. Error: " + error, "Close");
                         }
                     );
                 }
-                this.isActiveAgreement = !(this.dateService.isDatePassed(this.agreement.untilTimeDuration));
-                if (this.projectStatus !== "Closed") {
-
-
-
-
-
-                } else {
-                    if (this.requestID !== "") {
-                        this.voteService.getRequestResult(this.requestID).subscribe(
-                            (response) => {
-                                this.requestResult = response.result;
-                                this.requestDownvotes = response.downvotes;
-                                this.requestUpvotes = response.upvotes;
-                                this.requestAbstentions = response.abstentions;
-                                this._snackBar.open("Successfully fetched request deliberation result", "Close", { duration: 3000 });
-                            },
-                            (error) => {
-                                console.log(error);
-                                this._snackBar.open("Error in fetching request deliberation result: " + error, "Close", { duration: 3000 });
-                            }
-                        );
-                        if (this.offers.length !== 0) {
-                            this.voteService.getOfferResult(this.projectID).subscribe(
-                                (response) => {
-                                    this.offerResult = response.winner;
-                                    // console.log("Offer Result: ", response);
-                                    this._snackBar.open("Successfully fetched offer deliberation result", "Close", { duration: 3000 });
-                                },
-                                (error) => {
-                                    console.log(error);
-                                    this._snackBar.open("Error in fetching offer deliberation result: " + error, "Close", { duration: 3000 });
-                                }
-                            );
+                if (this.isActiveAgreement === true && this.dateService.isDatePassed(this.agreement.untilTimeDuration)) {
+                    this.isActiveAgreement = false;
+                    this.userService.removeAccess(this.agreement.assignee).subscribe(
+                        (response) => {
+                            this._snackBar.open("Successfully removed access", "Close", { duration: 3000 });
+                        },
+                        (error) => {
+                            this._snackBar.open("Error in removing access: " + error, "Close");
                         }
-
-                    }
+                    );
+                }
+                // Fetching request results after the initial results fetch
+                if (this.requestID !== "" && this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation") {
+                    this.voteService.getRequestResult(this.requestID, this.project.requestEndTime.toISOString()).subscribe(
+                        (response) => {
+                            this.requestResult = response.result;
+                            this.requestDownvotes = response.downvotes;
+                            this.requestUpvotes = response.upvotes;
+                            this.requestAbstentions = response.abstentions;
+                            this._snackBar.open("Successfully fetched request deliberation result", "Close", { duration: 3000 });
+                        },
+                        (error) => {
+                            console.log(error);
+                            this._snackBar.open("Error in fetching request deliberation result: " + error, "Close");
+                        }
+                    );
+                }
+                // Fetching offer results after the initial results fetch
+                if (this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation" && this.projectStatus !== "OfferDeliberation" && this.offers.length !== 0) {
+                    this.voteService.getOfferResult(this.projectID, this.project.offerEndTime.toISOString()).subscribe(
+                        (response) => {
+                            this.offerResult = response.winner;
+                            // console.log("Offer Result: ", response);
+                            this._snackBar.open("Successfully fetched offer deliberation result", "Close", { duration: 3000 });
+                        },
+                        (error) => {
+                            console.log(error);
+                            this._snackBar.open("Error in fetching offer deliberation result. Try Refreshing. Error: " + error.message, "Close");
+                        }
+                    );
                 }
             },
             (error) => {

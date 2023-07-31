@@ -13,6 +13,7 @@
 mat-drawer-container {
     width: 70%;
     height: 100%;
+    margin-bottom: 20px;
 }
 
 /* Add this CSS either in your component's .scss file or in your global styles */

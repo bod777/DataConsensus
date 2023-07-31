@@ -57,12 +57,12 @@ export class ChangeRulesComponent {
                 this._snackBar.open("Error in changing rules: " + error, "Close", { duration: 3000 });
             }
         );
-        this.userService.getMemberCount().subscribe(
+        this.project.requestStartTime = this.dateControl1.value;
+        this.project.requestEndTime = this.dateControl2.value;
+        this.project.offerEndTime = this.dateControl3.value;
+        this.userService.getMemberCount(this.project.requestStartTime).subscribe(
             (member: any) => {
                 this.project.cutoff = Math.ceil(member.data * this.project.threshold);
-                this.project.requestStartTime = this.dateControl1.value;
-                this.project.requestEndTime = this.dateControl2.value;
-                this.project.offerEndTime = this.dateControl3.value;
             }
         );
     }

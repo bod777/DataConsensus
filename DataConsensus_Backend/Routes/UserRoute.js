@@ -249,7 +249,8 @@ module.exports = function (appSession) {
 
     router.get("/get-member-count", async (req, res, next) => {
         try {
-            const memberCount = await userService.getMemberCount(appSession);
+            const date = req.query.date;
+            const memberCount = await userService.getMemberCount(date, appSession);
             res.send({ data: memberCount, message: "Member count found." });
         }
         catch (error) {

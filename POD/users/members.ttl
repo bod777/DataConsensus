@@ -1,94 +1,109 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix user: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/user.ttl#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 <https://id.inrupt.com/odonneb4>
         rdf:type          user:User ;
         foaf:mbox         "odonneb4@tcd.ie" ;
         foaf:name         "Bríd O'Donnell" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
         user:dataSource   <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/Sample%20Data.csv> ;
         user:hasUserType  user:Member .
 
-<https://id.inrupt.com/jimdoe>
+<https://id.inrupt.com/jimkirk>
         rdf:type          user:User ;
-        foaf:mbox         "jimdoe@example.com" ;
-        foaf:name         "Jim Doe" ;
-        user:dataSource   <http://example.com/pods/jimdoe/data.csv> ;
+        foaf:mbox         "kirk@enterprise.com" ;
+        foaf:name         "Capt. James T Kirk" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
+        user:dataSource   <http://example.com/pods/jimkirk/data.csv> ;
         user:hasUserType  user:Member .
 
 <https://id.inrupt.com/eripley>
         rdf:type          user:User ;
-        foaf:mbox         "eripley@example.com" ;
+        foaf:mbox         "eripley@nostromo.com" ;
         foaf:name         "Ellen Ripley" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
         user:dataSource   <http://example.com/pods/eripley/data.csv> ;
         user:hasUserType  user:Member .
 
-<https://id.inrupt.com/janedoe>
+<https://id.inrupt.com/starbuck>
         rdf:type          user:User ;
-        foaf:mbox         "janedoe@example.com" ;
-        foaf:name         "Jane Doe" ;
-        user:dataSource   <http://example.com/pods/janedoe/data.csv> ;
+        foaf:mbox         "starbuck@galactica.com" ;
+        foaf:name         "Capt. Kara Thrace" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
+        user:dataSource   <http://example.com/pods/starbuck/data.csv> ;
         user:hasUserType  user:Member .
 
 <https://id.inrupt.com/jconnor>
         rdf:type          user:User ;
-        foaf:mbox         "jconnor@example.com" ;
+        foaf:mbox         "jconnor@skynet.com" ;
         foaf:name         "John Connor" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
         user:dataSource   <http://example.com/pods/jconnor/data.csv> ;
         user:hasUserType  user:Member .
 
 <https://id.inrupt.com/jeffwinger>
         rdf:type          user:User ;
-        foaf:mbox         "winger@greendale.com" ;
+        foaf:mbox         "jeffwinger@greendale.com" ;
         foaf:name         "Jeff Winger" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
         user:dataSource   <http://example.com/pods/jeffwinger/data.csv> ;
         user:hasUserType  user:Member .
 
 <https://id.inrupt.com/brittaperry>
         rdf:type          user:User ;
-        foaf:mbox         "bperry@greendale.com" ;
+        foaf:mbox         "brittaperry@greendale.edu" ;
         foaf:name         "Britta Perry" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
         user:dataSource   <http://example.com/pods/brittaperry/data.csv> ;
         user:hasUserType  user:Member .
 
 <https://id.inrupt.com/sconnor>
         rdf:type            user:User ;
-        foaf:mbox           "sconnor@example.com" ;
+        foaf:mbox           "sconnor@skynet.com" ;
         foaf:name           "Sarah Connor" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
         <user:dataSource>   <http://example.com/pods/sconnor/data.csv> ;
         <user:hasUserType>  <user:Member> .
 
-<https://id.inrupt.com/johndoe>
+<https://id.inrupt.com/picard>
         rdf:type          user:User ;
-        foaf:mbox         "johndoe@example.com" ;
-        foaf:name         "John Doe" ;
-        user:dataSource   <http://example.com/pods/johndoe/data.csv> ;
+        foaf:mbox         "picard@enterprise.com" ;
+        foaf:name         "Capt. Jean-Luc Picard" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
+        user:dataSource   <http://example.com/pods/picard/data.csv> ;
         user:hasUserType  user:Member .
 
 <https://id.inrupt.com/troybarnes>
         rdf:type          user:User ;
-        foaf:mbox         "tball@greendale.com" ;
+        foaf:mbox         "troybarnes@greendale.edu" ;
         foaf:name         "Troy Barnes" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
         user:dataSource   <http://example.com/pods/troybarnes/data.csv> ;
         user:hasUserType  user:Member .
 
 <https://id.inrupt.com/piercehawthorne>
-        rdf:type   user:User ;
-        foaf:mbox  "piercehawthorne@example.com" ;
-        foaf:name  "Pierce Hawthorne" ;
+        rdf:type        user:User ;
+        foaf:mbox       "piercehawthorne@greendale.edu" ;
+        foaf:name       "Pierce Hawthorne" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
         user:dataSource   <http://example.com/pods/piercehawthorne/data.csv> ;
         user:hasUserType  user:Member .
 
 <https://id.inrupt.com/craigpelton>
-        rdf:type   user:User ;
-        foaf:mbox  "craigpelton@example.com" ;
-        foaf:name  "Craig Pelton" ;
+        rdf:type        user:User ;
+        foaf:mbox       "craigpelton@greendale.edu" ;
+        foaf:name       "Dean Craig Pelton" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
         user:dataSource   <http://example.com/pods/craigpelton/data.csv> ;
         user:hasUserType  user:Member .
 
 <https://id.inrupt.com/benchang>
         rdf:type          user:User ;
-        foaf:mbox         "bchang@example.com" ;
+        foaf:mbox         "benchang@greendale.edu" ;
         foaf:name         "Benjamin Franklin Chang" ;
+        dct:issued        "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
         user:dataSource   <http://example.com/pods/benchang/data.csv> ;
         user:hasUserType  user:Member .

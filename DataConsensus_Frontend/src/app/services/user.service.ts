@@ -94,11 +94,20 @@ export class UserService {
         return this.http.delete('http://localhost:3000/api/v1/user/remove-data', { headers, params });
     }
 
-    getMemberCount(): Observable<any> {
+    getMemberCount(date: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        return this.http.get('http://localhost:3000/api/v1/user/get-member-count', { headers });
+        const params = new HttpParams().set('date', date);
+        return this.http.get('http://localhost:3000/api/v1/user/get-member-count', { headers, params });
+    }
+
+    removeAccess(webID: string): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        const params = new HttpParams().set('webID', webID);
+        return this.http.get('http://localhost:3000/api/v1/remove-access', { headers, params });
     }
 }
 

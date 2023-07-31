@@ -271,9 +271,9 @@ module.exports = {
         else {
             // only the creator of the policy or an admin can delete it and only if the memberApproved is Pending
             const isAdmin = await userService.checkUserByType({ type: "ADMIN", webID }, session);
-            console.log("isAdmin", isAdmin);
-            console.log(getUrl(policy, DCTERMS.creator));
-            console.log(webID);
+            // console.log("isAdmin", isAdmin);
+            // console.log(getUrl(policy, DCTERMS.creator));
+            // console.log(webID);
             if (webID === getUrl(policy, DCTERMS.creator) || isAdmin) {
                 if (getUrl(policy, `${policySchema}#memberApproved`) === `${policySchema}#Pending`) {
                     if (datasetURL === requestsList) {

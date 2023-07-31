@@ -76,13 +76,13 @@ export class SubmitRequestComponent implements OnInit {
         this.policyService.submitRequest(this.webID, this.title, this.description, this.organisationType, this.purpose, this.sellingData, this.sellingInsights, this.techOrgMeasures, this.recipients, this.duration).subscribe(
             (profile) => {
                 this.request = profile.data;
-                this._snackBar.open("Request submitted successfully", "Close", { duration: 3000 });
+                this._snackBar.open("Request submitted successfully", "Close", { duration: 300000 });
+                this.router.navigate(['/project'], { queryParams: { projectID: this.request.isPartOf.split('#')[1] } })
             },
             (error) => {
-                this._snackBar.open("Error submitting request: " + error, "Close", { duration: 3000 });
+                this._snackBar.open("Error submitting request: " + error, "Close", { duration: 300000 });
             }
         );
-        this.router.navigate(['/project'], { queryParams: { projectID: this.request.isPartOf } })
     }
 
     cancelChanges() {

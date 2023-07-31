@@ -23,8 +23,7 @@
     <ng-container matColumnDef="projectStatus">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
         <td mat-cell *matCellDef="let project">
-            <project-status [hasAgreement]="false" [isActiveAgreement]="false"
-                [projectStatus]="project.projectStatus"></project-status>
+            <project-status [projectStatus]="project.projectStatus"></project-status>
         </td>
     </ng-container>
     <ng-container matColumnDef="buttons">

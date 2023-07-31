@@ -15,7 +15,6 @@
             <!-- OVERVIEW -->
             <mat-drawer-content *ngIf="tab === 'overview'">
                 <mat-card>
-                    <p>{{offers}}</p>
                     <mat-card-header>
                         <mat-card-title>{{ project.title }}</mat-card-title>
                         <mat-card-subtitle>Overview</mat-card-subtitle>
@@ -44,20 +43,38 @@
                             <b>End time for deliberation on request:</b> {{ project.requestEndTime | date:'dd/MM/yyyy
                             hh:mma'}}
                         </p>
-                        <div *ngIf="project.projectStatus==='OfferDeliberation'">
+                        <div
+                            *ngIf="(project.projectStatus!=='Pending'||project.projectStatus!=='RequestDeliberation')&&offers.length>0">
                             <p>
                                 <b>End time for deliberation on counter offers:</b> {{ project.offerEndTime |
                                 date:'dd/MM/yyyy'}}
                             </p>
+                            <p>
+                                <b>Passing threshold: </b> {{ project.offerCutoff}} ({{ (project.threshold *
+                                100).toFixed(2) }}%)
+                            </p>
                         </div>
-                        <p>
-                            <b>Passing threshold: </b> {{ project.cutoff}} ({{ (project.threshold * 100).toFixed(2) }}%)
-                        </p>
+                        <div
+                            *ngIf="!((project.projectStatus==='Pending'||project.projectStatus==='RequestDeliberation')&&offers.length>0)">
+                            <p>
+                                <b>Passing threshold: </b> {{ project.requestCutoff}} ({{ (project.threshold *
+                                100).toFixed(2) }}%)
+                            </p>
+                        </div>
                         <b>Project Status:</b>
                         <project-status style="margin-left:30px; margin-right:30px"
                             [projectStatus]="project.projectStatus"></project-status>
                         <agreement-status [hasAgreement]="project.hasAgreement"
                             [isActiveAgreement]="isActiveAgreement"></agreement-status>
+                        <!-- <div> -->
+                        <div *ngIf="project.hasAgreement===true && isActiveAgreement && userType==='THIRDPARTY'">
+                            <mat-divider></mat-divider>
+                            <h3 class="instructions">Download the data:</h3>
+                            <p>You can access the data by logging into a general pod browser such as <a mat-button
+                                    href="https://penny.vincenttunru.com/" target="_blank">Penny</a> and search for the
+                                following URL:</p>
+                            <p>https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv</p>
+                        </div>
                     </mat-card-content>
                     <!-- ADMIN CHANGE RULES -->
                     <mat-card-content *ngIf="project.projectStatus==='Pending' && userType === 'ADMIN'">
@@ -140,7 +157,7 @@
                         <mat-divider></mat-divider>
                         <constraints [policy]="request"></constraints>
                     </mat-card-content>
-                    <mat-card-content>
+                    <mat-card-content *ngIf="userType!=='THIRDPARTY'">
                         <mat-divider></mat-divider>
                         <h3>Comments</h3>
                         <comments [policyURL]="request.URL"></comments>
@@ -182,7 +199,7 @@
                         <mat-card>
                             <policy-status [policy]="offer"></policy-status>
                             <mat-card-content>
-                                <p>
+                                <p *ngIf="userType!=='THIRDPARTY'">
                                     <b>Proposer:</b> <button mat-button (click)="navigateToProfile(offer.creator)">{{
                                         offer.creator }}</button>
                                 </p>
@@ -202,9 +219,11 @@
                                         </mat-card-actions>
                                     </mat-card-actions>
                                 </mat-card-content>
-                                <mat-divider></mat-divider>
-                                <h2>Comments</h2>
-                                <comments [policyURL]="offer.URL"></comments>
+                                <mat-card-content *ngIf="userType!=='THIRDPARTY'">
+                                    <mat-divider></mat-divider>
+                                    <h2>Comments</h2>
+                                    <comments [policyURL]="offer.URL"></comments>
+                                </mat-card-content>
                             </mat-card-content>
                         </mat-card>
                     </mat-tab>
@@ -242,7 +261,7 @@
                             </mat-card-actions>
                         </mat-card-actions>
                     </mat-card-content>
-                    <mat-card-content>
+                    <mat-card-content *ngIf="userType!=='THIRDPARTY'">
                         <mat-divider></mat-divider>
                         <h3>Comments</h3>
                         <comments [policyURL]="agreement.URL"></comments>

@@ -17,6 +17,7 @@ export class ThirdPartyProfileComponent implements OnInit {
     webID: string = "";
     name: string = "";
     email: string = "";
+    issued: Date = new Date();
     organisationType: string = "";
     description: string = "";
 
@@ -46,6 +47,7 @@ export class ThirdPartyProfileComponent implements OnInit {
                 this.webID = profile.data.webID;
                 this.name = profile.data.name;
                 this.email = profile.data.email;
+                this.issued = new Date(profile.data.issued);
                 this.organisationType = profile.data.orgType;
                 this.description = profile.data.description;
             },

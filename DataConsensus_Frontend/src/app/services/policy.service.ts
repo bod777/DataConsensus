@@ -88,7 +88,6 @@ export class PolicyService {
             "recipients": recipients,
             "untilTimeDuration": duration
         }
-        console.log(request)
         return this.http.post('http://localhost:3000/api/v1/policy/submit-request', request, { headers });
     }
 
@@ -138,7 +137,6 @@ export class PolicyService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        console.log(policyURL);
         const parts = policyURL.split('#');
         const policyID = parts[1];
         const policyType = parts[0];
@@ -164,8 +162,6 @@ export class PolicyService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        console.log(project.requestEndTime);
-        console.log(typeof project.requestEndTime);
         return this.http.put('http://localhost:3000/api/v1/project/update-project', {
             projectID: project.projectID, requestEndTime: project.requestEndTime, requestStartTime: project.requestStartTime, offerEndTime: project.offerEndTime, threshold: project.threshold
         }, { headers });

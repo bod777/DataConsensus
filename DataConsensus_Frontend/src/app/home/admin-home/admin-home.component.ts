@@ -39,7 +39,7 @@ export class AdminHomeComponent implements OnInit {
                 this.loading = false;
             },
             (error) => {
-                this._snackBar.open("Error fetching projects. Try refreshing. Error:" + error, "Close", { duration: 30000 });
+                this._snackBar.open("Error fetching projects. Try refreshing. Error:" + error, "Close");
             }
         );
     }

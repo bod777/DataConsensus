@@ -6,6 +6,7 @@ const {
     getSessionIdFromStorageAll,
     Session
 } = require("@inrupt/solid-client-authn-node");
+const { removeAccess, grantAccess } = require("./AccessControl.js");
 
 const AuthRoute = require("./Routes/AuthRoute.js");
 const UserRoute = require("./Routes/UserRoute.js");
@@ -57,13 +58,15 @@ app.use(
     })
 );
 
-app.get("/", async (req, res, next) => {
-    const sessionIds = await getSessionIdFromStorageAll();
-    res.send({
-        data:
-            `<p>There are currently [${sessionIds.length}] visitors.</p>`
+app.get(`${api}/remove-access`, async (req, res, next) => {
+    try {
+        const thirdparty = req.query.webID;
+        const message = await removeAccess(thirdparty, appSession);
+        res.send(message);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Error in removing access", error: error.message });
     }
-    );
 });
 
 app.use(`${api}/auth`, AuthRoute());

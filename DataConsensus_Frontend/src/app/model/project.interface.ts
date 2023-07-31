@@ -6,12 +6,16 @@ export interface Project {
     description: string;
     organisation: string;
     projectStatus: string;
-    hasAgreement: string;
+    hasAgreement: boolean;
     projectCreationTime: Date;
     requestStartTime: Date;
     requestEndTime: Date;
     offerEndTime: Date;
     threshold: number;
+    requestCutoff: number;
+    offerCutoff: number;
+    untilTimeDuration: Date;
+    isAgreementActive: boolean;
     projectPolicies: {
         requests: string[];
         offers: string[];

@@ -6,7 +6,13 @@
     margin-right: 50px;
 }
 
+span {
+    margin-left: 10%;
+}
+
 .toolbar-container {
     height: 5vh;
     margin-bottom: 10vh;
+    margin-left: -50px;
+    margin-top: -15px;
 }

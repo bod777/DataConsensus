@@ -10,24 +10,27 @@
     justify-content: center;
 }
 
-mat-card {
-    display: flex;
-    width: 70%;
-    margin-right: 15%;
-    margin-left: 15%;
-}
-
 .form-field-container {
     margin-bottom: 20px;
-}
-
-.mat-form-field {
-    width: 700px;
 }
 
 .button-container {
     display: flex;
     justify-content: center;
+    margin-bottom: 20px;
+}
+
+
+mat-form-field {
+    width: 100%;
+}
+
+mat-card {
+    display: flex;
+    width: 70%;
+    margin-right: 15%;
+    margin-left: 15%;
+    margin-bottom: 100px;
 }
 
 mat-divider {

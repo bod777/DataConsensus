@@ -25,7 +25,7 @@ pod:47c0abdf-15aa-43d6-8c6f-e6200e11f1a0
     dct:modified      "2023-06-11T20:09:49.561Z"^^xsd:dateTime ;
     vote:hasPolicy    request:12d6eb50-f6e2-488c-8923-fb0c4d47749a ;
     vote:hasVoteType  vote:BinaryVote ;
-    vote:hasVoter     <https://id.inrupt.com/jimdoe> ;
+    vote:hasVoter     <https://id.inrupt.com/jimkirk> ;
     vote:voteRank     1 .
 
 pod:bc0e32a2-9765-485d-84c2-e76b81358535
@@ -35,7 +35,7 @@ pod:bc0e32a2-9765-485d-84c2-e76b81358535
     dct:modified      "2023-06-11T20:09:49.561Z"^^xsd:dateTime ;
     vote:hasPolicy    request:12d6eb50-f6e2-488c-8923-fb0c4d47749a ;
     vote:hasVoteType  vote:BinaryVote ;
-    vote:hasVoter     <https://id.inrupt.com/JohnDoe> ;
+    vote:hasVoter     <https://id.inrupt.com/picard> ;
     vote:voteRank     1 .
 
 pod:44ee021a-86db-43eb-97ee-6d9883fa3d7c
@@ -55,7 +55,7 @@ pod:c4ebac79-2b48-4505-b009-735cb48e4012
     dct:modified      "2023-06-11T20:09:49.561Z"^^xsd:dateTime ;
     vote:hasPolicy    request:12d6eb50-f6e2-488c-8923-fb0c4d47749a ;
     vote:hasVoteType  vote:BinaryVote ;
-    vote:hasVoter     <https://id.inrupt.com/janedoe> ;
+    vote:hasVoter     <https://id.inrupt.com/starbuck> ;
     vote:voteRank     2 .
 
 pod:6b3bcbe7-3614-4cbe-aee6-451c2c8905b7
@@ -165,7 +165,7 @@ pod:374a97ee-9c3e-453a-afb8-a4fbcadf3e90
     dct:modified      "2023-06-11T20:09:49.561Z"^^xsd:dateTime ;
     vote:hasPolicy    request:72013827-a31e-4a27-a7cb-0b86fa9ddf15 ;
     vote:hasVoteType  vote:BinaryVote ;
-    vote:hasVoter     <https://id.inrupt.com/jimdoe> ;
+    vote:hasVoter     <https://id.inrupt.com/jimkirk> ;
     vote:voteRank     2 .
 
 pod:9107edad-ec5c-478a-9b04-d6b36d8b494b
@@ -175,7 +175,7 @@ pod:9107edad-ec5c-478a-9b04-d6b36d8b494b
     dct:modified      "2023-06-11T20:09:49.561Z"^^xsd:dateTime ;
     vote:hasPolicy    request:72013827-a31e-4a27-a7cb-0b86fa9ddf15 ;
     vote:hasVoteType  vote:BinaryVote ;
-    vote:hasVoter     <https://id.inrupt.com/JohnDoe> ;
+    vote:hasVoter     <https://id.inrupt.com/picard> ;
     vote:voteRank     2 .
 
 pod:b17560d5-61f8-4644-a4c4-81f4e135f0bc
@@ -195,7 +195,7 @@ pod:3792636f-4204-4681-a4e7-e8dab6901085
     dct:modified      "2023-06-11T20:09:49.561Z"^^xsd:dateTime ;
     vote:hasPolicy    request:72013827-a31e-4a27-a7cb-0b86fa9ddf15 ;
     vote:hasVoteType  vote:BinaryVote ;
-    vote:hasVoter     <https://id.inrupt.com/janedoe> ;
+    vote:hasVoter     <https://id.inrupt.com/starbuck> ;
     vote:voteRank     2 .
 
 pod:917a4b35-75ab-44b1-8819-294fc1b763f1
@@ -305,7 +305,7 @@ pod:62f3c657-30f5-4f09-93f3-61c1f0f2964f
     dct:modified      "2023-06-11T20:09:49.561Z"^^xsd:dateTime ;
     vote:hasPolicy    request:d1739b02-2e77-4930-ac2e-e41ad39ac985 ;
     vote:hasVoteType  vote:BinaryVote ;
-    vote:hasVoter     <https://id.inrupt.com/jimdoe> ;
+    vote:hasVoter     <https://id.inrupt.com/jimkirk> ;
     vote:voteRank     2 .
 
 pod:dd58c274-2ca0-40fe-954a-c0f710f47e64
@@ -315,7 +315,7 @@ pod:dd58c274-2ca0-40fe-954a-c0f710f47e64
     dct:modified      "2023-06-11T20:09:49.561Z"^^xsd:dateTime ;
     vote:hasPolicy    request:d1739b02-2e77-4930-ac2e-e41ad39ac985 ;
     vote:hasVoteType  vote:BinaryVote ;
-    vote:hasVoter     <https://id.inrupt.com/JohnDoe> ;
+    vote:hasVoter     <https://id.inrupt.com/picard> ;
     vote:voteRank     1 .
 
 pod:587d925b-9bc6-4d5b-8274-097b5d80a8e4
@@ -335,7 +335,7 @@ pod:739f9572-25bd-48f5-915e-8310e4072ad1
     dct:modified      "2023-06-11T20:09:49.561Z"^^xsd:dateTime ;
     vote:hasPolicy    request:d1739b02-2e77-4930-ac2e-e41ad39ac985 ;
     vote:hasVoteType  vote:BinaryVote ;
-    vote:hasVoter     <https://id.inrupt.com/janedoe> ;
+    vote:hasVoter     <https://id.inrupt.com/starbuck> ;
     vote:voteRank     2 .
 
 pod:05a6a350-3b9d-4111-8c3d-a6a8f42100e4
@@ -435,7 +435,7 @@ pod:8574ae69-bf09-49bf-944c-0ba16e7644fb
         dct:modified      "2023-07-17T20:09:49.561Z"^^xsd:dateTime ;
         vote:hasPolicy    offer:87c44b67-78f9-4e08-801f-9f098379bd04 ;
         vote:hasVoteType  vote:PreferenceVote ;
-        vote:hasVoter     <https://id.inrupt.com/janedoe> ;
+        vote:hasVoter     <https://id.inrupt.com/starbuck> ;
         vote:voteRank     3 .
 
 pod:51fbdd1c-fdec-4c54-875a-748e16c88a47
@@ -455,7 +455,7 @@ pod:0dd3497e-e77e-41ce-ade7-20d6e83b76db
         dct:modified      "2023-07-17T20:09:49.561Z"^^xsd:dateTime ;
         vote:hasPolicy    offer:rejection ;
         vote:hasVoteType  vote:PreferenceVote ;
-        vote:hasVoter     <https://id.inrupt.com/janedoe> ;
+        vote:hasVoter     <https://id.inrupt.com/starbuck> ;
         vote:voteRank     4 .
 
 pod:cf434eef-6c3c-47cf-8416-5496112a9a5b
@@ -595,7 +595,7 @@ pod:eacf15cd-029b-4952-a1c0-85deedc94473
         dct:modified      "2023-07-27T17:21:40.343Z"^^xsd:dateTime ;
         vote:hasPolicy    offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
         vote:hasVoteType  vote:PreferenceVote ;
-        vote:hasVoter     <https://id.inrupt.com/janedoe> ;
+        vote:hasVoter     <https://id.inrupt.com/starbuck> ;
         vote:voteRank     1 .
 
 pod:44286034-8384-414e-88fa-8df88b429119
@@ -605,7 +605,7 @@ pod:44286034-8384-414e-88fa-8df88b429119
         dct:modified      "2023-07-27T17:21:40.866Z"^^xsd:dateTime ;
         vote:hasPolicy    offer:rejection ;
         vote:hasVoteType  vote:PreferenceVote ;
-        vote:hasVoter     <https://id.inrupt.com/janedoe> ;
+        vote:hasVoter     <https://id.inrupt.com/starbuck> ;
         vote:voteRank     2 .
 
 pod:75caed18-2828-4738-9d27-eba8047672a1
@@ -615,7 +615,7 @@ pod:75caed18-2828-4738-9d27-eba8047672a1
         dct:modified      "2023-07-27T17:21:40.343Z"^^xsd:dateTime ;
         vote:hasPolicy    offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
         vote:hasVoteType  vote:PreferenceVote ;
-        vote:hasVoter     <https://id.inrupt.com/JohnDoe> ;
+        vote:hasVoter     <https://id.inrupt.com/picard> ;
         vote:voteRank     2 .
 
 pod:27b456b2-0657-45a9-80dc-99960a674bcc
@@ -625,7 +625,7 @@ pod:27b456b2-0657-45a9-80dc-99960a674bcc
         dct:modified      "2023-07-27T17:21:40.866Z"^^xsd:dateTime ;
         vote:hasPolicy    offer:rejection ;
         vote:hasVoteType  vote:PreferenceVote ;
-        vote:hasVoter     <https://id.inrupt.com/JohnDoe> ;
+        vote:hasVoter     <https://id.inrupt.com/picard> ;
         vote:voteRank     1 .
 
 
@@ -666,7 +666,7 @@ pod:fa9cdcc7-7c08-426b-8abb-034e733de7e7
         dct:modified      "2023-07-17T20:09:49.561Z"^^xsd:dateTime ;
         vote:hasPolicy    offer:64555f2b-efee-485d-abef-3542ca867ebf ;
         vote:hasVoteType  vote:PreferenceVote ;
-        vote:hasVoter     <https://id.inrupt.com/janedoe> ;
+        vote:hasVoter     <https://id.inrupt.com/starbuck> ;
         vote:voteRank     1 .
 
 pod:ceb616ff-8345-42a7-a39d-d079cbffaedd
@@ -726,5 +726,5 @@ pod:d944a90c-6c0b-4f5a-b355-92ef215bb014
         dct:modified      "2023-07-17T20:09:49.561Z"^^xsd:dateTime ;
         vote:hasPolicy    offer:4aaeb920-bdb4-48cc-9f41-644c6206433f ;
         vote:hasVoteType  vote:PreferenceVote ;
-        vote:hasVoter     <https://id.inrupt.com/janedoe> ;
+        vote:hasVoter     <https://id.inrupt.com/starbuck> ;
         vote:voteRank     2 .

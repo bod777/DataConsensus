@@ -46,19 +46,19 @@ export class VoteService {
         return this.http.get('http://localhost:3000/api/v1/vote/offer-vote', { headers, params });
     }
 
-    getRequestResult(policyID: string): Observable<any> {
+    getRequestResult(policyID: string, date: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        const params = new HttpParams().set('policyID', policyID);
+        const params = new HttpParams().set('policyID', policyID).set('date', date);
         return this.http.get('http://localhost:3000/api/v1/vote/request-result', { headers, params });
     }
 
-    getOfferResult(projectID: string): Observable<any> {
+    getOfferResult(projectID: string, date: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        const params = new HttpParams().set('projectID', projectID);
+        const params = new HttpParams().set('projectID', projectID).set('date', date);;
         return this.http.get('http://localhost:3000/api/v1/vote/offer-result', { headers, params });
     }
 }

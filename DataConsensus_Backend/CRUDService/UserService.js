@@ -50,6 +50,7 @@ module.exports = {
             .addUrl(RDF.type, `${user}#User`)
             .addStringNoLocale(FOAF.name, req.body.name)
             .addStringNoLocale(FOAF.mbox, req.body.email)
+            .addDatetime(DCTERMS.issued, new Date())
             .addUrl(`${user}#hasUserType`, `${user}#Member`)
             .addUrl(`${user}#dataSource`, req.body.dataSource)
             .build();
@@ -65,6 +66,7 @@ module.exports = {
             .addUrl(RDF.type, `${user}#User`)
             .addStringNoLocale(FOAF.mbox, req.body.email)
             .addStringNoLocale(FOAF.name, req.body.name)
+            .addDatetime(DCTERMS.issued, new Date())
             .addUrl(`${user}#hasUserType`, `${user}#ThirdParty`)
             .addUrl("https://w3id.org/dpv#Organisation", `https://w3id.org/dpv#${req.body.org}`)
             .addStringNoLocale(DCTERMS.description, req.body.description)
@@ -80,6 +82,7 @@ module.exports = {
         const newAdmin = buildThing(createThing({ url: req.body.webID }))
             .addUrl(RDF.type, `${user}#User`)
             .addStringNoLocale(FOAF.mbox, req.body.email)
+            .addDatetime(DCTERMS.issued, new Date())
             .addStringNoLocale(FOAF.name, req.body.name)
             .addUrl(`${user}#hasUserType`, `${user}#Admin`)
             .build();
@@ -134,13 +137,14 @@ module.exports = {
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
     },
 
-    getMemberCount: async function (session) {
+    getMemberCount: async function (date, session) {
         const datasetUrl = membersURL;
         const solidDataset = await getGivenSolidDataset(datasetUrl, session);
-
         const users = getThingAll(solidDataset);
-        // console.log("Member count: " + users.length);
-        return users.length;
+        const filteredUsers = users.filter(user => {
+            return new Date(user.predicates[DCTERMS.issued]["literals"]["http://www.w3.org/2001/XMLSchema#dateTime"][0]) <= new Date(date);
+        });
+        return filteredUsers.length;
     },
 
     addNewData: async function (fileURL, appSession, userSession) {

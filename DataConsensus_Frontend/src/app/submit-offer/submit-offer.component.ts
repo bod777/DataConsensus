@@ -77,7 +77,7 @@ export class SubmitOfferComponent {
             (profile) => {
                 this.offer = profile.data;
                 this._snackBar.open("Offer submitted successfully", "Close", { duration: 3000 });
-                this.router.navigate(['/project'], { queryParams: { projectID: this.offer.isPartOf } })
+                this.router.navigate(['/project'], { queryParams: { projectID: this.offer.isPartOf.split('#')[1] } })
             },
             (error) => {
                 this._snackBar.open("Error submitting offer: " + error, "Close", { duration: 3000 });

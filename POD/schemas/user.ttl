@@ -36,6 +36,10 @@ user:dataSource a rdf:Property ;
     rdfs:domain user:Member ;
     rdfs:range rdf:Resource .
 
+dct:issued a rdf:Property ;
+    rdfs:domain user:Member ;
+    rdfs:range xsd:dateTime .
+
 dpv:Organisation a rdf:Property ;
     rdfs:domain user:ThirdParty ;
     rdfs:range rdf:Resource .

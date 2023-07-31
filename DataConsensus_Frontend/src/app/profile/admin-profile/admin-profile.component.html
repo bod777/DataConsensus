@@ -3,6 +3,7 @@
         <mat-card-header>
             <mat-card-title>Admin Profile</mat-card-title>
             <mat-card-subtitle>WebID: {{ webID }}</mat-card-subtitle>
+            <mat-card-subtitle>Joined on: {{ issued | date:'dd/MM/yyyy' }}</mat-card-subtitle>
         </mat-card-header>
         <div *ngIf="webID!==user">
             <mat-card-content>
@@ -15,13 +16,13 @@
             <mat-card-content>
                 <form>
                     <div class="form-field-container">
-                        <mat-form-field [style.width.px]=800>
+                        <mat-form-field>
                             <mat-label>Name</mat-label>
                             <input matInput [(ngModel)]="name" name="name" required>
                         </mat-form-field>
                     </div>
                     <div class="form-field-container">
-                        <mat-form-field [style.width.px]=800>
+                        <mat-form-field>
                             <mat-label>Email</mat-label>
                             <input matInput [(ngModel)]="email" name="email" required>
                         </mat-form-field>

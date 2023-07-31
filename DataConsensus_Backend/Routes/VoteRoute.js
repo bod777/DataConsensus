@@ -170,6 +170,7 @@ module.exports = function (appSession) {
     */
     router.get("/request-result", async (req, res) => {
         const policyID = req.query.policyID;
+        const date = req.query.date;
         // console.log(policyID);
         if (!policyID) {
             res.status(400).send({ message: "policyID is required." });
@@ -187,12 +188,20 @@ module.exports = function (appSession) {
                 const downvotes = await voteService.countVotesByRankPolicy(
                     { policyURL: policyURL, rank: 2 },
                     appSession);
-                const membersNumber = await userService.getMemberCount(appSession);
+                const membersNumber = await userService.getMemberCount(date, appSession);
                 const abstention = membersNumber - (upvotes + downvotes);
                 const threshold = policyJSON.threshold;
                 let result = false;
                 if (upvotes > Math.ceil(membersNumber * threshold)) {
                     result = true;
+                }
+                if (result === true) {
+                    const projectToUpdate = { policyURL, actor: "memberApproved", newStatus: "Approved" };
+                    updatedProject = await policyService.updatePolicyStatus(projectToUpdate, appSession);
+                }
+                else {
+                    const projectToUpdate = { policyURL, actor: "memberApproved", newStatus: "Rejected" };
+                    updatedProject = await policyService.updatePolicyStatus(projectToUpdate, appSession);
                 }
                 res.send({ result, upvotes, downvotes, abstention, membersNumber, threshold });
             }
@@ -210,10 +219,11 @@ module.exports = function (appSession) {
     */
     router.get("/offer-result", async (req, res) => {
         const projectURL = `${projectsList}#${req.query.projectID}`;
+        const date = req.query.date;
         try {
             const projectPolicies = await policyService.getProjectPolicies(projectURL, appSession);
             const projectOffers = projectPolicies.offers;
-            const membersNumber = await userService.getMemberCount(appSession);
+            const membersNumber = await userService.getMemberCount(date, appSession);
             const project = new Project();
             await project.fetchProject(projectURL, appSession);
             const threshold = project.toJson().threshold;

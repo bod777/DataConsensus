@@ -6,33 +6,27 @@ const dpv = process.env.DPV;
 const user = process.env.USER;
 
 class User {
-    constructor(webID, name, email) {
+    constructor(webID, name, email, date) {
         this.webID = webID;
         this.name = name;
         this.email = email;
+        this.issued = new Date(date);
     }
 
-    // Some shared method
-    displayUserInfo() {
-        console.log(`WebID: ${this.webID}, Name: ${this.name}, Email: ${this.email}`);
-    }
-
-    getUser() {
-        return this;
-    }
 
     toJson() {
         return {
             webID: this.webID,
             name: this.name,
-            email: this.email
+            email: this.email,
+            issued: this.issued
         };
     }
 }
 
 class Member extends User {
-    constructor(webID, name, email, dataSource) {
-        super(webID, name, email);
+    constructor(webID, name, email, issued, dataSource) {
+        super(webID, name, email, issued);
         this.dataSource = dataSource;
     }
 
@@ -41,6 +35,7 @@ class Member extends User {
         this.webID = webID;
         this.name = solidThing.predicates[FOAF.name]["literals"][XSD.string][0];
         this.email = solidThing.predicates[FOAF.mbox]["literals"][XSD.string][0];
+        this.issued = new Date(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
         this.dataSource = solidThing.predicates[`${user}#dataSource`]["namedNodes"][0];
     }
 
@@ -49,14 +44,15 @@ class Member extends User {
             webID: this.webID,
             name: this.name,
             email: this.email,
+            issued: this.issued,
             dataSource: this.dataSource
         };
     }
 }
 
 class ThirdParty extends User {
-    constructor(webID, name, email, description, org) {
-        super(webID, name, email);
+    constructor(webID, name, email, issued, description, org) {
+        super(webID, name, email, issued);
         this.description = description;
         this.orgType = org;
     }
@@ -66,6 +62,7 @@ class ThirdParty extends User {
         this.webID = webID;
         this.name = solidThing.predicates[FOAF.name]["literals"][XSD.string][0];
         this.email = solidThing.predicates[FOAF.mbox]["literals"][XSD.string][0];
+        this.issued = new Date(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
         this.description = solidThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
         this.orgType = extractTerm(solidThing.predicates[`${dpv}Organisation`]["namedNodes"][0]);
     }
@@ -75,6 +72,7 @@ class ThirdParty extends User {
             webID: this.webID,
             name: this.name,
             email: this.email,
+            issued: this.issued,
             description: this.description,
             orgType: this.orgType
         };
@@ -82,8 +80,8 @@ class ThirdParty extends User {
 }
 
 class Admin extends User {
-    constructor(webID, name, email) {
-        super(webID, name, email);
+    constructor(webID, name, email, issued) {
+        super(webID, name, email, issued);
     }
 
     async fetchUser(webID, session) {
@@ -91,6 +89,7 @@ class Admin extends User {
         this.webID = webID;
         this.name = solidThing.predicates[FOAF.name]["literals"][XSD.string][0];
         this.email = solidThing.predicates[FOAF.mbox]["literals"][XSD.string][0];
+        this.issued = new Date(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
     }
 }
 

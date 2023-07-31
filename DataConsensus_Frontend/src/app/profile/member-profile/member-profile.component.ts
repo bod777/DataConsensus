@@ -14,9 +14,11 @@ export class MemberProfileComponent implements OnInit {
     constructor(private userService: UserService, private _snackBar: MatSnackBar, private route: ActivatedRoute, private router: Router) { }
 
     user: string = localStorage.getItem("webID") || "";
+    currentUserType: string = localStorage.getItem("userType") || "";
     webID: string = "";
     name: string = "";
     email: string = "";
+    issued: Date = new Date();
     dataSource: string = "";
 
     saveChanges() {
@@ -60,6 +62,7 @@ export class MemberProfileComponent implements OnInit {
                 this.webID = profile.data.webID;
                 this.name = profile.data.name;
                 this.email = profile.data.email;
+                this.issued = new Date(profile.data.issued);
                 this.dataSource = profile.data.dataSource;
             },
             (error) => {

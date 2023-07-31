@@ -30,7 +30,7 @@ export class AgreementListComponent implements OnInit {
             },
             (error) => {
                 console.log(error);
-                this._snackBar.open("Error fetching agreements. Try refreshing. Error:" + error, "Close", { duration: 30000 });
+                this._snackBar.open("Error fetching agreements. Try refreshing. Error:" + error, "Close");
             }
         );
     }

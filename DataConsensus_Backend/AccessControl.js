@@ -32,8 +32,10 @@ async function removeAccess(thirdParty, session) {
         console.log(`For resource::: ${resourceURL}`);
         if (newAccess === null) {
             console.log(`Could not load ${thirdParty}'s access details.`);
+            return `Could not load ${thirdParty}'s access details.`;
         } else {
             console.log(`${thirdParty}'s Access:: ${JSON.stringify(newAccess)}`);
+            return `${thirdParty}'s Access:: ${JSON.stringify(newAccess)}`;
         }
     });
 }

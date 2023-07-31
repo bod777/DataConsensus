@@ -1,8 +1,11 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 @prefix user: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/user#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 <https://id.inrupt.com/dataconsensusadmin> a user:User ;
-  foaf:name "Bríd O'Donnell" ;
-  foaf:mbox "dataconsensus12345@gmail.com" ;
-  user:hasUserType user:Admin .
+    foaf:name           "Bríd O'Donnell" ;
+    foaf:mbox           "dataconsensus12345@gmail.com" ;
+    dct:issued          "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
+    user:hasUserType    user:Admin .
