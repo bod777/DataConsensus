@@ -18,6 +18,7 @@ export class ThirdPartyHomeComponent implements OnInit {
 
     constructor(private policyService: PolicyService, private router: Router, private _snackBar: MatSnackBar, private dateService: DateService) { }
 
+    broken: boolean = false;
     user: string = localStorage.getItem('webID') || '';
     loading: boolean = true;
     public dataSource = new MatTableDataSource<Project>([]);
@@ -70,6 +71,7 @@ export class ThirdPartyHomeComponent implements OnInit {
                             (error) => {
                                 console.log(error);
                                 this._snackBar.open("Error in fetching agreement. Try refreshing. Error: " + error, "Close");
+                                this.broken = true;
                             }
                         );
                     }
@@ -84,6 +86,7 @@ export class ThirdPartyHomeComponent implements OnInit {
             },
             (error) => {
                 this._snackBar.open("Error fetching projects. Try refreshing. Error:" + error.message, "Close");
+                this.broken = true;
             }
         );
     }

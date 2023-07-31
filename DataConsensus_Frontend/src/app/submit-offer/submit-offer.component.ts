@@ -20,6 +20,7 @@ export class SubmitOfferComponent {
     constructor(private route: ActivatedRoute, private router: Router, private policyService: PolicyService, private _snackBar: MatSnackBar) {
     }
 
+    loading: boolean = true;
     requestsList = "https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/requests.ttl#";
     requestID: string = "";
     projectURL: string = "";
@@ -77,10 +78,11 @@ export class SubmitOfferComponent {
             (profile) => {
                 this.offer = profile.data;
                 this._snackBar.open("Offer submitted successfully", "Close", { duration: 3000 });
+                console.log(this.offer);
                 this.router.navigate(['/project'], { queryParams: { projectID: this.offer.isPartOf.split('#')[1] } })
             },
             (error) => {
-                this._snackBar.open("Error submitting offer: " + error, "Close", { duration: 3000 });
+                this._snackBar.open("Error submitting offer: " + error, "Close");
             }
         );
     }
@@ -138,6 +140,7 @@ export class SubmitOfferComponent {
                 this.techOrgMeasures = request.data.techOrgMeasures;
                 this.recipients = request.data.recipients;
                 this.duration = request.data.untilTimeDuration;
+                this.loading = false;
             },
             (error) => {
                 this._snackBar.open("Error retrieving request: " + error, "Close", { duration: 3000 });

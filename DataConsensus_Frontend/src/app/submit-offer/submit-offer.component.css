@@ -2,6 +2,13 @@
     height: 75vh;
 }
 
+.loading {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin: 10px;
+}
+
 mat-card {
     display: flex;
     justify-content: center;

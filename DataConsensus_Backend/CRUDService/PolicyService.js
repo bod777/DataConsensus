@@ -18,9 +18,11 @@ const {
     getSolidDataset
 } = require("@inrupt/solid-client");
 const { v4: uuidv4 } = require('uuid');
-const { RDF, DCTERMS, ODRL } = require("@inrupt/vocab-common-rdf");
 const userService = require("./UserService.js")
-const { getDatasetUrl, getPolicyDataset } = require("../HelperFunctions.js");
+const { Proposal, Agreement } = require("../Models/Policy.js");
+const { ODRL, DCTERMS, XSD, RDF } = require("@inrupt/vocab-common-rdf");
+const { extractTerm, getDatasetUrl, getDataset } = require("../HelperFunctions.js");
+const projectService = require("./ProjectService.js");
 
 const policySchema = process.env.POLICY;
 const projectSchema = process.env.PROJECT;
@@ -46,20 +48,139 @@ async function saveGivenSolidDataset(datasetURL, courseSolidDataset, session) {
 
 module.exports = {
 
-    getPolicy: async function (req, session) {
-        let datasetURL = getPolicyDataset(req.policyURL);
+    getSolidThing: async function (req, session) {
+        // console.log("req", req);
+        let datasetURL = getDataset(req.policyURL);
         const solidDataset = await getGivenSolidDataset(datasetURL, session);
         const policy = await getThing(solidDataset, req.policyURL);
         return policy;
     },
 
-    getProject: async function (projectURL, session) {
-        let datasetURL = projectsList;
-        const solidDataset = await getGivenSolidDataset(datasetURL, session);
-        const policy = await getThing(solidDataset, projectURL);
+    fetchAgreement: async function (URL, session) {
+        const solidThing = await this.getSolidThing({ policyURL: `${URL}` }, session);
+        const permissionThing = await this.getSolidThing({ policyURL: `${URL}_permission` }, session);
+        const purposeConstraint = await this.getSolidThing({ policyURL: `${URL}_purposeConstraint` }, session);
+        const sellingDataConstraint = await this.getSolidThing({ policyURL: `${URL}_sellingDataConstraint` }, session);
+        const sellingInsightsConstraint = await this.getSolidThing({ policyURL: `${URL}_sellingInsightsConstraint` }, session);
+        const organisationConstraint = await this.getSolidThing({ policyURL: `${URL}_organisationConstraint` }, session);
+        const techOrgMeasureConstraint = await this.getSolidThing({ policyURL: `${URL}_techOrgMeasureConstraint` }, session);
+        const recipientConstraint = await this.getSolidThing({ policyURL: `${URL}_recipientConstraint` }, session);
+        const durationConstraint = await this.getSolidThing({ policyURL: `${URL}_durationConstraint` }, session);
+        const projectThing = await this.getSolidThing({ policyURL: solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0] }, session);
+
+        const policy = await this.formatAgreement(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, projectThing);
         return policy;
     },
 
+    formatAgreement: async function (solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, projectThing) {
+        const URL = solidThing.url;
+        const ID = solidThing.url.split('#')[1];
+        const creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
+        const policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
+        const partOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
+        const assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
+        const assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
+        const references = solidThing.predicates[DCTERMS.references]["namedNodes"][0];
+
+        const purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
+        const organisation = extractTerm(organisationConstraint.predicates[ODRL.rightOperand]["namedNodes"][0])
+        let sellingData;
+        let sellingInsights;
+        if (sellingDataConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
+            sellingData = false;
+        } else {
+            sellingData = true;
+        }
+        if (sellingInsightsConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
+            sellingInsights = false;
+        } else {
+            sellingInsights = true;
+        }
+        const measuresArray = techOrgMeasureConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        const techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
+        const recipientsArray = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        const recipients = recipientsArray.map((recipient) => extractTerm(recipient));
+        const untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
+
+        const title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
+        const description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
+        const projectStatus = extractTerm(projectThing.predicates[`${projectSchema}#hasProjectStatus`]["namedNodes"][0]);
+        const hasAgreement = projectThing.predicates[`${projectSchema}#hasAgreement`]["literals"][XSD.boolean][0];
+        const projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
+        const requestStartTime = projectThing.predicates[`${projectSchema}#requestStartTime`]["literals"][XSD.dateTime][0];
+        const requestEndTime = projectThing.predicates[`${projectSchema}#requestEndTime`]["literals"][XSD.dateTime][0];
+        const offerEndTime = projectThing.predicates[`${projectSchema}#offerEndTime`]["literals"][XSD.dateTime][0];
+        const threshold = projectThing.predicates[`${projectSchema}#threshold`]["literals"][XSD.decimal][0];
+
+        const policy = new Agreement(URL, ID, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, untilTimeDuration, references, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
+        return policy.toJson();
+    },
+
+    fetchProposal: async function (URL, session) {
+        const solidThing = await this.getSolidThing({ policyURL: `${URL}` }, session);
+        const permissionThing = await this.getSolidThing({ policyURL: `${URL}_permission` }, session);
+        const purposeConstraint = await this.getSolidThing({ policyURL: `${URL}_purposeConstraint` }, session);
+        const sellingDataConstraint = await this.getSolidThing({ policyURL: `${URL}_sellingDataConstraint` }, session);
+        const sellingInsightsConstraint = await this.getSolidThing({ policyURL: `${URL}_sellingInsightsConstraint` }, session);
+        const organisationConstraint = await this.getSolidThing({ policyURL: `${URL}_organisationConstraint` }, session);
+        const techOrgMeasureConstraint = await this.getSolidThing({ policyURL: `${URL}_techOrgMeasureConstraint` }, session);
+        const recipientConstraint = await this.getSolidThing({ policyURL: `${URL}_recipientConstraint` }, session);
+        const durationConstraint = await this.getSolidThing({ policyURL: `${URL}_durationConstraint` }, session);
+        const projectThing = await this.getSolidThing({ policyURL: solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0] }, session);
+
+        const policy = await this.formatProposal(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, projectThing);
+        return policy;
+    },
+
+    formatProposal: async function (solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, projectThing) {
+        const URL = solidThing.url;
+        const ID = solidThing.url.split('#')[1];
+        const creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
+        const policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
+
+        const partOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
+        const assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
+        const assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
+        const adminStatus = extractTerm(solidThing.predicates[`${policySchema}#adminApproved`]["namedNodes"][0]);
+        const memberStatus = extractTerm(solidThing.predicates[`${policySchema}#memberApproved`]["namedNodes"][0]);
+        const thirdPartyStatus = extractTerm(solidThing.predicates[`${policySchema}#thirdPartyApproved`]["namedNodes"][0]);
+
+        const purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
+        const organisation = extractTerm(organisationConstraint.predicates[ODRL.rightOperand]["namedNodes"][0])
+        let sellingData;
+        let sellingInsights;
+        if (sellingDataConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
+            sellingData = false;
+        } else {
+            sellingData = true;
+        }
+        if (sellingInsightsConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
+            sellingInsights = false;
+        } else {
+            sellingInsights = true;
+        }
+        const measuresArray = techOrgMeasureConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        const techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
+        const recipientsArray = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        const recipients = recipientsArray.map((recipient) => extractTerm(recipient));
+        const untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
+
+        const title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
+        const description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
+        const projectStatus = extractTerm(projectThing.predicates[`${projectSchema}#hasProjectStatus`]["namedNodes"][0]);
+        const hasAgreement = projectThing.predicates[`${projectSchema}#hasAgreement`]["literals"][XSD.boolean][0];
+        const projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
+        const requestStartTime = projectThing.predicates[`${projectSchema}#requestStartTime`]["literals"][XSD.dateTime][0];
+        const requestEndTime = projectThing.predicates[`${projectSchema}#requestEndTime`]["literals"][XSD.dateTime][0];
+        const offerEndTime = projectThing.predicates[`${projectSchema}#offerEndTime`]["literals"][XSD.dateTime][0];
+        const threshold = projectThing.predicates[`${projectSchema}#threshold`]["literals"][XSD.decimal][0];
+
+        const policy = new Proposal(URL, ID, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
+        return policy.toJson();
+    },
+
+
+    // FIX THIS
     getpolicyURLs: async function (policyType, session) {
         let datasetURL = getDatasetUrl(policyType);
         const solidDataset = await getGivenSolidDataset(datasetURL, session);
@@ -238,7 +359,7 @@ module.exports = {
     },
 
     updatePolicyStatus: async function (req, session) {
-        let datasetURL = getPolicyDataset(req.policyURL);
+        let datasetURL = getDataset(req.policyURL);
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
 
         let policyToUpdate = getThing(solidDataset, req.policyURL);
@@ -254,7 +375,7 @@ module.exports = {
     removeProposal: async function (req, session) {
         const webID = req.requester;
         const policyURL = req.policyURL;
-        const datasetURL = getPolicyDataset(policyURL);
+        const datasetURL = getDataset(policyURL);
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         const policy = getThing(solidDataset, policyURL);
         const permissionThing = getThing(solidDataset, `${policyURL}_permission`);
@@ -277,7 +398,7 @@ module.exports = {
             if (webID === getUrl(policy, DCTERMS.creator) || isAdmin) {
                 if (getUrl(policy, `${policySchema}#memberApproved`) === `${policySchema}#Pending`) {
                     if (datasetURL === requestsList) {
-                        this.updateProject({ projectURL: getUrl(policy, DCTERMS.isPartOf), status: "Removed" }, session);
+                        await projectService.updateProject({ projectURL: getUrl(policy, DCTERMS.isPartOf), status: "Removed" }, session);
                     }
                     solidDataset = removeThing(solidDataset, policy);
                     solidDataset = removeThing(solidDataset, permissionThing);
@@ -325,7 +446,7 @@ module.exports = {
             await this.updatePolicyStatus(req, session);
         }
         if (projectURL !== "") {
-            await this.updateProject({ projectURL, agreement: false, status: "Removed" }, session);
+            await projectService.updateProject({ projectURL, agreement: false, status: "Removed" }, session);
         }
 
         solidDataset = removeThing(solidDataset, policy);
@@ -340,124 +461,5 @@ module.exports = {
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
 
         return thirdparty;
-    },
-
-    /* PROJECT RELATED FUNCTIONS */
-
-    createProject: async function (req, session) {
-        let solidDataset = await getGivenSolidDataset(projectsList, session);
-        const projectID = uuidv4();
-        const projectURL = `${projectsList}#${projectID}`;
-        const currentTime = new Date();
-        const requestStartTime = new Date(currentTime.getTime() + 1 * 24 * 60 * 60 * 1000);
-        const requestEndTime = new Date(requestStartTime.getTime() + 7 * 24 * 60 * 60 * 1000);
-        const offerEndTime = new Date(requestEndTime.getTime() + 7 * 24 * 60 * 60 * 1000);
-        const newProject = buildThing(createThing({ url: projectURL }))
-            .addUrl(RDF.type, `${projectSchema}#Project`)
-            .addUrl(`${projectSchema}#hasProjectStatus`, `${projectSchema}#Pending`)
-            .addStringNoLocale(DCTERMS.title, req.title)
-            .addStringNoLocale(DCTERMS.description, req.description)
-            .addUrl(`${oac}Organisation`, `${dpv}${req.organisation}`)
-            .addUrl(DCTERMS.creator, req.creator)
-            .addDatetime(DCTERMS.issued, currentTime)
-            .addDatetime(`${projectSchema}#requestStartTime`, requestStartTime)
-            .addDatetime(`${projectSchema}#requestEndTime`, requestEndTime)
-            .addDatetime(`${projectSchema}#offerEndTime`, offerEndTime)
-            .addDecimal(`${projectSchema}#threshold`, 0.5)
-            .addBoolean(`${projectSchema}#hasAgreement`, false)
-            .build();
-
-
-
-        solidDataset = setThing(solidDataset, newProject);
-        await saveGivenSolidDataset(projectsList, solidDataset, session);
-        return `${projectsList}#${projectID}`;
-    },
-
-    updateProject: async function (req, session) {
-        let solidDataset = await getGivenSolidDataset(projectsList, session);
-        let projectToUpdate = getThing(solidDataset, req.projectURL);
-        if (projectToUpdate) {
-            if (req.status !== undefined) {
-                projectToUpdate = buildThing(projectToUpdate)
-                    .setUrl(`${projectSchema}#hasProjectStatus`, `${projectSchema}#${req.status}`)
-                    .build();
-            }
-            if (req.title !== undefined) {
-                projectToUpdate = buildThing(projectToUpdate)
-                    .setStringNoLocale(DCTERMS.title, req.title)
-                    .build();
-            }
-            if (req.description !== undefined) {
-                projectToUpdate = buildThing(projectToUpdate)
-                    .setStringNoLocale(DCTERMS.description, req.description).build();
-            }
-            if (req.requestStartTime !== undefined) {
-                console.log(req.requestStartTime);
-                console.log(typeof req.requestStartTime);
-                projectToUpdate = buildThing(projectToUpdate)
-                    .setDatetime(`${projectSchema}#requestStartTime`, new Date(req.requestStartTime)).build();
-            }
-            if (req.requestEndTime !== undefined) {
-                projectToUpdate = buildThing(projectToUpdate)
-                    .setDatetime(`${projectSchema}#requestEndTime`, new Date(req.requestEndTime)).build();
-            }
-            if (req.offerEndTime !== undefined) {
-                projectToUpdate = buildThing(projectToUpdate)
-                    .setDatetime(`${projectSchema}#offerEndTime`, new Date(req.offerEndTime)).build();
-            }
-            if (req.threshold !== undefined) {
-                projectToUpdate = buildThing(projectToUpdate)
-                    .setDecimal(`${projectSchema}#threshold`, req.threshold).build();
-            }
-            if (req.agreement !== undefined) {
-                projectToUpdate = buildThing(projectToUpdate)
-                    .setBoolean(`${projectSchema}#hasAgreement`, req.agreement).build();
-            }
-            solidDataset = setThing(solidDataset, projectToUpdate);
-            await saveGivenSolidDataset(projectsList, solidDataset, session);
-            return projectToUpdate;
-        }
-        else {
-            throw new Error("Project not found.");
-        }
-    },
-
-    getPendingThirdPartyPolicies: async function () {
-        const requestsDataset = await getGivenSolidDataset(requestsList, session);
-        const offersDataset = await getGivenSolidDataset(offersList, session);
-        const requests = getThingAll(requestsDataset);
-        const offers = getThingAll(offersDataset);
-        let policies = requests.concat(offers);
-        let projectList = projects.map(item => item.url);
-        return projectList;
-    },
-
-    getPendingAdminPolicies: async function () {
-
-    },
-
-
-    getProjects: async function (session) {
-        const solidDataset = await getGivenSolidDataset(projectsList, session);
-        const projects = getThingAll(solidDataset);
-        let projectList = projects.map(item => item.url);
-        return projectList;
-    },
-
-    getProjectPolicies: async function (projectURL, session) {
-        const requestDataset = await getGivenSolidDataset(requestsList, session);
-        const requests = getThingAll(requestDataset, projectURL);
-        let projectRequests = requests.filter((request) => getUrl(request, DCTERMS.isPartOf) === projectURL);
-        projectRequests = projectRequests.map((request) => request.url);
-        const offerDataset = await getGivenSolidDataset(offersList, session);
-        const offers = getThingAll(offerDataset, projectURL);
-        let projectOffers = offers.filter((offer) => getUrl(offer, DCTERMS.isPartOf) === projectURL);
-        projectOffers = projectOffers.map((offer) => offer.url);
-        const agreementDataset = await getGivenSolidDataset(agreementsList, session);
-        const agreements = getThingAll(agreementDataset, projectURL);
-        let projectAgreements = agreements.filter((agreement) => getUrl(agreement, DCTERMS.isPartOf) === projectURL);
-        projectAgreements = projectAgreements.map((agreement) => agreement.url);
-        return { requests: projectRequests, offers: projectOffers, agreements: projectAgreements };
     }
 }

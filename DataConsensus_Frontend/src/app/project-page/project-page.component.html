@@ -1,10 +1,16 @@
 <div class="content">
     <div class="card-container">
-        <mat-drawer-container>
+        <div *ngIf="loading && !broken">
+            <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
+        </div>
+        <div *ngIf="broken">
+            <h3 class="instructions">Error. Please refresh the page.</h3>
+        </div>
+        <mat-drawer-container *ngIf="!loading && !broken">
             <mat-drawer mode="side" opened>
                 <mat-button-toggle-group class="sidebar" name="tab" [(ngModel)]="tab" aria-label="Font Style">
                     <mat-button-toggle class="sidebar-panel" value="overview">Overview</mat-button-toggle>
-                    <mat-button-toggle *ngIf="requestID!==''" class="sidebar-panel"
+                    <mat-button-toggle *ngIf="request!=={}" class="sidebar-panel"
                         value="request">Request</mat-button-toggle>
                     <mat-button-toggle *ngIf="offers.length>0" class="sidebar-panel"
                         value="offer">Offers</mat-button-toggle>
@@ -47,7 +53,7 @@
                             *ngIf="(project.projectStatus!=='Pending'||project.projectStatus!=='RequestDeliberation')&&offers.length>0">
                             <p>
                                 <b>End time for deliberation on counter offers:</b> {{ project.offerEndTime |
-                                date:'dd/MM/yyyy'}}
+                                date:'dd/MM/yyyy hh:mma'}}
                             </p>
                             <p>
                                 <b>Passing threshold: </b> {{ project.offerCutoff}} ({{ (project.threshold *
@@ -175,7 +181,7 @@
                     <div *ngIf="project.projectStatus==='OfferDeliberation'">
                         <h3 class="instructions"> Rank the offers: </h3>
                         <app-preference-voting [offerRanking]="this.offerRanking"
-                            [projectID]="this.projectID"></app-preference-voting>
+                            [projectURL]="this.project.URL"></app-preference-voting>
                     </div>
                     <!-- RESULTS FOR OFFER -->
                     <mat-card-content

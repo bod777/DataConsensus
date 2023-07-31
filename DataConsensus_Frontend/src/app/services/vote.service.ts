@@ -28,13 +28,14 @@ export class VoteService {
             'Content-Type': 'application/json'
         });
         const params = new HttpParams().set('voter', voter).set('policyID', policyID);
-        return this.http.get('http://localhost:3000/api/v1/vote/request-vote', { headers, params });
+        return this.http.get('http://localhost:3000/api/v1/vote/get-vote', { headers, params });
     }
 
     submitPreference(req: any): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
+        console.log(req);
         return this.http.post('http://localhost:3000/api/v1/vote/add-preference', req, { headers });
     }
 
@@ -43,7 +44,7 @@ export class VoteService {
             'Content-Type': 'application/json'
         });
         const params = new HttpParams().set('voter', voter).set('projectID', projectID);
-        return this.http.get('http://localhost:3000/api/v1/vote/offer-vote', { headers, params });
+        return this.http.get('http://localhost:3000/api/v1/vote/get-preference', { headers, params });
     }
 
     getRequestResult(policyID: string, date: string): Observable<any> {

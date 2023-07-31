@@ -64,10 +64,10 @@ project:threshold a rdf:Property ;
     rdfs:domain project:Project ;
     rdfs:range xsd:integer .
 
-project:membershipCount a rdf:Property ;
-    rdfs:domain project:Project ;
-    rdfs:range xsd:integer .
-
 project:hasAgreement a rdf:Property ;
+    rdfs:domain project:Project ;
+    rdfs:range xsd:boolean .
+
+project:isActiveAgreement a rdf:Property ;
     rdfs:domain project:Project ;
     rdfs:range xsd:boolean .

@@ -11,43 +11,43 @@ const {
 } = require("@inrupt/solid-client");
 const { RDF, XSD, DCTERMS } = require("@inrupt/vocab-common-rdf");
 const { v4: uuidv4 } = require('uuid');
-const { getGivenSolidDataset, saveGivenSolidDataset } = require("../HelperFunctions.js");
+const { getGivenSolidDataset, saveGivenSolidDataset, extractTerm } = require("../HelperFunctions.js");
+const { BinaryVote, PreferenceVote } = require("../Models/Vote.js");
 const voteSchema = process.env.VOTE;
 const votesList = process.env.VOTES
 
+
 module.exports = {
+
     addVote: async function (req, session) {
         let datasetURL = votesList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
-        // console.log(req);
         const existingVotes = getThingAll(solidDataset);
         let existingVote = null;
         for (const vote of existingVotes) {
             const voter = getUrl(vote, `${voteSchema}#hasVoter`);
             const policy = getUrl(vote, `${voteSchema}#hasPolicy`);
-            if (voter === req.voter && policy === req.policyURL) {
+            const project = getUrl(vote, DCTERMS.isPartOf);
+            if (voter === req.voter && policy === req.policyURL && project === req.projectURL) {
                 existingVote = vote;
                 break;
             }
         }
         if (existingVote) {
-            // console.log("existingVote", existingVote);
             existingVote = buildThing(existingVote)
                 .setDatetime(DCTERMS.modified, new Date())
                 .setInteger(`${voteSchema}#voteRank`, req.voteRank)
                 .build();
         } else {
-            // console.log("newVote");
             const voteID = uuidv4();
             const voteURL = `${datasetURL}#${voteID}`;
-            // console.log(voteURL);
             let voteType;
             if (req.isPreference) {
                 voteType = `${voteSchema}#PreferenceVote`;
             } else {
                 voteType = `${voteSchema}#BinaryVote`;
             }
-            // console.log(voteType);
+            // console.log("updating vote for ", req.policyURL);
             existingVote = buildThing(createThing({ url: voteURL }))
                 .addUrl(RDF.type, `${voteSchema}#Vote`)
                 .addUrl(`${voteSchema}#hasVoteType`, voteType)
@@ -58,9 +58,8 @@ module.exports = {
                 .setDatetime(DCTERMS.modified, new Date())
                 .addInteger(`${voteSchema}#voteRank`, req.voteRank)
                 .build();
-            // console.log("existing vote built");
         }
-        // console.log("existingVote", existingVote);
+        // console.log("existingVote", JSON.stringify(existingVote));
         solidDataset = setThing(solidDataset, existingVote);
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
     },
@@ -93,10 +92,23 @@ module.exports = {
                 break;
             }
         }
-        return existingVote;
+        if (existingVote === null) {
+            throw new Error("No votes found");
+        }
+        const voteURL = existingVote.url;
+        const voteType = extractTerm(existingVote.predicates[`${voteSchema}#hasVoteType`]["namedNodes"][0]);
+        const project = existingVote.predicates[DCTERMS.isPartOf]["namedNodes"][0];
+        const policy = existingVote.predicates[`${voteSchema}#hasPolicy`]["namedNodes"][0];
+        const voter = existingVote.predicates[`${voteSchema}#hasVoter`]["namedNodes"][0];
+        const created = existingVote.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
+        const modified = existingVote.predicates[DCTERMS.modified]["literals"][XSD.dateTime][0];
+        const rank = existingVote.predicates[`${voteSchema}#voteRank`]["literals"][XSD.integer][0];
+        const vote = new BinaryVote(voteURL, project, policy, voter, created, modified, rank);
+        return vote.toJson();
     },
 
     getPreferenceVote: async function (req, session) {
+        // console.log(req);
         let datasetURL = votesList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         const existingVotes = getThingAll(solidDataset);
@@ -106,10 +118,23 @@ module.exports = {
             const policy = getUrl(vote, `${voteSchema}#hasPolicy`);
             const project = getUrl(vote, DCTERMS.isPartOf);
             if (voter === req.voter && policy === req.policyURL && project === req.projectURL) {
+                // console.log(policy);
                 existingVote = vote;
                 break;
             }
         }
-        return existingVote;
+        if (existingVote === null) {
+            throw new Error("No votes found");
+        }
+        const voteURL = existingVote.url;
+        const voteType = extractTerm(existingVote.predicates[`${voteSchema}#hasVoteType`]["namedNodes"][0]);
+        const project = existingVote.predicates[DCTERMS.isPartOf]["namedNodes"][0];
+        const policy = existingVote.predicates[`${voteSchema}#hasPolicy`]["namedNodes"][0];
+        const voter = existingVote.predicates[`${voteSchema}#hasVoter`]["namedNodes"][0];
+        const created = existingVote.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
+        const modified = existingVote.predicates[DCTERMS.modified]["literals"][XSD.dateTime][0];
+        const rank = existingVote.predicates[`${voteSchema}#voteRank`]["literals"][XSD.integer][0];
+        const vote = new PreferenceVote(voteURL, project, policy, voter, created, modified, rank);
+        return vote.toJson();
     }
 }

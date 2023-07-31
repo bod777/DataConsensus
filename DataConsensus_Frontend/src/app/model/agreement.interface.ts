@@ -17,10 +17,9 @@ export interface Agreement {
     description: string;
     projectStatus: string;
     hasAgreement: string;
-    projectCreationTime: string;
-    deliberationStartTime: string;
-    requestTime: string;
-    offerTime: string;
+    projectCreationTime: Date;
+    requestStartTime: Date;
+    requestEndTime: Date;
+    offerEndTime: Date;
     threshold: string;
-    thresholdType: string;
 }

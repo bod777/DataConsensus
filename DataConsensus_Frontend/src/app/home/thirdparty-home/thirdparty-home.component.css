@@ -16,7 +16,13 @@
     text-align: center;
 }
 
+th {
+    text-align: center;
+}
+
 .card-container {
     display: flex;
     justify-content: center;
+    margin-left: 5%;
+    margin-right: 5%;
 }

@@ -204,8 +204,8 @@ request:53280de2-47e2-4413-a9ff-a980da0d47b5
         odrl:permission            request:53280de2-47e2-4413-a9ff-a980da0d47b5_permission ;
         odrl:profile               oac: ;
         odrl:uid                   request:53280de2-47e2-4413-a9ff-a980da0d47b5 ;
-        policy:adminApproved       policy:Pending ;
-        policy:memberApproved      policy:Pending ;
+        policy:adminApproved       policy:Blocked ;
+        policy:memberApproved      policy:Rejected ;
         policy:thirdPartyApproved  policy:Approved .
 
 request:53280de2-47e2-4413-a9ff-a980da0d47b5_permission

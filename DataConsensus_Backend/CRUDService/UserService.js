@@ -177,9 +177,9 @@ module.exports = {
 
     removeData: async function (fileURL, session) {
         try {
-            console.log(fileURL);
+            // console.log(fileURL);
             const fileHash = await Transformer.hashFileURL(fileURL);
-            console.log(fileHash);
+            // console.log(fileHash);
             const file = await getFile(
                 resourceURL,
                 { fetch: session.fetch }

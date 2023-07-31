@@ -71,10 +71,17 @@ function getPolicyType(policyURL) {
     return type;
 }
 
-function getPolicyDataset(policyURL) {
+function getDataset(policyURL) {
+    // console.log(policyURL);
     parts = policyURL.split("#");
     return parts[0];
 }
 
+function isDatetimePassed(datetime) {
+    const inputDatetime = new Date(datetime);
+    const currentDatetime = new Date();
+    return inputDatetime < currentDatetime;
+}
 
-module.exports = { getGivenSolidDataset, saveGivenSolidDataset, getDatasetUrl, extractTerm, getPolicyDataset, getPolicyType };
+
+module.exports = { getGivenSolidDataset, saveGivenSolidDataset, getDatasetUrl, extractTerm, getDataset, getPolicyType, isDatetimePassed };

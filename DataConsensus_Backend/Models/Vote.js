@@ -23,9 +23,9 @@ class Vote {
             project: this.project,
             policy: this.policy,
             voter: this.voter,
-            created: this.created,
-            modified: this.modified,
-            rank: this.rank
+            created: new Date(this.created),
+            modified: new Date(this.modified),
+            rank: Number(this.rank)
         };
     }
 }
@@ -34,41 +34,11 @@ class BinaryVote extends Vote {
     constructor(voteURL, project, policy, voter, created, modified, rank) {
         super(voteURL, "BinaryVote", project, policy, voter, created, modified, rank);
     }
-
-    async fetchVote(req, session) {
-        const solidThing = await voteService.getBinaryVote(req, session);
-        if (solidThing === null) {
-            throw new Error("No votes found");
-        }
-        this.voteURL = solidThing.url;
-        this.voteType = extractTerm(solidThing.predicates[`${voteSchema}#hasVoteType`]["namedNodes"][0]);
-        this.project = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
-        this.policy = solidThing.predicates[`${voteSchema}#hasPolicy`]["namedNodes"][0];
-        this.voter = solidThing.predicates[`${voteSchema}#hasVoter`]["namedNodes"][0];
-        this.created = solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
-        this.modified = solidThing.predicates[DCTERMS.modified]["literals"][XSD.dateTime][0];
-        this.rank = solidThing.predicates[`${voteSchema}#voteRank`]["literals"][XSD.integer][0];
-    }
 }
 
 class PreferenceVote extends Vote {
     constructor(voteURL, project, policy, voter, created, modified, rank) {
         super(voteURL, "PreferenceVote", project, policy, voter, created, modified, rank);
-    }
-
-    async fetchVote(req, session) {
-        const solidThing = await voteService.getPreferenceVote(req, session);
-        if (solidThing === null) {
-            throw new Error("No votes found");
-        }
-        this.voteURL = solidThing.url;
-        this.voteType = extractTerm(solidThing.predicates[`${voteSchema}#hasVoteType`]["namedNodes"][0]);
-        this.project = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
-        this.policy = solidThing.predicates[`${voteSchema}#hasPolicy`]["namedNodes"][0];
-        this.voter = solidThing.predicates[`${voteSchema}#hasVoter`]["namedNodes"][0];
-        this.created = solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
-        this.modified = solidThing.predicates[DCTERMS.modified]["literals"][XSD.dateTime][0];
-        this.rank = solidThing.predicates[`${voteSchema}#voteRank`]["literals"][XSD.integer][0];
     }
 }
 

@@ -8,6 +8,12 @@
 .card-container {
     display: flex;
     justify-content: center;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+th {
+    text-align: center;
 }
 
 mat-drawer-container {

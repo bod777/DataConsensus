@@ -18,6 +18,7 @@ export class AdminHomeComponent implements OnInit {
     constructor(private policyService: PolicyService, private router: Router, private _snackBar: MatSnackBar) {
     }
 
+    broken: boolean = false;
     loading: boolean = true;
     public dataSource = new MatTableDataSource<Project>([]);
 
@@ -40,6 +41,7 @@ export class AdminHomeComponent implements OnInit {
             },
             (error) => {
                 this._snackBar.open("Error fetching projects. Try refreshing. Error:" + error, "Close");
+                this.broken = true;
             }
         );
     }

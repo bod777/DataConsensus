@@ -1,11 +1,14 @@
 <div class="content">
     <h1 class="page-header">Admin Dashboard</h1>
     <div class="card-container">
-        <mat-card *ngIf="!loading">
+        <mat-card *ngIf="!loading && !broken">
             <home-table [dataSource]="dataSource"></home-table>
         </mat-card>
-        <div *ngIf="loading">
+        <div *ngIf="loading && !broken">
             <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
+        </div>
+        <div *ngIf="broken">
+            <h3 class="instructions">Error. Please refresh the page.</h3>
         </div>
     </div>
 </div>

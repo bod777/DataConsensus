@@ -10,11 +10,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class PreferenceVotingComponent {
     @Input() offerRanking: any[] = [];
-    @Input() projectID: string = '';
+    @Input() projectURL: string = '';
+    user: string = localStorage.getItem('webID') || "";
 
     constructor(private voteService: VoteService, private _snackBar: MatSnackBar) { }
-
-    user: string = localStorage.getItem('user') || "";
 
     onDrop(event: CdkDragDrop<string[]>): void {
         console.log(this.offerRanking);
@@ -27,8 +26,8 @@ export class PreferenceVotingComponent {
             policyURL: item.URL,
             voteRank: index + 1
         }));
-        const req = { rankedVotes: voteArray, voter: this.user, projectID: this.projectID };
-        // console.log(req);
+        const req = { rankedVotes: voteArray, voter: this.user, projectURL: this.projectURL };
+        console.log(req);
         this.voteService.submitPreference(req).subscribe(
             (vote: any) => {
                 this._snackBar.open("Success", "Close", { duration: 3000 });

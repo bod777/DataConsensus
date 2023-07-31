@@ -1,11 +1,8 @@
 const router = require("express").Router();
-const { Comment } = require("../Models/Comment.js");
 const voteService = require("../CRUDService/VoteService.js");
 const policyService = require("../CRUDService/PolicyService.js");
 const userService = require("../CRUDService/UserService.js");
-const { getPolicyDataset } = require("../HelperFunctions.js");
-const { Proposal } = require("../Models/Policy.js");
-const { Project } = require("../Models/Project.js");
+const projectService = require("../CRUDService/ProjectService.js");
 const { Vote, BinaryVote, PreferenceVote } = require("../Models/Vote.js");
 const offersList = process.env.OFFERS
 const requestsList = process.env.REQUESTS
@@ -23,15 +20,16 @@ module.exports = function (appSession) {
     */
     router.post("/add-preference", async (req, res) => {
         try {
-            const { rankedVotes, voter, projectID } = req.body;
+            const { rankedVotes, voter, projectURL } = req.body;
             for (const vote of rankedVotes) {
                 const voteDetails = {
                     voter: voter,
                     policyURL: vote.policyURL,
-                    voteRank: vote.voteRank,
+                    voteRank: Number(vote.voteRank),
                     isPreference: true,
-                    projectURL: projectID
+                    projectURL: projectURL
                 };
+                // console.log(voteDetails);
                 await voteService.addVote(voteDetails, appSession);
             }
             res.send({ message: "All votes added successfully." });
@@ -96,19 +94,17 @@ module.exports = function (appSession) {
         voter: string
         policyURL: string
     */
-    router.get("/request-vote", async (req, res) => {
+    router.get("/get-vote", async (req, res) => {
         const { voter, policyID } = req.query;
         const policyURL = `${requestsList}#${policyID}`;
         try {
-            const fetchedVote = new BinaryVote();
-            await fetchedVote.fetchVote({ voter, policyURL }, appSession);
-            const vote = await fetchedVote.toJson();
+            const fetchedVote = await voteService.getBinaryVote({ voter, policyURL }, appSession);
             // console.log("vote data:", vote);
-            res.send({ data: vote });
+            res.send({ data: fetchedVote });
         }
         catch (error) {
             if (error.message === "No votes found") {
-                console.log(`No vote found`);
+                // console.log(`No vote found`);
                 res.send({ data: null });
             }
             else {
@@ -118,34 +114,30 @@ module.exports = function (appSession) {
         }
     });
 
-    router.get("/offer-vote", async (req, res) => {
+    router.get("/get-preference", async (req, res) => {
         // console.log("get offer vote");
         // console.log(req.query);
         const { voter, projectID } = req.query;
         const projectURL = `${projectsList}#${projectID}`;
         // console.log("project URL ", projectURL);
-        const projectPolicies = await policyService.getProjectPolicies(projectURL, appSession);
-        const projectOffers = projectPolicies.offers;
+        const project = await projectService.getProject(projectURL, appSession);
+        const projectOffers = project.projectPolicies.offers.map(offer => offer.URL);
         projectOffers.push(`${offersList}#rejection`)
         // console.log("list of offer URL ", projectOffers);
         const rankedOffers = []
         // console.log("project offers ", projectOffers);
+        // console.log("project offers ", projectOffers);
         for (const offer of projectOffers) {
-            // console.log("individual offer ", offer);
             try {
-                // console.log("trying");
-                const fetchedVote = new PreferenceVote();
-                // console.log("fetching");
-                await fetchedVote.fetchVote({ voter, policyURL: offer, projectURL }, appSession);
-                // console.log("fetched");
-                const vote = await fetchedVote.toJson();
-                // console.log("vote data:", vote);
-                rankedOffers.push({ URL: vote.policy, rank: vote.rank });
+                // console.log("getting vote for ", offer);
+                const vote = await voteService.getPreferenceVote({ voter, policyURL: offer, projectURL }, appSession);
+                // console.log(vote);
+                rankedOffers.push({ URL: vote.policy, rank: Number(vote.rank) });
                 // console.log("pushed");
             }
             catch (error) {
                 if (error.message === "No votes found") {
-                    console.log(`No votes found for offer ${offer}`);
+                    // console.log(`No votes found for offer ${offer}`);
                     rankedOffers.push({ URL: offer, rank: projectOffers.length + 1 });
                 } else {
                     console.error(error);
@@ -156,6 +148,7 @@ module.exports = function (appSession) {
         }
         // console.log("rankedOffers: ", rankedOffers);
         rankedOffers.sort((a, b) => a.rank - b.rank);
+        // console.log("sortedOffers: ", rankedOffers)
         const sortedOffersWithoutRank = rankedOffers.map(({ URL }) => ({
             URL, id: URL.substring(URL.lastIndexOf("#") + 1) === "rejection"
                 ? "reject all offers"
@@ -179,9 +172,7 @@ module.exports = function (appSession) {
             try {
                 const policyURL = `${requestsList}#${policyID}`;
                 // console.log(policyURL);
-                policy = new Proposal();
-                await policy.fetchPolicy(policyURL, appSession);
-                const policyJSON = policy.toJson();
+                const policyJSON = policyService.fetchProposal(policyURL, appSession);
                 const upvotes = await voteService.countVotesByRankPolicy(
                     { policyURL: policyURL, rank: 1 },
                     appSession);
@@ -221,12 +212,10 @@ module.exports = function (appSession) {
         const projectURL = `${projectsList}#${req.query.projectID}`;
         const date = req.query.date;
         try {
-            const projectPolicies = await policyService.getProjectPolicies(projectURL, appSession);
-            const projectOffers = projectPolicies.offers;
+            const project = await projectService.getProject(projectURL, appSession);
+            const projectOffers = project.projectPolicies.offers.map(offer => offer.URL);
             const membersNumber = await userService.getMemberCount(date, appSession);
-            const project = new Project();
-            await project.fetchProject(projectURL, appSession);
-            const threshold = project.toJson().threshold;
+            const threshold = project.threshold;
             let results = [];
             let winner = `rejection`;
             for (const offer of projectOffers) {
@@ -247,6 +236,7 @@ module.exports = function (appSession) {
                 } else {
                     policyToUpdate.newStatus = "Rejected";
                 }
+                // console.log(policyToUpdate);
                 await policyService.updatePolicyStatus(policyToUpdate, appSession);
             }
             if (sortedResults[0].count > cutoff) {

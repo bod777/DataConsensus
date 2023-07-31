@@ -49,7 +49,7 @@ module.exports = function (appSession) {
         }
         else {
             const existsAlready = await userService.checkUserByType({ webID: webID, type: "MEMBER" }, appSession);
-            console.log("does it exist?", existsAlready);
+            // console.log("does it exist?", existsAlready);
             // const existsAlready = false;
             if (existsAlready) {
                 res.status(400).send({ message: "User is already registered as a member." });

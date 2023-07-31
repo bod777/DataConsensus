@@ -24,9 +24,9 @@ offer:ff284cf0-2c7b-4718-b261-698119c2408c
         odrl:permission            offer:ff284cf0-2c7b-4718-b261-698119c2408c_permission ;
         odrl:profile               oac: ;
         odrl:uid                   offer:ff284cf0-2c7b-4718-b261-698119c2408c ;
-        policy:adminApproved       policy:Approved ;
+        policy:adminApproved       policy:Pending ;
         policy:memberApproved      policy:Approved ;
-        policy:thirdPartyApproved  policy:Approved .
+        policy:thirdPartyApproved  policy:Pending .
 
 offer:ff284cf0-2c7b-4718-b261-698119c2408c_permission
         rdf:type         odrl:Permission ;
@@ -89,9 +89,9 @@ offer:ce627985-5433-4639-87f4-cfe9a9791cae
         odrl:permission            offer:ce627985-5433-4639-87f4-cfe9a9791cae_permission ;
         odrl:profile               oac: ;
         odrl:uid                   offer:ce627985-5433-4639-87f4-cfe9a9791cae ;
-        policy:adminApproved       policy:Approved ;
-        policy:memberApproved      policy:Approved ;
-        policy:thirdPartyApproved  policy:Approved .
+        policy:adminApproved       policy:Pending ;
+        policy:memberApproved      policy:Pending ;
+        policy:thirdPartyApproved  policy:Pending .
 
 offer:ce627985-5433-4639-87f4-cfe9a9791cae_permission
         rdf:type         odrl:Permission ;
@@ -152,9 +152,9 @@ offer:959e2007-be7f-44cc-a558-1b6708f3bb7b
         odrl:permission            offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_permission ;
         odrl:profile               oac: ;
         odrl:uid                   offer:959e2007-be7f-44cc-a558-1b6708f3bb7b ;
-        policy:adminApproved       policy:Approved ;
-        policy:memberApproved      policy:Approved ;
-        policy:thirdPartyApproved  policy:Approved .
+        policy:adminApproved       policy:Pending ;
+        policy:memberApproved      policy:Pending ;
+        policy:thirdPartyApproved  policy:Pending .
 
 offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_permission
         rdf:type         odrl:Permission ;
@@ -215,9 +215,9 @@ offer:959e2007-be7f-44cc-a558-1b6708f3bb7b
         odrl:permission            offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_permission ;
         odrl:profile               oac: ;
         odrl:uid                   offer:959e2007-be7f-44cc-a558-1b6708f3bb7b ;
-        policy:adminApproved       policy:Approved ;
-        policy:memberApproved      policy:Approved ;
-        policy:thirdPartyApproved  policy:Approved .
+        policy:adminApproved       policy:Pending ;
+        policy:memberApproved      policy:Pending ;
+        policy:thirdPartyApproved  policy:Pending .
 
 offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_permission
         rdf:type         odrl:Permission ;

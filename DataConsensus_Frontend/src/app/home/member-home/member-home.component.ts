@@ -19,20 +19,22 @@ export class MemberHomeComponent implements OnInit {
 
     }
 
+    broken: boolean = false;
     loading: boolean = true;
     public dataSource = new MatTableDataSource<Project>([]);
 
     ngOnInit() {
         this.policyService.getAllProjects().subscribe(
             (response) => {
+                console.log(response.data);
                 let projects = response.data;
-                projects = projects.map((project: Project) => {
-                    project.projectCreationTime = new Date(project.projectCreationTime);
-                    project.requestStartTime = new Date(project.requestStartTime);
-                    project.requestEndTime = new Date(project.requestEndTime);
-                    project.offerEndTime = new Date(project.offerEndTime);
-                    return project;
-                });
+                // projects = projects.map((project: Project) => {
+                //     project.projectCreationTime = new Date(project.projectCreationTime);
+                //     project.requestStartTime = new Date(project.requestStartTime);
+                //     project.requestEndTime = new Date(project.requestEndTime);
+                //     project.offerEndTime = new Date(project.offerEndTime);
+                //     return project;
+                // });
                 projects = projects.filter((project: Project) => {
                     return project.projectStatus !== "Removed";
                 });
@@ -41,6 +43,7 @@ export class MemberHomeComponent implements OnInit {
             },
             (error) => {
                 this._snackBar.open("Error fetching projects. Try refreshing. Error:" + error, "Close");
+                this.broken = true;
             }
         );
     }
