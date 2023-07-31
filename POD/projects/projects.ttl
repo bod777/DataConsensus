@@ -26,7 +26,7 @@ pod:82e7f5d0-662b-4ec0-adb1-b3e52ff32a03
 
 pod:4ddb1306-df85-4730-8545-14973be50cd2
         rdf:type                  dct:Project ;
-        dct:creator               <https://id.inrupt.com/thirdParty> ;
+        dct:creator               <https://id.inrupt.com/thirdparty> ;
         dct:description           "The third party is a new nonprofit organization looking to improve healthcare resources for people with diabetes. Their mission is relatively broad and the exact aim of their research is not stated. \nAs they are a new organization with limited resources, they have opted for more relaxed data protection measures. They do not have a designated data protection officer and do not have training or a code of conduct for their staff to follow. They do have standard operating system security and password authentication but cannot guarantee encryption at rest. They do commit to not selling the data or sharing it with unauthorized parties. They have also requested a ridiculously long duration for the research (20 years). " ;
         dct:issued                "2023-06-06T09:08:23"^^xsd:dateTime ;
         dct:title                 "Improving Healthcare Resources for People with Diabetes in Dublin" ;

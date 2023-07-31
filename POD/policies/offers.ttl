@@ -31,7 +31,7 @@ offer:ff284cf0-2c7b-4718-b261-698119c2408c
 offer:ff284cf0-2c7b-4718-b261-698119c2408c_permission
         rdf:type         odrl:Permission ;
         odrl:action      dpv:Remove , dpv:Copy , dpv:Store , dpv:Transform , dpv:Use ;
-        odrl:assignee    <https://id.inrupt.com/thirdParty> ;
+        odrl:assignee    <https://id.inrupt.com/thirdparty> ;
         odrl:assigner    <https://id.inrupt.com/DataConsensus> ;
         odrl:constraint  offer:ff284cf0-2c7b-4718-b261-698119c2408c_purposeConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_recipientConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingDataConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_techOrgMeasureConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_durationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_organisationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingInsightsConstraint ;
         odrl:target      dpvpd:MedicalHealth .
@@ -70,7 +70,7 @@ offer:ff284cf0-2c7b-4718-b261-698119c2408c_recipientConstraint
         rdf:type           odrl:Constraint ;
         odrl:leftOperand   oac:Recipient ;
         odrl:operator      odrl:isAnyOf ;
-        odrl:rightOperand  <https://id.inrupt.com/thirdParty> , <https://id.inrupt.com/DataConsensus> .
+        odrl:rightOperand  <https://id.inrupt.com/thirdparty> , <https://id.inrupt.com/DataConsensus> .
 
 offer:rejection  rdf:type      odrl:Offer ;
         policy:memberApproved  policy:Rejected .
