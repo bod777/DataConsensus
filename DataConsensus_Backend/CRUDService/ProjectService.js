@@ -74,14 +74,14 @@ module.exports = {
         const description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
         const projectStatus = extractTerm(projectThing.predicates[`${projectSchema}#hasProjectStatus`]["namedNodes"][0]);
         const hasAgreement = projectThing.predicates[`${projectSchema}#hasAgreement`]["literals"][XSD.boolean][0];
-        const isActiveAgreement = projectThing.predicates[`${projectSchema}#isActiveAgreement`]["literals"][XSD.boolean][0];
+        const hasAccess = projectThing.predicates[`${projectSchema}#hasAccess`]["literals"][XSD.boolean][0];
         const projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
         const requestStartTime = projectThing.predicates[`${projectSchema}#requestStartTime`]["literals"][XSD.dateTime][0];
         const requestEndTime = projectThing.predicates[`${projectSchema}#requestEndTime`]["literals"][XSD.dateTime][0];
         const offerEndTime = projectThing.predicates[`${projectSchema}#offerEndTime`]["literals"][XSD.dateTime][0];
         const threshold = projectThing.predicates[`${projectSchema}#threshold`]["literals"][XSD.decimal][0];
 
-        const project = new Project(projectURL, projectID, creator, title, description, organisation, projectStatus, hasAgreement, isActiveAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies);
+        const project = new Project(projectURL, projectID, creator, title, description, organisation, projectStatus, hasAgreement, hasAccess, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies);
         return project.toJson();
     },
 
@@ -163,7 +163,7 @@ module.exports = {
             .addDatetime(`${projectSchema}#offerEndTime`, offerEndTime)
             .addDecimal(`${projectSchema}#threshold`, 0.5)
             .addBoolean(`${projectSchema}#hasAgreement`, false)
-            .addBoolean(`${projectSchema}#isActiveAgreement`, false)
+            .addBoolean(`${projectSchema}#hasAccess`, false)
             .build();
 
         solidDataset = setThing(solidDataset, newProject);
@@ -209,9 +209,9 @@ module.exports = {
                 projectToUpdate = buildThing(projectToUpdate)
                     .setBoolean(`${projectSchema}#hasAgreement`, req.hasAgreement).build();
             }
-            if (req.isActiveAgreement !== undefined) {
+            if (req.hasAccess !== undefined) {
                 projectToUpdate = buildThing(projectToUpdate)
-                    .setBoolean(`${projectSchema}#isActiveAgreement`, req.isActiveAgreement).build();
+                    .setBoolean(`${projectSchema}#hasAccess`, req.hasAccess).build();
             }
             solidDataset = setThing(solidDataset, projectToUpdate);
             await saveGivenSolidDataset(projectsList, solidDataset, session);

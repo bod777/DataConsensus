@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { interval } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -14,7 +15,9 @@ export class ThirdPartySignUpComponent implements OnInit {
 
     constructor(private route: ActivatedRoute, private router: Router, private userService: UserService) { }
 
-    loginInput?: string = "https://login.inrupt.com";
+    showProgressBar: boolean = false;
+    progress: number = 0;
+    loginInput: string = "https://login.inrupt.com";
     webID: string = "";
     name: string = "";
     email: string = "";
@@ -30,8 +33,8 @@ export class ThirdPartySignUpComponent implements OnInit {
         localStorage.setItem('email', this.email);
         localStorage.setItem('organisationType', this.organisationType);
         localStorage.setItem('description', this.description);
-
-        window.location.href = "http://localhost:3000/api/v1/auth/thirdparty-signup";
+        localStorage.setItem('loginInput', this.loginInput);
+        window.location.href = "http://localhost:3000/api/v1/auth/thirdparty-signup?issuer=" + this.loginInput;
     }
 
     ngOnInit() {
@@ -49,6 +52,16 @@ export class ThirdPartySignUpComponent implements OnInit {
             const sessionID = params["sessionId"];
             if (isLoggedIn) {
                 this.webID = params["webId"];
+                this.showProgressBar = true;
+                const interval$ = interval(500);
+                const subscription = interval$.subscribe(() => {
+                    this.progress += 10;
+                    if (this.progress >= 100) {
+                        this.showProgressBar = false;
+                        subscription.unsubscribe();
+                        this.progress = 0;
+                    }
+                });
                 if (this.name && this.email && this.organisationType && this.description && this.webID) {
                     this.userService.registerThirdParty(this.webID, this.name, this.email, this.organisationType, this.description, sessionID).subscribe(
                         (response) => {

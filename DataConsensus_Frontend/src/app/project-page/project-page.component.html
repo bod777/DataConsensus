@@ -1,9 +1,12 @@
 <div class="content">
     <div class="card-container">
-        <div *ngIf="loading">
+        <div *ngIf="broken">
+            <h3 class="instructions">Error. Please refresh the page.</h3>
+        </div>
+        <div *ngIf="loading && !broken">
             <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
         </div>
-        <mat-drawer-container *ngIf="!loading">
+        <mat-drawer-container *ngIf="!loading && !broken">
             <mat-drawer mode="side" opened>
                 <mat-button-toggle-group class="sidebar" name="tab" [(ngModel)]="tab" aria-label="Font Style">
                     <mat-button-toggle class="sidebar-panel" value="overview">Overview</mat-button-toggle>
@@ -43,7 +46,8 @@
                             hh:mma'}}
                         </p>
                         <p>
-                            <b>End time for deliberation on request:</b> {{ project.requestEndTime | date:'dd/MM/yyyy
+                            <b>End time for deliberation on request:</b> {{ project.requestEndTime |
+                            date:'dd/MM/yyyy
                             hh:mma'}}
                         </p>
                         <div
@@ -68,15 +72,17 @@
                         <project-status style="margin-left:30px; margin-right:30px"
                             [projectStatus]="project.projectStatus"></project-status>
                         <agreement-status [hasAgreement]="project.hasAgreement"
-                            [isActiveAgreement]="isActiveAgreement"></agreement-status>
+                            [hasAccess]="project.hasAccess"></agreement-status>
                         <!-- <div> -->
-                        <div *ngIf="project.hasAgreement===true && isActiveAgreement && userType==='THIRDPARTY'">
+                        <div *ngIf="project.hasAgreement===true && project.hasAccess && userType==='THIRDPARTY'">
                             <mat-divider></mat-divider>
                             <h3 class="instructions">Download the data:</h3>
                             <p>You can access the data by logging into a general pod browser such as <a mat-button
-                                    href="https://penny.vincenttunru.com/" target="_blank">Penny</a> and search for the
+                                    href="https://penny.vincenttunru.com/" target="_blank">Penny</a> and search for
+                                the
                                 following URL:</p>
-                            <p>https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv</p>
+                            <p>https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv
+                            </p>
                         </div>
                     </mat-card-content>
                     <!-- ADMIN CHANGE RULES -->
@@ -85,19 +91,26 @@
                         <change-rules [project]="project"></change-rules>
                     </mat-card-content>
                     <!-- ADMIN APPROVAL BUTTON -->
-                    <mat-card-content *ngIf="project.projectStatus==='AdminApprovalNeeded' && userType === 'ADMIN'">
+                    <mat-card-content class="approval"
+                        *ngIf="project.projectStatus==='AdminApprovalNeeded' && userType === 'ADMIN' && toBeApproved !== ''">
                         <h3 class="instructions">Do you approve of this policy?</h3>
                         <button mat-raised-button color="primary" (click)="adminApprove()">Approve</button>
+                        <span class="gap"></span>
                         <button mat-raised-button color="warn" (click)="adminReject()">Reject</button>
+                        <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"
+                            *ngIf="showProgressBar"></mat-progress-spinner>
                     </mat-card-content>
                     <!-- THIRD PARTY APPROVAL BUTTON -->
-                    <mat-card-content
-                        *ngIf="project.projectStatus==='ThirdPartyApprovalNeeded' && user === project.creator">
+                    <mat-card-content class="approval"
+                        *ngIf="project.projectStatus==='ThirdPartyApprovalNeeded' && user === project.creator && userType === 'THIRDPARTY' && toBeApproved !== ''">
                         <h3 class="instructions">Do you approve of the counter offer to your request proposed by
                             the
                             members?</h3>
                         <button mat-raised-button color="primary" (click)="thirdPartyApprove()">Approve</button>
+                        <span class="gap"></span>
                         <button mat-raised-button color="warn" (click)="thirdPartyReject()">Reject</button>
+                        <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"
+                            *ngIf="showProgressBar"></mat-progress-spinner>
                     </mat-card-content>
                 </mat-card>
             </mat-drawer-content>
@@ -188,7 +201,7 @@
                         </div>
                         <div *ngIf="offerResult!=='rejection'">
                             <p><b>Members have approved a counter offer to the third party request.</b></p>
-                            <p><b>Winning offer: </b>{{offerResult}}</p>
+                            <p><b>Winning offer: </b>{{offerResult.split("#")[1]}}</p>
                         </div>
                     </mat-card-content>
                     <mat-card-content *ngIf="projectStatus==='RequestDeliberation'||projectStatus==='Pending'">
@@ -272,5 +285,6 @@
                 </mat-card>
             </mat-drawer-content>
         </mat-drawer-container>
+        <!-- </div> -->
     </div>
 </div>

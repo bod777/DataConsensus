@@ -1,5 +1,11 @@
 <div class="content">
-    <div class="card-container">
+    <div *ngIf="broken">
+        <h3 class="instructions">Error. Please refresh the page.</h3>
+    </div>
+    <div *ngIf="loading && !broken">
+        <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
+    </div>
+    <div class="card-container" *ngIf="!loading && !broken">
         <div *ngIf="currentUserType==='THIRDPARTY'">
             <h3>You are not permitted to view this page.</h3>
         </div>
@@ -30,12 +36,6 @@
                                 <input matInput [(ngModel)]="email" name="email" required>
                             </mat-form-field>
                         </div>
-                        <div class="form-field-container">
-                            <mat-form-field>
-                                <mat-label>Data Source</mat-label>
-                                <input matInput [(ngModel)]="dataSource" name="dataSource" required>
-                            </mat-form-field>
-                        </div>
                     </form>
                 </mat-card-content>
 
@@ -43,6 +43,20 @@
                     <button mat-raised-button color="primary" (click)="saveChanges()">Save</button>
                     <button mat-raised-button (click)="cancelChanges()">Cancel</button>
                 </mat-card-actions>
+                <mat-divider></mat-divider>
+                <mat-card-content>
+                    <div class="form-field-container">
+                        <h3 class="instructions">Update Datasource</h3>
+                        <mat-form-field>
+                            <mat-label>Data Source</mat-label>
+                            <input matInput [(ngModel)]="dataSource" name="dataSource" required>
+                        </mat-form-field>
+                    </div>
+                    <mat-card-actions class="button-container">
+                        <button mat-raised-button color="primary" (click)="refreshSession()">Update Data</button>
+                        <button mat-raised-button (click)="cancelChanges()">Cancel</button>
+                    </mat-card-actions>
+                </mat-card-content>
                 <mat-divider></mat-divider>
                 <mat-card-content>
                     <b>If you no longer want to be apart of the Data Consensus group, you can click the button below and

@@ -161,8 +161,7 @@ module.exports = {
         }
         const measuresArray = techOrgMeasureConstraint.predicates[ODRL.rightOperand]["namedNodes"];
         const techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
-        const recipientsArray = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
-        const recipients = recipientsArray.map((recipient) => extractTerm(recipient));
+        const recipients = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
         const untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
 
         const title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
@@ -271,7 +270,6 @@ module.exports = {
         }
         sellingInsightsConstraint = sellingInsightsConstraint.build();
         solidDataset = setThing(solidDataset, sellingInsightsConstraint);
-
         if (techOrgMeasures.length > 0) {
             let techOrgMeasureConstraint = buildThing(createThing({ url: `${policyURL}_techOrgMeasureConstraint` }))
                 .addUrl(RDF.type, ODRL.Constraint)
@@ -446,7 +444,7 @@ module.exports = {
             await this.updatePolicyStatus(req, session);
         }
         if (projectURL !== "") {
-            await projectService.updateProject({ projectURL, agreement: false, status: "Removed" }, session);
+            await projectService.updateProject({ projectURL, hasAgreement: false, hasAccess: false, status: "Removed" }, session);
         }
 
         solidDataset = removeThing(solidDataset, policy);

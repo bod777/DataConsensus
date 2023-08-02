@@ -1,24 +1,29 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 export const environment = {
-    firebase: {
-        projectId: 'dissertation-solid',
-        appId: '1:986973602698:web:e47d2d0fcdd6e5093cbe73',
-        storageBucket: 'dissertation-solid.appspot.com',
-        apiKey: 'AIzaSyBu4-jaO3Y86NMTXR2MvozqlQGMdM7fJv0',
-        authDomain: 'dissertation-solid.firebaseapp.com',
-        messagingSenderId: '986973602698',
-    },
-    production: false
+    production: false,
+    frontend: 'http://localhost:4200',
+    hostname: 'http://localhost:',
+    port: 3000,
+    apiUri: '/api/v1',
+    user: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/user.ttl',
+    comment: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/comment.ttl',
+    policy: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy.ttl',
+    project: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/project.ttl',
+    vote: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/vote.ttl',
+    memberList: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/members.ttl',
+    thirdPartyList: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/third-parties.ttl',
+    adminList: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/admins.ttl',
+    requests: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/requests.ttl',
+    offers: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/offers.ttl',
+    agreements: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/agreements.ttl',
+    comments: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/comments.ttl',
+    votes: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/votes.ttl',
+    projects: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/projects.ttl',
+    odrl: 'http://www.w3.org/ns/odrl/2/',
+    dpv: 'https://w3id.org/dpv#',
+    oac: 'https://w3id.org/oac#',
+    secret: 'BThjJmCK31Aj77yqy!a@N^g$gFzdD',
+    appClientId: '8803e66f-2f4b-4964-89ec-e4e89ed5c920',
+    appClientSecret: 'b8cf9f0b-6678-4598-a82d-06f288b2bdcd',
+    appOidcIssuer: 'https://login.inrupt.com',
+    resourceUrl: 'https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv'
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-  // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

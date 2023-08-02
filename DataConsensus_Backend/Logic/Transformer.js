@@ -1,9 +1,8 @@
 require("dotenv").config();
 const crypto = require('crypto');
-const secret = process.env.SECRET;
 
 module.exports = {
-    hashFileURL: function (fileURL) {
+    hashFileURL: function (fileURL, secret) {
         const hash = crypto.createHmac('sha256', secret)
             .update(fileURL)
             .digest('hex');

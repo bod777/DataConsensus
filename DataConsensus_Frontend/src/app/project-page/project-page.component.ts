@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { interval } from 'rxjs';
 import { PolicyService } from '../services/policy.service';
 import { CommentService } from '../services/comment.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -7,7 +8,8 @@ import { DatePipe } from '@angular/common'
 import { VoteService } from '../services/vote.service';
 import { DateService } from '../services/date.service';
 import { UserService } from '../services/user.service';
-import { measuresOptions, projectStatusOptions, purposeOptions, organisationOptions } from '../model/mapping';
+import { environment } from '../../environments/environment';
+import { measuresOptions, purposeOptions, organisationOptions } from '../model/mapping';
 
 @Component({
     selector: 'app-project-page',
@@ -18,7 +20,10 @@ export class ProjectPageComponent implements OnInit {
 
     constructor(private voteService: VoteService, private userService: UserService, private dateService: DateService, private commentService: CommentService, private route: ActivatedRoute, private router: Router, private policyService: PolicyService, private _snackBar: MatSnackBar, public datepipe: DatePipe) { }
 
+    showProgressBar: boolean = false;
+    progress: number = 0;
     loading: boolean = true;
+    broken: boolean = false;
     user: string = localStorage.getItem("webID") || "";
     userType: string = localStorage.getItem("userType") || "";
     tab: string = 'overview';
@@ -39,7 +44,6 @@ export class ProjectPageComponent implements OnInit {
     requestUpvotes: Number = 0;
     requestAbstentions: Number = 0;
     offerResult: any = {};
-    isActiveAgreement: boolean = false;
 
     // Function to update the selected tab
     setSelectedTab(tab: string) {
@@ -54,7 +58,7 @@ export class ProjectPageComponent implements OnInit {
                 this._snackBar.open("Success", "Close", { duration: 3000 });
             },
             (error) => {
-                this._snackBar.open("Error retrieving project: " + error, "Close");
+                this._snackBar.open("Error downvoting request: " + error, "Close");
             }
         );
     }
@@ -67,55 +71,110 @@ export class ProjectPageComponent implements OnInit {
                 this._snackBar.open("Success", "Close", { duration: 3000 });
             },
             (error) => {
-                this._snackBar.open("Error retrieving project: " + error, "Close");
+                this._snackBar.open("Error upvoting request: " + error, "Close");
             }
         );
     }
 
-    // NEED TO CHANGE THIS
     adminReject() {
+        this.showProgressBar = true;
+        const interval$ = interval(500);
+        const subscription = interval$.subscribe(() => {
+            this.progress += 10;
+            if (this.progress >= 100) {
+                this.showProgressBar = false;
+                subscription.unsubscribe();
+                this.progress = 0;
+            }
+        });
         this.policyService.adminApproval(this.toBeApproved, "Rejected").subscribe(
             (response) => {
-                console.log(response);
+                this.projectStatus = "Closed";
+                this._snackBar.open("Successfully rejected policy", "Close", { duration: 3000 });
+                this.ngOnInit();
+                window.location.reload();
             },
             (error) => {
-                console.log(error);
+                console.error(error);
+                this._snackBar.open("Error rejecting policy: " + error, "Close");
             }
         );
     }
 
-    // NEED TO CHANGE THIS
     thirdPartyReject() {
+        this.showProgressBar = true;
+        const interval$ = interval(500);
+        const subscription = interval$.subscribe(() => {
+            this.progress += 10;
+            if (this.progress >= 100) {
+                this.showProgressBar = false;
+                subscription.unsubscribe();
+                this.progress = 0;
+            }
+        });
         this.policyService.thirdPartyApproval(this.toBeApproved, "Rejected").subscribe(
             (response) => {
-                console.log(response);
+                this.projectStatus = "Closed";
+                this.ngOnInit();
+                window.location.reload();
+                this._snackBar.open("Successfully rejected policy", "Close", { duration: 3000 });
             },
             (error) => {
-                console.log(error);
+                console.error(error);
+                this._snackBar.open("Error rejecting policy: " + error, "Close");
             }
         );
     }
 
-    // NEED TO CHANGE THIS
     adminApprove() {
-        this.policyService.updateStatus(this.toBeApproved, "Approved").subscribe(
+        this.showProgressBar = true;
+        const interval$ = interval(500);
+        const subscription = interval$.subscribe(() => {
+            this.progress += 10;
+            if (this.progress >= 100) {
+                this.showProgressBar = false;
+                subscription.unsubscribe();
+                this.progress = 0;
+            }
+        });
+        this.policyService.adminApproval(this.toBeApproved, "Approved").subscribe(
             (response) => {
-                console.log(response);
+                this.projectStatus = "Closed";
+                this.project.projectStatus = "Closed";
+                this.project.hasAgreement = true;
+                this.project.hasAccess = true;
+                this._snackBar.open("Successfully approved policy", "Close", { duration: 3000 });
+                this.ngOnInit();
+                window.location.reload();
             },
             (error) => {
-                console.log(error);
+                console.error(error);
+                this._snackBar.open("Error approving policy: " + error, "Close");
             }
         );
     }
 
-    // NEED TO CHANGE THIS
     thirdPartyApprove() {
-        this.policyService.updateStatus(this.toBeApproved, "Approved").subscribe(
+        this.showProgressBar = true;
+        const interval$ = interval(500);
+        const subscription = interval$.subscribe(() => {
+            this.progress += 10;
+            if (this.progress >= 100) {
+                this.showProgressBar = false;
+                subscription.unsubscribe();
+                this.progress = 0;
+            }
+        });
+        this.policyService.thirdPartyApproval(this.toBeApproved, "Approved").subscribe(
             (response) => {
-                console.log(response);
+                this.projectStatus = "AdminApprovalNeeded";
+                this.ngOnInit();
+                window.location.reload();
+                this._snackBar.open("Successfully approved policy", "Close", { duration: 3000 });
             },
             (error) => {
-                console.log(error);
+                console.error(error);
+                this._snackBar.open("Error approving policy: " + error, "Close");
             }
         );
     }
@@ -124,7 +183,10 @@ export class ProjectPageComponent implements OnInit {
         this.policyService.removeAgreement(this.agreement.ID).subscribe(
             (response) => {
                 this.project.hasAgreement = false;
+                this.project.hasAccess = false;
                 this.agreement = {};
+                this.ngOnInit();
+                window.location.reload();
                 this._snackBar.open("Successfully removed agreement", "Close", { duration: 3000 });
             },
             (error) => {
@@ -136,6 +198,8 @@ export class ProjectPageComponent implements OnInit {
     removeProposal(policyURL: string) {
         this.policyService.removeProposal(policyURL, this.user).subscribe(
             (response) => {
+                this.ngOnInit();
+                window.location.reload();
                 this._snackBar.open("Successfully removed agreement", "Close", { duration: 3000 });
             },
             (error) => {
@@ -159,6 +223,7 @@ export class ProjectPageComponent implements OnInit {
         });
         this.policyService.getProject(this.projectID).subscribe(
             (project: any) => {
+                console.log(project.data)
                 this.project = project.data;
                 this.userService.getMemberCount(this.project.requestEndTime).subscribe(
                     (member: any) => {
@@ -176,7 +241,7 @@ export class ProjectPageComponent implements OnInit {
                 this.project.requestEndTime = new Date(this.project.requestEndTime);
                 this.project.offerEndTime = new Date(this.project.offerEndTime);
                 this.project.organisation = organisationOptions[this.project.organisation] || this.project.organisation;
-                this.project.hasAgreement = this.project.hasAgreement === "true" ? true : false;
+                // this.project.hasAgreement = this.project.hasAgreement === "true" ? true : false;
                 this.project.threshold = Number(this.project.threshold);
                 if (this.project.projectPolicies.requests.length > 0) {
                     this.project.projectPolicies.requests[0].policyCreationTime = new Date(this.project.projectPolicies.requests[0].policyCreationTime)
@@ -261,8 +326,6 @@ export class ProjectPageComponent implements OnInit {
                         this.project.projectPolicies.agreements[0].threshold = Number(this.project.projectPolicies.agreements[0].threshold);
                         this.agreement = this.project.projectPolicies.agreements[0];
                     }
-                    console.log(this.project);
-                    this.loading = false;
                 }
 
                 // Fetching request results after the initial results fetch
@@ -273,29 +336,44 @@ export class ProjectPageComponent implements OnInit {
                             this.requestDownvotes = response.downvotes;
                             this.requestUpvotes = response.upvotes;
                             this.requestAbstentions = response.abstentions;
+                            if (this.requestResult === true) {
+                                this.toBeApproved = this.request.URL;
+                                this.loading = false;
+                                console.log(this.loading);
+                            }
                         },
                         (error) => {
                             console.log(error);
                             this._snackBar.open("Error in fetching request deliberation result: " + error, "Close");
+                            this.broken = true;
                         }
                     );
                 }
                 // Fetching offer results after the initial results fetch
                 if (this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation" && this.projectStatus !== "OfferDeliberation" && this.offers.length !== 0) {
-                    console.log("Getting offer results")
                     this.voteService.getOfferResult(this.projectID, this.project.offerEndTime.toISOString()).subscribe(
                         (response) => {
                             this.offerResult = response.winner;
+                            if (this.offerResult !== "rejection") {
+                                this.toBeApproved = this.offerResult;
+                            }
+                            this.loading = false;
+                            console.log(this.loading);
                         },
                         (error) => {
                             console.log(error);
                             this._snackBar.open("Error in fetching offer deliberation result. Try Refreshing. Error: " + error.message, "Close");
+                            this.broken = true;
                         }
                     );
+                } else {
+                    this.loading = false;
                 }
             },
             (error) => {
                 this._snackBar.open("Error retrieving project. Try refreshing. Error:" + error, "Close");
+                this.loading = false;
+                this.broken = true;
             }
         );
     }

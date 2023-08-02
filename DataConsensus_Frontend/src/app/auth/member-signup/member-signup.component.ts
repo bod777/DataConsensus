@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { interval } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'member-signup',
@@ -10,9 +12,11 @@ import { UserService } from '../../services/user.service';
 
 export class MemberSignUpComponent implements OnInit {
 
-    constructor(private route: ActivatedRoute, private router: Router, private userService: UserService) { }
+    constructor(private route: ActivatedRoute, private router: Router, private userService: UserService, private _snackBar: MatSnackBar) { }
 
-    loginInput?: string = "https://login.inrupt.com";
+    showProgressBar: boolean = false;
+    progress: number = 0;
+    loginInput: string = "https://login.inrupt.com";
     webID: string = "";
     name: string = "";
     email: string = "";
@@ -26,8 +30,9 @@ export class MemberSignUpComponent implements OnInit {
         localStorage.setItem('name', this.name);
         localStorage.setItem('email', this.email);
         localStorage.setItem('dataSource', this.dataSource);
-
-        window.location.href = "http://localhost:3000/api/v1/auth/member-signup";
+        localStorage.setItem('loginInput', this.loginInput);
+        // window.location.href = "http://localhost:3000/api/v1/auth/member-signup";
+        window.location.href = "http://localhost:3000/api/v1/auth/member-signup?issuer=" + this.loginInput;
     }
 
     async ngOnInit() {
@@ -43,6 +48,16 @@ export class MemberSignUpComponent implements OnInit {
             const sessionID = params["sessionId"];
             if (isLoggedIn) {
                 this.webID = params["webId"];
+                this.showProgressBar = true;
+                const interval$ = interval(500);
+                const subscription = interval$.subscribe(() => {
+                    this.progress += 10;
+                    if (this.progress >= 100) {
+                        this.showProgressBar = false;
+                        subscription.unsubscribe();
+                        this.progress = 0;
+                    }
+                });
                 if (this.name && this.email && this.dataSource && this.webID) {
                     this.userService.registerMember(this.webID, this.name, this.email, this.dataSource, sessionID).subscribe(
                         (response) => {
@@ -53,7 +68,16 @@ export class MemberSignUpComponent implements OnInit {
                             this.router.navigate(['/home']);
                         },
                         (error) => {
-                            console.log(error);
+                            if (error.error.message === "User is already registered as a member.") {
+                                this._snackBar.open("User already exists. Please login.", "Close");
+                                this.router.navigate(['/login']);
+                            } else if (error.error.message === "You do not have permission to access this file. Please double check the datasource URL.") {
+                                console.log(error);
+                                this._snackBar.open(error.error.message, "Close");
+                            } else {
+                                console.log(error);
+                                this._snackBar.open("Error registering new member", "Close");
+                            }
                         }
                     );
                 }

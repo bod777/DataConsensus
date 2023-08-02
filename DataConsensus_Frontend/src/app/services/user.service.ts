@@ -31,6 +31,7 @@ export class UserService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
+        console.log(webID, name, email, dataSource, sessionID);
         return this.http.post('http://localhost:3000/api/v1/user/register-member', { webID, name, email, dataSource, sessionID }, { headers });
     }
 
@@ -49,11 +50,18 @@ export class UserService {
         return this.http.get('http://localhost:3000/api/v1/user/member', { headers, params });
     }
 
-    updateMember(webID: string, name: string, email: string, dataSource: string): Observable<any> {
+    updateMember(webID: string, name: string, email: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        return this.http.put('http://localhost:3000/api/v1/user/updateMember', { webID, name, email, dataSource }, { headers });
+        return this.http.put('http://localhost:3000/api/v1/user/update-member', { webID, name, email }, { headers });
+    }
+
+    updateDatasource(webID: string, dataSource: string, sessionID: string): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        return this.http.put('http://localhost:3000/api/v1/user/update-member', { webID, dataSource, sessionID }, { headers });
     }
 
     getThirdParty(webID: string): Observable<any> {

@@ -57,12 +57,17 @@ module.exports = function (appSession) {
             else {
                 try {
                     await userService.addMember(req, appSession);
-                    await userService.addNewData(dataSource, appSession, userSession); // FIX THIS AND HOW THE SESSION ID IS PASSED
+                    await userService.addNewData(dataSource, appSession, userSession);
                     res.send({ message: "Member registered successfully." });
                 }
                 catch (error) {
                     console.error(error);
-                    res.status(500).send({ message: "Error in registering member.", error: error.message });
+                    if (error.message = "You do not have permission to access this file.") {
+                        res.status(403).send({ message: "You do not have permission to access this file. Please double check the datasource URL.", error: error.message });
+                    }
+                    else {
+                        res.status(500).send({ message: "Error in registering member.", error: error.message });
+                    }
                 }
             }
         }
@@ -161,6 +166,7 @@ module.exports = function (appSession) {
     });
 
     router.put("/update-member", async (req, res, next) => {
+        // console.log(req.body);
         if (!req.body.webID) {
             res.status(400).send({ message: "WebID are required." });
         }
@@ -168,14 +174,26 @@ module.exports = function (appSession) {
             if (await userService.checkUserByType({ webID: req.body.webID, type: "MEMBER" }, appSession)) {
                 req.body.datasetURL = "MEMBER";
                 try {
+                    if (req.body.sessionID !== "") {
+                        const sessionID = req.body.sessionID;
+                        const userSession = await getSessionFromStorage(sessionID);
+                        await userService.addNewData(req.body.dataSource, appSession, userSession)
+                    }
                     await userService.updateUser(req, appSession);
                     const updatedUser = new Member();
                     await updatedUser.fetchUser(req.body.webID, appSession);
                     res.send({ data: updatedUser, message: "User updated successfully." });
                 }
                 catch (error) {
-                    console.error(error);
-                    res.status(500).send({ message: "Error in updating user.", error: error.message });
+                    if (error.message = "You do not have permission to access this file.") {
+                        console.error(error);
+                        res.status(403).send({ message: "You do not have permission to access this file. Please double check the datasource URL.", error: error.message });
+                    }
+                    else {
+                        console.log("generic");
+                        console.error(error);
+                        res.status(500).send({ message: "Error in updating user.", error: error.message });
+                    }
                 }
             }
             else {
@@ -238,6 +256,7 @@ module.exports = function (appSession) {
             const newMember = new Member();
             await newMember.fetchUser(webID, appSession)
             const user = newMember.toJson();
+            await userService.removeMember(webID, appSession);
             await userService.removeData(user.dataSource, appSession);
             res.send({ message: "Data removed successfully." });
         }

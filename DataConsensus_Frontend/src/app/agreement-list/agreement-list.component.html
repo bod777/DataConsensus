@@ -1,3 +1,8 @@
 <div class="content">
-    <agreement-list [dataArray]="data.data"></agreement-list>
+    <h1>Agreements</h1>
+    <agreement-card *ngIf="!loading && !broken" [dataArray]="agreements"></agreement-card>
+    <mat-spinner color="primary" mode="indeterminate" diameter="50" *ngIf="loading && !broken"
+        class="spinner"></mat-spinner>
+    <h3 class="instructions" *ngIf="!loading && broken">Something went wrong! There was an error loading the data.
+        Please try again later.</h3>
 </div>

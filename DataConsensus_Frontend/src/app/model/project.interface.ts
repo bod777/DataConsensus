@@ -1,6 +1,6 @@
 export interface Project {
-    projectURL: string;
-    projectID: string;
+    URL: string;
+    ID: string;
     creator: string;
     title: string;
     description: string;
@@ -15,7 +15,7 @@ export interface Project {
     requestCutoff: number;
     offerCutoff: number;
     untilTimeDuration: Date;
-    isAgreementActive: boolean;
+    hasAccess: boolean;
     projectPolicies: {
         requests: string[];
         offers: string[];

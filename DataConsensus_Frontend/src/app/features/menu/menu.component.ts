@@ -15,7 +15,7 @@ export class MenuComponent {
     user: string = localStorage.getItem('webID') || "";
 
     navigateToHomePage() {
-        this.router.navigateByUrl('/home');
+        this.router.navigateByUrl('/');
     }
     navigateToAgreementsPage() {
         this.router.navigateByUrl('/agreements');

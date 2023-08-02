@@ -148,6 +148,8 @@ export class PolicyService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
+        console.log(policyURL);
+        console.log(status)
         return this.http.put('http://localhost:3000/api/v1/policy/admin-approved', { policyURL, status }, { headers });
     }
 
@@ -163,7 +165,7 @@ export class PolicyService {
             'Content-Type': 'application/json'
         });
         return this.http.put('http://localhost:3000/api/v1/project/update-project', {
-            projectID: project.projectID, requestEndTime: project.requestEndTime, requestStartTime: project.requestStartTime, offerEndTime: project.offerEndTime, threshold: project.threshold
+            projectID: project.ID, requestEndTime: project.requestEndTime, requestStartTime: project.requestStartTime, offerEndTime: project.offerEndTime, threshold: project.threshold
         }, { headers });
     }
 }

@@ -68,6 +68,6 @@ project:hasAgreement a rdf:Property ;
     rdfs:domain project:Project ;
     rdfs:range xsd:boolean .
 
-project:isActiveAgreement a rdf:Property ;
+project:hasAccess a rdf:Property ;
     rdfs:domain project:Project ;
     rdfs:range xsd:boolean .

@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    height: 75vh;
     justify-content: center;
 }
 
@@ -17,4 +16,10 @@ mat-spinner {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.instructions {
+    justify-content: center;
+    display: flex;
+    margin-top: 20px;
 }

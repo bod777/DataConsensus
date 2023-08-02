@@ -70,16 +70,16 @@ module.exports = function (appSession) {
         policyURL: string
     */
     router.post("/downvote", async (req, res) => {
-        const { voter, policyURL, projectURL } = req.body;
-
+        const { voter, policyURL, projectID } = req.body;
+        // console.log(req.body);
         const vote = {
             voter: voter,
             policyURL: policyURL,
             voteRank: 2,
             isPreference: false,
-            projectURL: projectURL
+            projectURL: `${projectsList}#${projectID}`
         };
-
+        // console.log(vote);
         try {
             await voteService.addVote(vote, appSession);
             res.send({ message: "Vote added successfully." });
@@ -171,8 +171,7 @@ module.exports = function (appSession) {
         else {
             try {
                 const policyURL = `${requestsList}#${policyID}`;
-                // console.log(policyURL);
-                const policyJSON = policyService.fetchProposal(policyURL, appSession);
+                const policyJSON = await policyService.fetchProposal(policyURL, appSession);
                 const upvotes = await voteService.countVotesByRankPolicy(
                     { policyURL: policyURL, rank: 1 },
                     appSession);
@@ -240,7 +239,7 @@ module.exports = function (appSession) {
                 await policyService.updatePolicyStatus(policyToUpdate, appSession);
             }
             if (sortedResults[0].count > cutoff) {
-                winner = sortedResults[0].policyUrl.split('#')[1];
+                winner = sortedResults[0].policyUrl;
             }
             res.send({ sortedResults, winner, totalCount, cutoff, membersNumber, threshold });
         }

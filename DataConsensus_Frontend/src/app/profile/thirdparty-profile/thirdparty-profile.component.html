@@ -1,6 +1,11 @@
 <div class="container">
-
-    <mat-card>
+    <div *ngIf="broken">
+        <h3 class="instructions">Error. Please refresh the page.</h3>
+    </div>
+    <div *ngIf="loading && !broken">
+        <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
+    </div>
+    <mat-card *ngIf="!broken && !loading">
         <mat-card-header>
             <mat-card-title>Third Party Profile</mat-card-title>
             <mat-card-subtitle>WebID: {{ webID }}</mat-card-subtitle>

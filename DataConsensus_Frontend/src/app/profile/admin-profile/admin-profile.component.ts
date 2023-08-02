@@ -13,6 +13,8 @@ export class AdminProfileComponent implements OnInit {
 
     constructor(private userService: UserService, private _snackBar: MatSnackBar, private route: ActivatedRoute) { }
 
+    loading: boolean = true;
+    broken: boolean = false;
     user: string = localStorage.getItem("webID") || "";
     webID: string = "";
     name: string = "";
@@ -31,7 +33,8 @@ export class AdminProfileComponent implements OnInit {
     }
 
     cancelChanges() {
-
+        this.ngOnInit();
+        window.location.reload();
     }
 
     ngOnInit() {
@@ -47,7 +50,9 @@ export class AdminProfileComponent implements OnInit {
             },
             (error) => {
                 this._snackBar.open("Error retrieving profile: " + error, "Close", { duration: 3000 });
+                this.broken = true;
             }
         );
+        this.loading = false;
     }
 }

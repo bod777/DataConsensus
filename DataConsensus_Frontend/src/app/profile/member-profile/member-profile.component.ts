@@ -13,6 +13,10 @@ export class MemberProfileComponent implements OnInit {
 
     constructor(private userService: UserService, private _snackBar: MatSnackBar, private route: ActivatedRoute, private router: Router) { }
 
+    broken: boolean = false;
+    loading: boolean = true;
+    sessionID: string = localStorage.getItem("sessionId") || "";
+    loginInput: string = localStorage.getItem("loginInput") || "https://login.inrupt.com";
     user: string = localStorage.getItem("webID") || "";
     currentUserType: string = localStorage.getItem("userType") || "";
     webID: string = "";
@@ -22,15 +26,37 @@ export class MemberProfileComponent implements OnInit {
     dataSource: string = "";
 
     saveChanges() {
-        this.userService.updateMember(this.webID, this.name, this.email, this.dataSource).subscribe(
+        this.userService.updateMember(this.webID, this.name, this.email).subscribe(
             (profile) => {
                 this._snackBar.open("Profile updated successfully", "Close", { duration: 3000 });
             },
             (error) => {
-                this._snackBar.open("Error updating profile: " + error, "Close", { duration: 3000 });
+                this._snackBar.open("Error updating profile: " + error, "Close");
             }
         );
+    }
 
+    refreshSession() {
+        localStorage.setItem('dataSource', this.dataSource);
+        window.location.href = "http://localhost:3000/api/v1/auth/refresh-session?issuer=" + this.loginInput;
+    }
+
+    updateData() {
+        this.dataSource = localStorage.getItem('dataSource') || "";
+        this.userService.updateDatasource(this.webID, this.dataSource, this.sessionID).subscribe(
+            (profile) => {
+                this._snackBar.open("Data updated successfully", "Close", { duration: 3000 });
+            },
+            (error) => {
+                if (error.error.message === "You do not have permission to access this file. Please double check the datasource URL.") {
+                    console.log(error);
+                    this._snackBar.open(error.error.message, "Close");
+                } else {
+                    console.log(error);
+                    this._snackBar.open("Error adding data", "Close");
+                }
+            }
+        );
     }
 
     cancelChanges() {
@@ -48,7 +74,7 @@ export class MemberProfileComponent implements OnInit {
                 this.router.navigateByUrl('/login');
             },
             (error) => {
-                this._snackBar.open("Error deleting data: " + error, "Close", { duration: 3000 });
+                this._snackBar.open("Error deleting data: " + error, "Close");
             }
         )
     }
@@ -56,6 +82,11 @@ export class MemberProfileComponent implements OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe((params) => {
             this.webID = params["webID"];
+            if (params["sessionId"] !== undefined) {
+                this.sessionID = params["sessionId"];
+                localStorage.setItem("sessionId", this.sessionID);
+                this.updateData();
+            }
         });
         this.userService.getMember(this.webID).subscribe(
             (profile) => {
@@ -66,8 +97,10 @@ export class MemberProfileComponent implements OnInit {
                 this.dataSource = profile.data.dataSource;
             },
             (error) => {
-                this._snackBar.open("Error retrieving profile: " + error, "Close", { duration: 3000 });
+                this._snackBar.open("Error retrieving profile: " + error, "Close");
+                this.broken = true;
             }
         );
+        this.loading = true;
     }
 }

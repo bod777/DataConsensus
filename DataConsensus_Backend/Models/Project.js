@@ -1,5 +1,5 @@
 class Project {
-    constructor(url, id, creator, title, description, organisation, projectStatus, hasAgreement, isActiveAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies) {
+    constructor(url, id, creator, title, description, organisation, projectStatus, hasAgreement, hasAccess, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies) {
         this.projectURL = url;
         this.projectID = id;
         this.creator = creator;
@@ -8,7 +8,7 @@ class Project {
         this.organisation = organisation;
         this.projectStatus = projectStatus;
         this.hasAgreement = hasAgreement;
-        this.isActiveAgreement = isActiveAgreement;
+        this.hasAccess = hasAccess;
         this.projectCreationTime = projectCreationTime;
         this.requestStartTime = requestStartTime;
         this.requestEndTime = requestEndTime;
@@ -17,7 +17,7 @@ class Project {
         this.projectPolicies = projectPolicies;
     }
 
-    setProject(url, id, creator, title, description, organisation, projectStatus, hasAgreement, isActiveAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies) {
+    setProject(url, id, creator, title, description, organisation, projectStatus, hasAgreement, hasAccess, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies) {
         this.projectURL = url;
         this.projectID = id;
         this.creator = creator;
@@ -26,7 +26,7 @@ class Project {
         this.organisation = organisation;
         this.projectStatus = projectStatus;
         this.hasAgreement = hasAgreement;
-        this.isActiveAgreement = isActiveAgreement;
+        this.hasAccess = hasAccess;
         this.projectCreationTime = projectCreationTime;
         this.requestStartTime = requestStartTime;
         this.requestEndTime = requestEndTime;
@@ -45,7 +45,7 @@ class Project {
             organisation: this.organisation,
             projectStatus: this.projectStatus,
             hasAgreement: (this.hasAgreement === 'true' ? true : false),
-            isAgreementActive: (this.hasAgreement === 'true' ? true : false),
+            hasAccess: (this.hasAccess === 'true' ? true : false),
             projectCreationTime: new Date(this.projectCreationTime),
             requestStartTime: new Date(this.requestStartTime),
             requestEndTime: new Date(this.requestEndTime),

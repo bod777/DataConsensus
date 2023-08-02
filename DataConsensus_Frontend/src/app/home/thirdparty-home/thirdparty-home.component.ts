@@ -51,6 +51,8 @@ export class ThirdPartyHomeComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log("broken", this.broken);
+        console.log("loading", this.loading);
         this.policyService.getAllProjects().subscribe(
             (response) => {
                 let projects = response.data;
@@ -59,22 +61,6 @@ export class ThirdPartyHomeComponent implements OnInit {
                     project.requestStartTime = new Date(project.requestStartTime);
                     project.requestEndTime = new Date(project.requestEndTime);
                     project.offerEndTime = new Date(project.offerEndTime);
-                    project.isAgreementActive = false;
-                    project.hasAgreement = response.data.hasAgreement === 'true' ? true : false;
-                    if (project.hasAgreement === true) {
-                        const agreementID = project.projectPolicies.agreements[0].split('#')[1]
-                        this.policyService.getAgreement(agreementID).subscribe(
-                            (agreement) => {
-                                project.untilTimeDuration = new Date(agreement.data.untilTimeDuration);
-                                project.isAgreementActive = !(this.dateService.isDatePassed(project.untilTimeDuration));
-                            },
-                            (error) => {
-                                console.log(error);
-                                this._snackBar.open("Error in fetching agreement. Try refreshing. Error: " + error, "Close");
-                                this.broken = true;
-                            }
-                        );
-                    }
                     return project;
                 });
                 console.log(projects);

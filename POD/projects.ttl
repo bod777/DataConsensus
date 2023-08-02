@@ -16,7 +16,7 @@ pod:82e7f5d0-662b-4ec0-adb1-b3e52ff32a03
         dct:issued                "2023-06-09T14:05:13"^^xsd:dateTime ;
         dct:title                 "Developing Risk Assessment Models for Diabetes Patients" ;
         project:hasAgreement      false ;
-        project:isActiveAgreement false ;
+        project:hasAccess         false ;
         project:hasProjectStatus  project:Closed ;
         project:membershipCount   14 ;
         project:offerEndTime      "2023-06-24T14:05:13"^^xsd:dateTime ;
@@ -32,7 +32,7 @@ pod:4ddb1306-df85-4730-8545-14973be50cd2
         dct:issued                "2023-06-06T09:08:23"^^xsd:dateTime ;
         dct:title                 "Improving Healthcare Resources for People with Diabetes in Dublin" ;
         project:hasAgreement      false ;
-        project:isActiveAgreement false ;
+        project:hasAccess         false ;
         project:hasProjectStatus  project:OfferDeliberation ;
         project:membershipCount   14 ;
         project:offerEndTime      "2023-06-21T09:08:23"^^xsd:dateTime ;
@@ -47,9 +47,9 @@ pod:af993b9f-b8ba-4f3f-9f5e-26b6d37747ae
         dct:description           "To use CGM data to explore how glucose levels vary throughout the day. The third party is a respected academic research institution. They are hoping to leverage the CGM data to gain insights into glucose patterns in different populations. Specifically, they would like to explore how glucose levels vary throughout the day. The institution aims to publish research papers based on this research, contribute to scientific knowledge, and provide evidence-based recommendations for people with diabetes. \nThe data will only be used for the purpose of the research outlined above. The staff of the institution have data protection training and follow an ethical code of conduct. The institution also employs a data protection officer. The academic research institution will not sell the data. The data will be stored and transferred securely using encryption and access to the data will only be granted through password authentication. There are also compliance monitoring procedures and a plan in place for incident reporting if there is any unauthorized data processing. \nGiven the thorough constraints listed above, the trusted reputation of the organization and the altruistic purpose of the research, the patient group quickly approved their request with little concern. \nOnce granted access by the application's users, the academic research institution accesses the pseudo-anonymised data from the DataConsensus pod. The data will then be analyzed using statistical methods, machine learning algorithms, and other research techniques to identify patterns, associations, and trends. At the data agreed upon, any duplicate data files of the pod data will be destroyed. \n" ;
         dct:issued                "2023-06-04T17:58:31"^^xsd:dateTime ;
         dct:title                 "Analyzing Glucose Variability Throughout the Day" ;
-        project:hasAgreement      true ;
-        project:isActiveAgreement true ;
-        project:hasProjectStatus  project:Closed ;
+        project:hasAgreement      false ;
+        project:hasAccess         false ;
+        project:hasProjectStatus  project:AdminApprovalNeeded ;
         project:membershipCount   14 ;
         project:offerEndTime      "2023-06-19T17:58:31"^^xsd:dateTime ;
         project:requestEndTime    "2023-06-12T17:58:31"^^xsd:dateTime ;
@@ -64,7 +64,7 @@ pod:4653ed52-a317-4ee4-8819-b2d09bdfac4a
         dct:issued                "2023-07-23T22:31:07.958Z"^^xsd:dateTime ;
         dct:title                 "Understanding the habits of diabetes patients" ;
         project:hasAgreement      false ;
-        project:isActiveAgreement false ;
+        project:hasAccess         false ;
         project:hasProjectStatus  project:OfferDeliberation ;
         project:offerEndTime      "2023-08-07T22:31:07.958Z"^^xsd:dateTime ;
         project:requestEndTime    "2023-07-31T12:04:07.958Z"^^xsd:dateTime ;

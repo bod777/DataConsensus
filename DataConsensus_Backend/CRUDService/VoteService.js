@@ -34,6 +34,7 @@ module.exports = {
             }
         }
         if (existingVote) {
+            // console.log("updating vote for ", req.policyURL);
             existingVote = buildThing(existingVote)
                 .setDatetime(DCTERMS.modified, new Date())
                 .setInteger(`${voteSchema}#voteRank`, req.voteRank)
@@ -47,7 +48,7 @@ module.exports = {
             } else {
                 voteType = `${voteSchema}#BinaryVote`;
             }
-            // console.log("updating vote for ", req.policyURL);
+            // console.log("creating vote for ", req.policyURL);
             existingVote = buildThing(createThing({ url: voteURL }))
                 .addUrl(RDF.type, `${voteSchema}#Vote`)
                 .addUrl(`${voteSchema}#hasVoteType`, voteType)

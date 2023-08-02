@@ -171,21 +171,22 @@ module.exports = function (appSession) {
         status: string
     */
     router.put("/thirdparty-approved", async (req, res) => {
-        const { policyURL, status } = req.body;
-
-        if (!URL) {
-            res.status(400).send({ message: "Request URL is required." });
-            return;
-        }
         try {
+            const { policyURL, status } = req.body;
             await policyService.updatePolicyStatus({ policyURL, type: "Offer", actor: 'thirdPartyApproved', newStatus: status }, appSession);
+            // console.log("updated");
             const policy = await policyService.fetchProposal(policyURL, appSession);
+            // console.log("policy", policy);
             const projectURL = policy.isPartOf;
+            // console.log("projectURL", projectURL);
+            // console.log("status", status);
             if (status == "Rejected") {
-                await policyService.updateProject({ projectURL, status: "Closed" }, appSession);
+                // console.log("Closed");
+                await projectService.updateProject({ projectURL, status: "Closed" }, appSession);
                 res.send({ message: "Offer rejected by third party successfully." });
             } else {
-                await policyService.updateProject({ projectURL, status: "AdminApprovalNeeded" }, appSession);
+                // console.log("AdminApprovalNeeded");
+                await projectService.updateProject({ projectURL, status: "AdminApprovalNeeded" }, appSession);
                 res.send({ message: "Offer approved by third party successfully." });
             }
         } catch (error) {
@@ -200,22 +201,13 @@ module.exports = function (appSession) {
         status: string
     */
     router.put("/admin-approved", async (req, res) => {
-        const { policyURL, status } = req.body;
-
-        if (!policyURL) {
-            res.status(400).send({ message: "URL is required." });
-            return;
-        }
-
         try {
+            const { policyURL, status } = req.body;
             const updatedPolicy = await policyService.updatePolicyStatus({ policyURL, actor: 'adminApproved', newStatus: status }, appSession);
             const projectURL = updatedPolicy.predicates[DCTERMS.isPartOf]["namedNodes"][0];
             if (status == "Approved") {
-                await policyService.updateProject({ projectURL, agreememt: true, isActiveAgreement: true, status: "Closed" }, appSession);
+                await projectService.updateProject({ projectURL, hasAgreement: true, hasAccess: true, status: "Closed" }, appSession);
                 const policy = await policyService.fetchProposal(policyURL, appSession);
-                const organisationTerm = extractTerm(policy.organisation);
-                const purposeTerm = extractTerm(policy.organisation);
-                const measureTerms = policy.techOrgMeasures.map(item => extractTerm(item));
                 const agreement = {
                     type: "Agreement",
                     project: policy.isPartOf,
@@ -223,21 +215,21 @@ module.exports = function (appSession) {
                     references: policyURL,
                     assigner: policy.assigner,
                     assignee: policy.assignee,
-                    purpose: purposeTerm,
+                    purpose: policy.purpose,
                     sellingData: policy.sellingData,
                     sellingInsights: policy.sellingInsights,
-                    organisation: organisationTerm,
-                    measures: measureTerms,
+                    organisation: policy.organisation,
+                    measures: policy.techOrgMeasures,
                     recipients: policy.recipients,
                     untilTimeDuration: policy.untilTimeDuration
                 };
                 await policyService.createPolicy(agreement, appSession)
                 const thirdParty = policy.assignee;
-                grantAccess(thirdParty);
+                grantAccess(thirdParty, appSession);
                 res.send({ message: "Policy approved by admin successfully." });
             }
             else {
-                await policyService.updateProject({ projectURL, agreememt: false, status: "Closed" }, appSession);
+                await projectService.updateProject({ projectURL, agreememt: false, status: "Closed" }, appSession);
                 res.send({ message: "Policy rejected by admin successfully." });
             }
         } catch (error) {
@@ -285,7 +277,7 @@ module.exports = function (appSession) {
                 }
                 else {
                     const policy = await policyService.fetchProposal(offerURL, appSession);
-                    requests.push(policy);
+                    offers.push(policy);
                 }
             }
             res.send({ data: offers });
@@ -301,7 +293,7 @@ module.exports = function (appSession) {
             let agreements = [];
             for (const agreementURL of agreementURLs) {
                 const policy = await policyService.fetchAgreement(agreementURL, appSession);
-                requests.push(policy);
+                agreements.push(policy);
             }
             res.send({ data: agreements });
         } catch (error) {

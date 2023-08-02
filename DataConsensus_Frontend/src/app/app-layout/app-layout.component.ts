@@ -15,6 +15,8 @@ export class AppLayoutComponent implements OnInit {
   isLoggedIn: boolean = localStorage.getItem('isLoggedIn') === 'true' || false;
 
   async ngOnInit() {
+    console.log("isLoggedIn: " + this.isLoggedIn);
+    console.log("userType: " + this.userType);
     if (this.isLoggedIn === false) {
       this.router.navigate(['/login']);
     }

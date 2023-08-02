@@ -13,7 +13,7 @@ export class LoginComponent {
 
     constructor(private route: Router) { }
 
-    loginInput?: string = "https://login.inrupt.com";
+    loginInput: string = "https://login.inrupt.com";
     validate: boolean = false;
     isLoggingIn: boolean = false;
     isSigningUp: boolean = false;
@@ -38,6 +38,7 @@ export class LoginComponent {
     }
 
     async confirmLogin() {
-        window.location.href = "http://localhost:3000/api/v1/auth/login";
+        localStorage.setItem('loginInput', this.loginInput);
+        window.location.href = "http://localhost:3000/api/v1/auth/login?issuer=" + this.loginInput;
     }
 }

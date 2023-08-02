@@ -44,5 +44,7 @@
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
         <button mat-raised-button color="primary" (click)="submitForm()">Confirm</button>
+        <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"
+            *ngIf="showProgressBar"></mat-progress-spinner>
     </mat-grid-tile>
 </mat-grid-list>

@@ -8,17 +8,14 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 
 @Component({
     selector: 'agreement-list',
-    template: `
-    <h1>Agreements</h1>
-    <agreement-card *ngIf="!isLoading" [dataArray]="agreements"></agreement-card>
-    <mat-spinner *ngIf="isLoading" class="spinner"></mat-spinner>
-  `,
+    templateUrl: './agreement-list.component.html',
     styleUrls: ['./agreement-list.component.css']
 })
 
 export class AgreementListComponent implements OnInit {
     agreements: any[] = [];
-    isLoading: boolean = true;
+    loading: boolean = true;
+    broken: boolean = false;
 
     constructor(private policyService: PolicyService, private _snackBar: MatSnackBar) { }
 
@@ -26,10 +23,13 @@ export class AgreementListComponent implements OnInit {
         this.policyService.getAllAgreements().subscribe(
             (data) => {
                 this.agreements = data.data;
-                this.isLoading = false;
+                this.loading = false;
             },
             (error) => {
-                console.log(error);
+                console.error(error);
+                console.log(error.message);
+                this.broken = true;
+                this.loading = false;
                 this._snackBar.open("Error fetching agreements. Try refreshing. Error:" + error, "Close");
             }
         );

@@ -50,6 +50,7 @@ export class ChangeRulesComponent {
     changeRules() {
         this.policyService.changeRules(this.project).subscribe(
             (response) => {
+                console.log(response);
                 this._snackBar.open("Successfully changed rules", "Close", { duration: 3000 });
 
             },

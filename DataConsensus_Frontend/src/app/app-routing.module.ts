@@ -22,7 +22,7 @@ const routes: Routes = [
     path: '',
     component: AppLayoutComponent,
     children: [
-      { path: 'home', component: HomeComponent },
+      { path: '', component: HomeComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'agreements', component: AgreementListComponent },
       { path: 'submit-request', component: SubmitRequestComponent },
@@ -30,6 +30,8 @@ const routes: Routes = [
       { path: 'project', component: ProjectPageComponent }
     ],
   },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '**', redirectTo: 'home' },
 ];
 
 @NgModule({

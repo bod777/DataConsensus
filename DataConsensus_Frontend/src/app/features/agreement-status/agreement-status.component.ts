@@ -8,7 +8,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     templateUrl: './agreement-status.component.html',
     styleUrls: ['./agreement-status.component.css'],
 })
-export class AgreementStatusComponent {
-    @Input() isActiveAgreement: boolean = false;
+export class AgreementStatusComponent implements OnInit {
+    @Input() hasAccess: boolean = false;
     @Input() hasAgreement: boolean = false;
+
+    ngOnInit(): void {
+        console.log("hasAccess:", this.hasAccess);
+        console.log("hasAgreement:", this.hasAgreement);
+    }
 }

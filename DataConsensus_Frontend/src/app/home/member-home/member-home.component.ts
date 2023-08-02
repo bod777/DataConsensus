@@ -26,7 +26,7 @@ export class MemberHomeComponent implements OnInit {
     ngOnInit() {
         this.policyService.getAllProjects().subscribe(
             (response) => {
-                console.log(response.data);
+                // console.log(response.data);
                 let projects = response.data;
                 // projects = projects.map((project: Project) => {
                 //     project.projectCreationTime = new Date(project.projectCreationTime);

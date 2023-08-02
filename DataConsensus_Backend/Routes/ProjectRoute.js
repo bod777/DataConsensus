@@ -34,7 +34,7 @@ module.exports = function (appSession) {
                 if (req.body.offerEndTime) projectToUpdate.offerEndTime = req.body.offerEndTime;
                 if (req.body.threshold) projectToUpdate.threshold = req.body.threshold;
                 if (req.body.hasAgreement) projectToUpdate.hasAgreement = req.body.hasAgreement;
-                if (req.body.isActiveAgreement) projectToUpdate.isActiveAgreement = req.body.isActiveAgreement;
+                if (req.body.hasAccess) projectToUpdate.hasAccess = req.body.hasAccess;
 
                 updatedProject = await projectService.updateProject(projectToUpdate, appSession);
 
@@ -129,8 +129,8 @@ module.exports = function (appSession) {
         }
         if (project.hasAgreement === true) {
             if (isDatetimePassed(project.projectPolicies.agreements[0].untilTimeDuration)) {
-                project.isActiveAgreement = false;
-                updatedProject = await projectService.updateProject({ projectURL: project.URL, isActiveAgreement }, appSession);
+                project.hasAccess = false;
+                updatedProject = await projectService.updateProject({ projectURL: project.URL, hasAccess }, appSession);
                 removeAccess(project.creator, appSession);
             }
         }

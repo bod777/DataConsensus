@@ -98,7 +98,7 @@ request:12d6eb50-f6e2-488c-8923-fb0c4d47749a
         odrl:permission            request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_permission ;
         odrl:profile               oac: ;
         odrl:uid                   request:12d6eb50-f6e2-488c-8923-fb0c4d47749a ;
-        policy:adminApproved       policy:Approved ;
+        policy:adminApproved       policy:Pending ;
         policy:memberApproved      policy:Approved ;
         policy:thirdPartyApproved  policy:Approved .
 
