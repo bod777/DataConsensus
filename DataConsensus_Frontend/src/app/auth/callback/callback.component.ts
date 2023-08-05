@@ -30,7 +30,7 @@ export class CallbackComponent implements OnInit {
                             localStorage.setItem("userType", "undefined");
                         }
                         console.log("Logged in as " + webID);
-                        this.router.navigate(['/home']);
+                        this.router.navigate(['/']);
                     },
                     (error) => {
                         console.log(error);

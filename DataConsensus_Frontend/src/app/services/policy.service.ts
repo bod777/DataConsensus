@@ -72,7 +72,7 @@ export class PolicyService {
         return this.http.get<{ data: Project[] }>('http://localhost:3000/api/v1/project/all-projects', { headers });
     }
 
-    submitRequest(webID: string, title: string, description: string, organisationType: string, purpose: string, sellingData: boolean, sellingInsights: boolean, techOrgMeasures: string[], recipients: string[], duration: number): Observable<any> {
+    submitRequest(webID: string, title: string, description: string, justification: string, consequences: string, organisationType: string, purpose: string, sellingData: boolean, sellingInsights: boolean, techOrgMeasures: string[], recipients: string[], recipientJustification: string, duration: number, durationJustification: string, jurisdiction: string, thirdCountries: string[], thirdCountriesJustification: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
@@ -80,18 +80,25 @@ export class PolicyService {
             "title": title,
             "description": description,
             "user": webID,
+            "hasJustification": justification,
+            "hasConsequence": consequences,
             "organisation": organisationType,
             "purpose": purpose,
             "sellingData": sellingData,
             "sellingInsights": sellingInsights,
             "measures": techOrgMeasures,
             "recipients": recipients,
-            "untilTimeDuration": duration
+            "recipientsJustification": recipientJustification,
+            "untilTimeDuration": duration,
+            "durationJustification": durationJustification,
+            "juridiction": jurisdiction,
+            "thirdCountry": thirdCountries,
+            "thirdCountryJustification": thirdCountriesJustification
         }
         return this.http.post('http://localhost:3000/api/v1/policy/submit-request', request, { headers });
     }
 
-    submitOffer(webID: string, projectURL: string, requester: string, organisationType: string, purpose: string, sellingData: boolean, sellingInsights: boolean, techOrgMeasures: string[], recipients: string[], duration: number): Observable<any> {
+    submitOffer(webID: string, projectURL: string, requester: string, justification: string, consequences: string, organisationType: string, purpose: string, sellingData: boolean, sellingInsights: boolean, techOrgMeasures: string[], recipients: string[], recipientJustification: string, duration: number, durationJustification: string, jurisdiction: string, thirdCountries: string[], thirdCountriesJustification: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
@@ -99,13 +106,20 @@ export class PolicyService {
             "project": projectURL,
             "user": webID,
             "requester": requester,
+            "hasJustification": justification,
+            "hasConsequence": consequences,
             "organisation": organisationType,
             "purpose": purpose,
             "sellingData": sellingData,
             "sellingInsights": sellingInsights,
             "measures": techOrgMeasures,
             "recipients": recipients,
-            "untilTimeDuration": duration
+            "recipientsJustification": recipientJustification,
+            "untilTimeDuration": duration,
+            "durationJustification": durationJustification,
+            "juridiction": jurisdiction,
+            "thirdCountry": thirdCountries,
+            "thirdCountryJustification": thirdCountriesJustification
         }
         return this.http.post('http://localhost:3000/api/v1/policy/submit-offer', offer, { headers });
     }

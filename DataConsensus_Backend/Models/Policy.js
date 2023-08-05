@@ -1,5 +1,5 @@
 class Policy {
-    constructor(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
+    constructor(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, jurisdiction, thirdCountry, thirdCountryJustification, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
         this.URL = URL;
         this.ID = ID;
         this.creator = creator;
@@ -7,13 +7,20 @@ class Policy {
         this.isPartOf = isPartOf;
         this.assigner = assigner;
         this.assignee = assignee;
+        this.hasJustification = hasJustification;
+        this.hasConsequence = hasConsequence;
         this.purpose = purpose;
         this.sellingData = sellingData;
         this.sellingInsights = sellingInsights;
         this.organisation = organisation;
         this.techOrgMeasures = techOrgMeasures;
         this.recipients = recipients;
+        this.recipientsJustification = recipientsJustification;
         this.untilTimeDuration = untilTimeDuration;
+        this.durationJustification = durationJustification;
+        this.jurisdiction = jurisdiction;
+        this.thirdCountry = thirdCountry;
+        this.thirdCountryJustification = thirdCountryJustification;
         this.title = title;
         this.description = description;
         this.projectStatus = projectStatus;
@@ -25,7 +32,7 @@ class Policy {
         this.threshold = threshold;
     }
 
-    setPolicy(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
+    setPolicy(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, jurisdiction, thirdCountry, thirdCountryJustification, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
         this.URL = URL;
         this.ID = ID;
         this.creator = creator;
@@ -33,13 +40,20 @@ class Policy {
         this.partOf = isPartOf;
         this.assigner = assigner;
         this.assignee = assignee;
+        this.hasJustification = hasJustification;
+        this.hasConsequence = hasConsequence;
         this.purpose = purpose;
         this.sellingData = sellingData;
         this.sellingInsights = sellingInsights;
         this.organisation = organisation;
         this.techOrgMeasures = techOrgMeasures;
         this.recipients = recipients;
+        this.recipientsJustification = recipientsJustification;
         this.untilTimeDuration = untilTimeDuration;
+        this.durationJustification = durationJustification;
+        this.jurisdiction = jurisdiction;
+        this.thirdCountry = thirdCountry;
+        this.thirdCountryJustification = thirdCountryJustification;
         this.title = title;
         this.description = description;
         this.projectStatus = projectStatus;
@@ -53,8 +67,8 @@ class Policy {
 }
 
 class Agreement extends Policy {
-    constructor(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, untilTimeDuration, references, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
-        super(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
+    constructor(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, jurisdiction, thirdCountry, thirdCountryJustification, references, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
+        super(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, jurisdiction, thirdCountry, thirdCountryJustification, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
         this.references = references;
     }
 
@@ -68,13 +82,20 @@ class Agreement extends Policy {
             assigner: this.assigner,
             assignee: this.assignee,
             references: this.references,
+            hasJustification: this.hasJustification,
+            hasConsequence: this.hasConsequence,
             purpose: this.purpose,
             sellingData: this.sellingData,
             sellingInsights: this.sellingInsights,
             organisation: this.organisation,
             techOrgMeasures: this.techOrgMeasures,
             recipients: this.recipients,
+            recipientsJustification: this.recipientsJustification,
             untilTimeDuration: new Date(this.untilTimeDuration),
+            durationJustification: this.durationJustification,
+            jurisdiction: this.jurisdiction,
+            thirdCountry: this.thirdCountry,
+            thirdCountryJustification: this.thirdCountryJustification,
             title: this.title,
             description: this.description,
             projectStatus: this.projectStatus,
@@ -89,15 +110,15 @@ class Agreement extends Policy {
 }
 
 class Proposal extends Policy {
-    constructor(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
-        super(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, untilTimeDuration, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
+    constructor(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, jurisdiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold) {
+        super(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, jurisdiction, thirdCountry, thirdCountryJustification, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
         this.thirdPartyApproved = thirdPartyStatus;
         this.memberApproved = memberStatus;
         this.adminApproved = adminStatus;
     }
 
     toJson() {
-        return {
+        const policy = {
             URL: this.URL,
             ID: this.ID,
             creator: this.creator,
@@ -105,6 +126,8 @@ class Proposal extends Policy {
             isPartOf: this.isPartOf,
             assigner: this.assigner,
             assignee: this.assignee,
+            hasJustification: this.hasJustification,
+            hasConsequence: this.hasConsequence,
             adminApproved: this.adminApproved,
             memberApproved: this.memberApproved,
             thirdPartyApproved: this.thirdPartyApproved,
@@ -114,7 +137,12 @@ class Proposal extends Policy {
             organisation: this.organisation,
             techOrgMeasures: this.techOrgMeasures,
             recipients: this.recipients,
+            recipientsJustification: this.recipientsJustification,
             untilTimeDuration: new Date(this.untilTimeDuration),
+            durationJustification: this.durationJustification,
+            jurisdiction: this.jurisdiction,
+            thirdCountry: this.thirdCountry,
+            thirdCountryJustification: this.thirdCountryJustification,
             title: this.title,
             description: this.description,
             projectStatus: this.projectStatus,
@@ -125,6 +153,9 @@ class Proposal extends Policy {
             offerEndTime: new Date(this.offerEndTime),
             threshold: this.threshold
         };
+        console.log(policy.isPartOf);
+        console.log(policy.projectCreationTime);
+        return policy;
     }
 }
 

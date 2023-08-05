@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { measuresOptions, countryOptions, organisationOptions, purposeOptions } from '../model/mapping';
 
 @Component({
     selector: 'app-submit-offer',
@@ -29,52 +30,34 @@ export class SubmitOfferComponent {
     projectURL: string = "";
     webID: string = localStorage.getItem('webID') || "";
     requester: string = "";
+    justification: string = "";
+    consequences: string = "";
     organisationType: string = "";
     techOrgMeasures: string[] = [];
     purpose: string = "";
     sellingData: boolean = false;
     sellingInsights: boolean = false;
     duration: number = Date.now();
+    durationJustification: string = "";
     offer: any = {};
+    measuresOptions = measuresOptions;
+    countryOptions = countryOptions;
+    organisationOptions = organisationOptions;
+    purposeOptions = purposeOptions;
+
 
     addOnBlur = true;
     readonly separatorKeysCodes = [ENTER, COMMA] as const;
     recipients: string[] = [this.webID];
     recipient: string = "";
+    recipientJustification: string = "";
+
+    jurisdiction: string = "";
+    thirdCountries: string[] = [];
+    thirdCountry: string = "";
+    thirdCountriesJustification: string = "";
 
     announcer = inject(LiveAnnouncer);
-
-    measuresOptions: { displayText: string; value: string }[] = [
-        { displayText: 'Consultation with DPO', value: 'ConsultationWithDPO' },
-        { displayText: 'Certification Seal', value: 'CertificationSeal' },
-        { displayText: 'Code of Conduct', value: 'CodeOfConduct' },
-        { displayText: 'Privacy by Default', value: 'PrivacyByDefault' },
-        { displayText: 'Design Standard', value: 'DesignStandard' },
-        { displayText: 'Professional Training', value: 'ProfessionalTraining' },
-        { displayText: 'Cybersecurity Training', value: 'CybersecurityTraining' },
-        { displayText: 'Data Protection Training', value: 'DataProtectionTraining' },
-        { displayText: 'NDA', value: 'NDA' },
-        { displayText: 'Data Processing Agreement', value: 'DataProcessingAgreement' },
-        { displayText: 'Asset Management Procedures', value: 'AssetManagementProcedures' },
-        { displayText: 'Logging Policies', value: 'LoggingPolicies' },
-        { displayText: 'Monitoring Policies', value: 'MonitoringPolicies' },
-        { displayText: 'Compliance Monitoring', value: 'ComplianceMonitoring' },
-        { displayText: 'Incident Management Procedures', value: 'IncidentManagementProcedures' },
-        { displayText: 'Incident Reporting Communication', value: 'IncidentReportingCommunication' },
-        { displayText: 'Review Procedure', value: 'ReviewProcedure' },
-        { displayText: 'Multi-Factor Authentication', value: 'MultiFactorAuthentication' },
-        { displayText: 'Password Authentication', value: 'PasswordAuthentication' },
-        { displayText: 'Single Sign-On', value: 'SingleSignOn' },
-        { displayText: 'Usage Control', value: 'UsageControl' },
-        { displayText: 'Physical Assess Control Method', value: 'PhysicalAssessControlMethod' },
-        { displayText: 'Operating System Security', value: 'OperatingSystemSecurity' },
-        { displayText: 'Network Security Protocols', value: 'NeworkSecurityProtocols' },
-        { displayText: 'Cryptographic Methods', value: 'CryptographicMethods' },
-        { displayText: 'Encryption In Use', value: 'EncryptionInUse' },
-        { displayText: 'Encryption In Transfer', value: 'EncryptionInTransfer' },
-        { displayText: 'Encryption At Rest', value: 'EncryptionAtRest' },
-        { displayText: 'End-to-End Encryption', value: 'EndToEndEncryption' }
-    ];
 
     submit() {
         this.showProgressBar = true;
@@ -87,7 +70,7 @@ export class SubmitOfferComponent {
                 this.progress = 0;
             }
         });
-        this.policyService.submitOffer(this.webID, this.projectURL, this.requester, this.organisationType, this.purpose, this.sellingData, this.sellingInsights, this.techOrgMeasures, this.recipients, this.duration).subscribe(
+        this.policyService.submitOffer(this.webID, this.projectURL, this.requester, this.jurisdiction, this.consequences, this.organisationType, this.purpose, this.sellingData, this.sellingInsights, this.techOrgMeasures, this.recipients, this.recipientJustification, this.duration, this.durationJustification, this.jurisdiction, this.thirdCountries, this.thirdCountriesJustification).subscribe(
             (profile) => {
                 this.offer = profile.data;
                 this._snackBar.open("Offer submitted successfully", "Close", { duration: 3000 });
@@ -138,6 +121,39 @@ export class SubmitOfferComponent {
         }
     }
 
+    addCountry(event: MatChipInputEvent): void {
+        const value = (event.value || '').trim();
+
+        if (value) {
+            this.thirdCountries.push(value);
+        }
+        event.chipInput!.clear();
+    }
+
+    removeCountry(thirdCountry: any): void {
+        const index = this.thirdCountries.indexOf(thirdCountry);
+
+        if (index >= 0) {
+            this.thirdCountries.splice(index, 1);
+
+            this.announcer.announce(`Removed ${thirdCountry}`);
+        }
+    }
+
+    editCountry(thirdCountry: any, event: MatChipEditedEvent) {
+        const value = event.value.trim();
+
+        if (!value) {
+            this.removeRecipient(thirdCountry);
+            return;
+        }
+
+        const index = this.thirdCountries.indexOf(thirdCountry);
+        if (index >= 0) {
+            this.thirdCountries[index] = value;
+        }
+    }
+
     ngOnInit() {
         this.route.queryParams.subscribe((params) => {
             this.requestID = params["requestID"];
@@ -146,13 +162,20 @@ export class SubmitOfferComponent {
             (request) => {
                 this.projectURL = request.data.isPartOf;
                 this.requester = request.data.assignee;
+                this.jurisdiction = request.data.hasJurisdiction;
+                this.consequences = request.data.hasConsequences;
                 this.organisationType = request.data.organisation;
                 this.purpose = request.data.purpose;
                 this.sellingData = request.data.sellingData;
                 this.sellingInsights = request.data.sellingInsights;
                 this.techOrgMeasures = request.data.techOrgMeasures;
                 this.recipients = request.data.recipients;
+                this.recipientJustification = request.data.recipientJustification;
                 this.duration = request.data.untilTimeDuration;
+                this.durationJustification = request.data.durationJustification;
+                this.jurisdiction = request.data.jurisdiction;
+                this.thirdCountries = request.data.thirdCountry;
+                this.thirdCountriesJustification = request.data.thirdCountryJustification;
                 this.loading = false;
             },
             (error) => {

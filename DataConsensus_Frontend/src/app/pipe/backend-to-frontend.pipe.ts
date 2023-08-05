@@ -12,3 +12,4 @@ export class BackendToFrontendPipe implements PipeTransform {
   }
 
 }
+

@@ -2,6 +2,12 @@
     height: 75vh;
 }
 
+.card-container {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
 mat-card {
     display: flex;
     justify-content: center;
@@ -20,8 +26,18 @@ mat-checkbox {
 }
 
 .form-field-container {
-    display: flex;
+    display: block;
     justify-content: center;
+    text-align: center;
+}
+
+.guidelines {
+    display: block;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20px;
+    margin-left: 15%;
+    margin-right: 15%;
 }
 
 mat-card-actions {

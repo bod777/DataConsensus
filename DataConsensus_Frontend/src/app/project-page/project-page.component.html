@@ -27,7 +27,13 @@
                     </mat-card-header>
                     <mat-card-content>
                         <p>
-                            <b>Description:</b> {{ project.description }}
+                            <b>Description of the research project:</b> {{ project.description }}
+                        </p>
+                        <p>
+                            <b>Why the data is being requested:</b> {{ request.hasJustification }}
+                        </p>
+                        <p>
+                            <b>Benefits of the research:</b> {{ request.hasConsequence }}
                         </p>
                         <p>
                             <b>Third Party Requester:</b> <button mat-button

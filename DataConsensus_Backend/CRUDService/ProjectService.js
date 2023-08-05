@@ -127,13 +127,16 @@ module.exports = {
             const techOrgMeasureConstraint = filteredPolicies.find(obj => obj.url === `${URL}_techOrgMeasureConstraint`);
             const recipientConstraint = filteredPolicies.find(obj => obj.url === `${URL}_recipientConstraint`);
             const durationConstraint = filteredPolicies.find(obj => obj.url === `${URL}_durationConstraint`);
+            const jurisdictionConstraint = filteredPolicies.find(obj => obj.url === `${URL}_jurisdictionConstraint`);
+            const thirdCountryConstraint = filteredPolicies.find(obj => obj.url === `${URL}_thirdCountryConstraint`);
+
             // console.log("Duration ", durationConstraint);
             let policy;
             if (dataset !== agreementsList) {
-                policy = await policyService.formatProposal(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, project);
+                policy = await policyService.formatProposal(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, project);
             }
             else {
-                policy = await policyService.formatAgreement(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, project);
+                policy = await policyService.formatAgreement(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, project);
             }
             // console.log("formated policy", policy);
             projectPolicies.push(policy);

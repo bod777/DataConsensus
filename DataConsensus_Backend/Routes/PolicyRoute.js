@@ -32,7 +32,23 @@ module.exports = function (appSession) {
     */
     router.post("/submit-request", async function (req, res) {
         const {
-            title, description, user, organisation, purpose, sellingData, sellingInsights, measures, recipients, untilTimeDuration
+            title,
+            description,
+            user,
+            hasJustification,
+            hasConsequence,
+            organisation,
+            purpose,
+            sellingData,
+            sellingInsights,
+            measures,
+            recipients,
+            recipientsJustification,
+            untilTimeDuration,
+            durationJustification,
+            juridiction,
+            thirdCountry,
+            thirdCountryJustification
         } = req.body;
 
         const project = {
@@ -46,13 +62,20 @@ module.exports = function (appSession) {
                 creator: user,
                 assigner: user,
                 assignee: "https://id.inrupt.com/DataConsensus",
+                hasJustification,
+                hasConsequence,
                 purpose,
                 sellingData,
                 sellingInsights,
                 organisation,
                 measures,
                 recipients,
+                recipientsJustification,
                 untilTimeDuration,
+                durationJustification,
+                juridiction,
+                thirdCountry,
+                thirdCountryJustification,
                 thirdPartyApproved: "Approved",
                 memberApproved: "Pending",
                 adminApproved: "Pending"
@@ -99,13 +122,20 @@ module.exports = function (appSession) {
             creator: user,
             assigner: requester,
             assignee: "https://id.inrupt.com/DataConsensus",
+            hasJustification,
+            hasConsequence,
             purpose,
             sellingData,
             sellingInsights,
             organisation,
             measures,
             recipients,
+            recipientsJustification,
             untilTimeDuration,
+            durationJustification,
+            juridiction,
+            thirdCountry,
+            thirdCountryJustification,
             thirdPartyApproved: "Pending",
             memberApproved: "Pending",
             adminApproved: "Pending"
@@ -215,13 +245,20 @@ module.exports = function (appSession) {
                     references: policyURL,
                     assigner: policy.assigner,
                     assignee: policy.assignee,
+                    hasJustification: policy.hasJustification,
+                    hasConsequence: policy.hasConsequence,
                     purpose: policy.purpose,
                     sellingData: policy.sellingData,
                     sellingInsights: policy.sellingInsights,
                     organisation: policy.organisation,
                     measures: policy.techOrgMeasures,
                     recipients: policy.recipients,
-                    untilTimeDuration: policy.untilTimeDuration
+                    recipientsJustification: policy.recipientsJustification,
+                    untilTimeDuration: policy.untilTimeDuration,
+                    durationJustification: policy.durationJustification,
+                    juridiction: policy.juridiction,
+                    thirdCountry: policy.thirdCountry,
+                    thirdCountryJustification: policy.thirdCountryJustification
                 };
                 await policyService.createPolicy(agreement, appSession)
                 const thirdParty = policy.assignee;

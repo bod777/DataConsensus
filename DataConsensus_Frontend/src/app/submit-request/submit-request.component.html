@@ -9,51 +9,73 @@
                 <input matInput type="text" [(ngModel)]="title" required>
             </mat-form-field>
         </div>
+        <div class="guidelines">
+            <h3>Please describe your project and research. </h3>
+            <h3>Please include how and to who the data subject can make a
+                complaint in relation to the research.</h3>
+        </div>
         <div class="form-field-container">
             <mat-form-field [style.width.px]=800>
                 <mat-label>Description</mat-label>
                 <textarea matInput type="text" [(ngModel)]="description" required></textarea>
             </mat-form-field>
         </div>
+        <div class="guidelines">
+            <h3>Please explain why you will to access this data? </h3>
+        </div>
         <div class="form-field-container">
             <mat-form-field [style.width.px]=800>
-                <mat-label>Organisation Type</mat-label>
+                <mat-label>Justification</mat-label>
+                <textarea matInput type="text" [(ngModel)]="justification" required></textarea>
+            </mat-form-field>
+        </div>
+        <div class="guidelines">
+            <h3>Please explain the potential benefits that may arise from your research? </h3>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Benefits</mat-label>
+                <textarea matInput type="text" [(ngModel)]="consequences" required></textarea>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Please select your organisation type.</mat-label>
                 <mat-select [(ngModel)]="organisationType" required>
-                    <mat-option value="AcademicScientificOrganisation">Academic Scientific
-                        Organisation</mat-option>
-                    <mat-option value="ForProfitOrganisation">For-Profit Organisation</mat-option>
-                    <mat-option value="GovernmentalOrganisation">Governmental Organisation</mat-option>
-                    <mat-option value="IndustryConsortium">Industry Consortium</mat-option>
-                    <mat-option value="InternationalOrganisation">International Organisation</mat-option>
-                    <mat-option value="NonGovernmentalOrganisation">Non-Governmental
-                        Organisation</mat-option>
-                    <mat-option value="NonProfitOrganisation">Non-Profit Organisation</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="form-field-container">
-            <mat-form-field [style.width.px]=800>
-                <mat-label>Purpose</mat-label>
-                <mat-select [(ngModel)]="purpose" required>
-                    <mat-option value="AcademicResearch">Academic Research</mat-option>
-                    <mat-option value="CommercialResearch">Commercial Research</mat-option>
-                    <mat-option value="NonCommercialResearch">Non-Commercial Research</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="form-field-container">
-            <mat-checkbox [(ngModel)]="sellingData">Selling Data</mat-checkbox>
-            <mat-checkbox [(ngModel)]="sellingInsights">Selling Insights</mat-checkbox>
-        </div>
-        <div class="form-field-container">
-            <mat-form-field [style.width.px]=800>
-                <mat-label>Technical Organisational Measures</mat-label>
-                <mat-select [(ngModel)]="techOrgMeasures" multiple required>
-                    <mat-option *ngFor="let option of measuresOptions" [value]="option.value">
-                        {{ option.displayText }}
+                    <mat-option *ngFor="let key of organisationOptions | keys" [value]="key">
+                        {{ organisationOptions[key] }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Please select the purpose for your proposed data processing.</mat-label>
+                <mat-select [(ngModel)]="purpose" required>
+                    <mat-option *ngFor="let key of purposeOptions | keys" [value]="key">
+                        {{ purposeOptions[key] }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-checkbox [(ngModel)]="sellingData">Will you be selling the data?</mat-checkbox>
+            <mat-checkbox [(ngModel)]="sellingInsights">Will you be selling insights from the data?</mat-checkbox>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Select the technical/organisational measures</mat-label>
+                <mat-select [(ngModel)]="techOrgMeasures" multiple>
+                    <mat-option *ngFor="let key of measuresOptions | keys" [value]="key">
+                        {{ measuresOptions[key] }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="guidelines">
+            <h3>Please identity the persons/parties carrying out the research or otherwise will have access
+                to the personal data before and after processing, including data processors and any other joint data
+                controllers.</h3>
         </div>
         <div class="form-field-container">
             <mat-form-field [style.width.px]=800>
@@ -75,11 +97,55 @@
         </div>
         <div class="form-field-container">
             <mat-form-field [style.width.px]=800>
+                <mat-label>Please explain why the persons/parties above are necessary. </mat-label>
+                <textarea matInput type="text" [(ngModel)]="recipientJustification" required></textarea>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
                 <mat-label>Choose the date that access to and processing of the data will end.</mat-label>
                 <input matInput [(ngModel)]="duration" [matDatepicker]="picker">
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Why it is necessary to keep the data for this period?</mat-label>
+                <textarea matInput type="text" [(ngModel)]="durationJustification" required></textarea>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Please identify the specific jurisdation the data processing will take place.</mat-label>
+                <mat-select [(ngModel)]="jurisdiction" required>
+                    <mat-option *ngFor="let key of countryOptions | keys" [value]="key">
+                        {{ countryOptions[key] }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Please indicate any other countries the data will go.</mat-label>
+                <mat-select [(ngModel)]="thirdCountries" multiple>
+                    <mat-option *ngFor="let key of countryOptions | keys" [value]="key">
+                        {{ countryOptions[key] }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Please explain why the data will be going to the above countries?</mat-label>
+                <textarea matInput type="text" [(ngModel)]="thirdCountriesJustification"></textarea>
+            </mat-form-field>
+        </div>
+        <div class="guidelines">
+            <h3>By clicking submit, you are confirming that arrangements are in place so that personal data will be
+                processed with the constraints specified above and will not be processed in a way that damage or
+                distress will be caused to the data subject and that arrangements are made for the personal data to be
+                destroyed once the date specified above has passed. </h3>
         </div>
         <mat-card-actions class="button-container" style="padding-bottom: 100px;">
             <button mat-raised-button color="primary" (click)="submit()">Save</button>

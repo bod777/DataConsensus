@@ -73,6 +73,7 @@ export class ThirdPartyHomeComponent implements OnInit {
             (error) => {
                 this._snackBar.open("Error fetching projects. Try refreshing. Error:" + error.message, "Close");
                 this.broken = true;
+                this.loading = false;
             }
         );
     }

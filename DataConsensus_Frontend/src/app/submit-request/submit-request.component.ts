@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Router } from '@angular/router';
+import { measuresOptions, countryOptions, organisationOptions, purposeOptions } from '../model/mapping';
 
 @Component({
     selector: 'app-submit-request',
@@ -28,52 +29,35 @@ export class SubmitRequestComponent implements OnInit {
     webID: string = localStorage.getItem('webID') || "";
     title: string = "";
     description: string = "";
+    justification: string = "";
+    consequences: string = "";
     organisationType: string = "";
     techOrgMeasures: string[] = [];
     purpose: string = "";
     sellingData: boolean = false;
     sellingInsights: boolean = false;
     duration: number = Date.now();
+    durationJustification: string = "";
     request: any = {}
+    measuresOptions = measuresOptions;
+    countryOptions = countryOptions;
+    organisationOptions = organisationOptions;
+    purposeOptions = purposeOptions;
 
     addOnBlur = true;
     readonly separatorKeysCodes = [ENTER, COMMA] as const;
     recipients: string[] = [this.webID];
     recipient: string = "";
+    recipientJustification: string = "";
+
+    jurisdiction: string = "IE";
+    thirdCountries: string[] = [];
+    thirdCountry: string = "";
+    thirdCountriesJustification: string = "";
+
 
     announcer = inject(LiveAnnouncer);
 
-    measuresOptions: { displayText: string; value: string }[] = [
-        { displayText: 'Consultation with DPO', value: 'ConsultationWithDPO' },
-        { displayText: 'Certification Seal', value: 'CertificationSeal' },
-        { displayText: 'Code of Conduct', value: 'CodeOfConduct' },
-        { displayText: 'Privacy by Default', value: 'PrivacyByDefault' },
-        { displayText: 'Design Standard', value: 'DesignStandard' },
-        { displayText: 'Professional Training', value: 'ProfessionalTraining' },
-        { displayText: 'Cybersecurity Training', value: 'CybersecurityTraining' },
-        { displayText: 'Data Protection Training', value: 'DataProtectionTraining' },
-        { displayText: 'NDA', value: 'NDA' },
-        { displayText: 'Data Processing Agreement', value: 'DataProcessingAgreement' },
-        { displayText: 'Asset Management Procedures', value: 'AssetManagementProcedures' },
-        { displayText: 'Logging Policies', value: 'LoggingPolicies' },
-        { displayText: 'Monitoring Policies', value: 'MonitoringPolicies' },
-        { displayText: 'Compliance Monitoring', value: 'ComplianceMonitoring' },
-        { displayText: 'Incident Management Procedures', value: 'IncidentManagementProcedures' },
-        { displayText: 'Incident Reporting Communication', value: 'IncidentReportingCommunication' },
-        { displayText: 'Review Procedure', value: 'ReviewProcedure' },
-        { displayText: 'Multi-Factor Authentication', value: 'MultiFactorAuthentication' },
-        { displayText: 'Password Authentication', value: 'PasswordAuthentication' },
-        { displayText: 'Single Sign-On', value: 'SingleSignOn' },
-        { displayText: 'Usage Control', value: 'UsageControl' },
-        { displayText: 'Physical Assess Control Method', value: 'PhysicalAssessControlMethod' },
-        { displayText: 'Operating System Security', value: 'OperatingSystemSecurity' },
-        { displayText: 'Network Security Protocols', value: 'NeworkSecurityProtocols' },
-        { displayText: 'Cryptographic Methods', value: 'CryptographicMethods' },
-        { displayText: 'Encryption In Use', value: 'EncryptionInUse' },
-        { displayText: 'Encryption In Transfer', value: 'EncryptionInTransfer' },
-        { displayText: 'Encryption At Rest', value: 'EncryptionAtRest' },
-        { displayText: 'End-to-End Encryption', value: 'EndToEndEncryption' }
-    ];
 
     submit() {
         this.showProgressBar = true;
@@ -86,14 +70,16 @@ export class SubmitRequestComponent implements OnInit {
                 this.progress = 0;
             }
         });
-        this.policyService.submitRequest(this.webID, this.title, this.description, this.organisationType, this.purpose, this.sellingData, this.sellingInsights, this.techOrgMeasures, this.recipients, this.duration).subscribe(
+        this.policyService.submitRequest(this.webID, this.title, this.description, this.justification, this.consequences, this.organisationType, this.purpose, this.sellingData, this.sellingInsights, this.techOrgMeasures, this.recipients, this.recipientJustification, this.duration, this.durationJustification, this.jurisdiction, this.thirdCountries, this.thirdCountriesJustification).subscribe(
             (profile) => {
                 this.request = profile.data;
+                console.log(this.request);
                 this._snackBar.open("Request submitted successfully", "Close", { duration: 3000 });
+                console.log(this.request.isPartOf.split('#')[1]);
                 this.router.navigate(['/project'], { queryParams: { projectID: this.request.isPartOf.split('#')[1] } })
             },
             (error) => {
-                this._snackBar.open("Error submitting request: " + error, "Close", { duration: 300000 });
+                this._snackBar.open("Error submitting request: " + error, "Close");
             }
         );
     }

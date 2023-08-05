@@ -35,3 +35,50 @@ mat-card-actions {
     display: flex;
     justify-content: center;
 }
+
+.content {
+    height: 75vh;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+mat-card {
+    display: flex;
+    justify-content: center;
+}
+
+mat-card-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+mat-checkbox {
+    margin-right: 100px;
+    margin-left: 100px;
+    margin-bottom: 20px;
+}
+
+.form-field-container {
+    display: block;
+    justify-content: center;
+    text-align: center;
+}
+
+.guidelines {
+    display: block;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20px;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: center;
+}

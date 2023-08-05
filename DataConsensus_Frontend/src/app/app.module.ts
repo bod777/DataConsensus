@@ -81,6 +81,8 @@ import { ConstraintsComponent } from './features/constraints/constraints.compone
 import { BackendToFrontendPipe } from './pipe/backend-to-frontend.pipe';
 import { HomeTableComponent } from './features/home-table/home-table.component';
 
+import { KeysPipe } from './pipe/correct-ordering.pipe';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -112,7 +114,8 @@ import { HomeTableComponent } from './features/home-table/home-table.component';
         ConstraintsComponent,
         BackendToFrontendPipe,
         HomeTableComponent,
-        CallbackComponent
+        CallbackComponent,
+        KeysPipe
     ],
     imports: [
         BrowserModule,

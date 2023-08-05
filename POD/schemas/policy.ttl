@@ -5,40 +5,129 @@
 @prefix dpv: <https://w3id.org/dpv#> .
 @prefix policy: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy.ttl#> .
 
-policy:Seal a dpv:CertificationSeal, odrl:LeftOperand ;
-    rdfs:label "European Data Protection Seal " .
+## Definition of the Profile as OWL Ontology
+policy:
+    a owl:Ontology ;
+    rdfs:label "Example Profile 1"@en ;
+    owl:versionInfo "0.1" ;
+    dct:creator "Bríd O'Donnell";
+    dct:description "The Example Profile 1 Vocabulary defines a set of concepts required by the Any-Industry."@en ;
+    rdfs:comment "This is the RDF ontology for Example Profile 1 as of 2019-08-22"@en ;
+    dct:license <http://creativecommons.org/licenses/by/4.0/> .
+
+
+policy:Request
+  a rdfs:Class , owl:Class, skos:Concept ;
+  rdfs:isDefinedBy policy: ;
+  rdfs:subClassOf odrl:Policy ;
+  owl:disjointWith :Agreement, :Privacy, :Request, :Ticket, :Assertion, :Offer ;
+  rdfs:label "Request"@en ;
+  skos:definition "A Request Policy for Data Cooperatives"@en ;
+  skos:note "..."@en .
+
+policy:Offer
+  a rdfs:Class , owl:Class, skos:Concept ;
+  rdfs:isDefinedBy policy: ;
+  rdfs:subClassOf odrl:Policy ;
+  owl:disjointWith :Agreement, :Privacy, :Request, :Ticket, :Assertion, :Offer ;
+  rdfs:label "Request"@en ;
+  skos:definition "A Request Policy for Data Cooperatives"@en ;
+  skos:note "..."@en .
+
+policy:Agreement
+  a rdfs:Class , owl:Class, skos:Concept ;
+  rdfs:isDefinedBy policy: ;
+  rdfs:subClassOf odrl:Policy ;
+  owl:disjointWith :Agreement, :Privacy, :Request, :Ticket, :Assertion, :Offer ;
+  rdfs:label "Request"@en ;
+  skos:definition "A Request Policy for Data Cooperatives"@en ;
+  skos:note "..."@en .
+
+policy:Organisation a dpv:Organisation, odrl:LeftOperand, owl:NamedIndividual, skos:Concept ;
+  rdfs:isDefinedBy policy: ;
+  rdfs:label "Organisation"@en ;
+  skos:definition "Constraint on the purpose for which the processing of personal data is permitted or prohibited."@en ;
+  skos:example "..."@en ;
+  skos:note "..."@en .
+
+policy:UntilTimeDuration a dpv:UntilTimeDuration, odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy policy: ;
+  rdfs:label "UntilTimeDuration"@en ;
+  skos:definition "Constraint on the datetime on which the processing of personal data must end."@en ;
+  skos:example "..."@en ;
+  skos:note "..."@en .
+
+policy:hasJurisdiction a dpv:hasJurisdiction, odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy policy: ;
+  rdfs:label "Has Jurisdiction"@en ;
+  skos:definition "Constraint on the purpose for which the processing of personal data is permitted or prohibited."@en ;
+  skos:example "..."@en ;
+  skos:note "..."@en .
+
+policy:ThirdParty a dpv:ThirdParty, odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy policy: ;
+  rdfs:label "Has Third Country"@en ;
+  skos:definition "Constraint whether XXXXX for which the processing of personal data is permitted or prohibited."@en ;
+  skos:example "..."@en ;
+  skos:note "..."@en .
+
+policy:isAllOf a odrl:isAllOf ;
+	rdfs:isDefinedBy policy: ;
+    rdfs:label "Is all of"@en ;
+	skos:definition "Indicates that a given Left Operand is all of the instances of the Right Operand of the Constraint."@en ;
+    skos:example "The purpose constraint of a rule can not be an instance of a academic research."@en .
+
+policy:isAnyOf a odrl:isAnyOf ;
+	rdfs:isDefinedBy policy: ;
+    rdfs:label "Is any of"@en ;
+	skos:definition "Indicates that a given Left Operand is any of the instances of the Right Operand of the Constraint."@en ;
+    skos:example "The purpose constraint of a rule can not be an instance of a academic research."@en .
+
+policy:hasJustification a dpv:hasJustification, rdf:Property ;
+  rdfs:isDefinedBy policy: ;
+  rdfs:label "Has Justification"@en ;
+  skos:definition "XXX"@en ;
+  skos:example "..."@en ;
+  skos:note "..."@en .
+
+policy:hasConsequence a dpv:hasJustification, rdf:Property ;
+  rdfs:isDefinedBy policy: ;
+  rdfs:label "Has Justification"@en ;
+  skos:definition "XXX"@en ;
+  skos:example "..."@en ;
+  skos:note "..."@en .
 
 policy:thirdPartyApproved a rdf:Property ;
     rdfs:label "Third Party Approval Status" ;
-    rdfs:domain odrl:Request, odrl:Offer ;
+    rdfs:domain policy:Request, policy:Offer ;
     rdfs:range policy:Status .
 
 policy:memberApproved a rdf:Property ;
     rdfs:label "Member Approval Status" ;
-    rdfs:domain odrl:Request, odrl:Offer ;
+    rdfs:domain policy:Request, policy:Offer ;
     rdfs:range policy:Status .
 
 policy:adminApproved a rdf:Property ;
     rdfs:label "Admin Approval Status" ;
-    rdfs:domain odrl:Request, odrl:Offer ;
+    rdfs:domain policy:Request, policy:Offer ;
     rdfs:range policy:Status .
 
 policy:Status a rdfs:Class ;
     rdfs:label "Approval Status" ;
     owl:oneOf (policy:Approved policy:Rejected policy:Pending policy:Blocked policy:Removed) .
 
-policy:Approved a policy:status ;
+policy:Approved a policy:Status ;
     rdfs:label "Approved" ;
     rdfs:comment "The policy has been approved by this actor." .
-policy:Rejected a policy:status ;
+policy:Rejected a policy:Status ;
     rdfs:label "Rejected" ;
     rdfs:comment "The policy has been rejected by this actor." .
-policy:Pending a policy:status ;
+policy:Pending a policy:Status ;
     rdfs:label "Pending" ;
     rdfs:comment "The policy is currently pending approval or rejection.".
-policy:Blocked a policy:status ;
+policy:Blocked a policy:Status ;
     rdfs:label "Blocked" ;
     rdfs:comment "Because of actions of other actor, the approval status for this actor is not needed.".
-policy:Removed a policy:status ;
+policy:Removed a policy:Status ;
     rdfs:label "Removed" ;
     rdfs:comment "The policy has been removed and is no longer in effect." .

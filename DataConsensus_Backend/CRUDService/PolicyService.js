@@ -32,6 +32,7 @@ const projectsList = process.env.PROJECTS
 const requestsList = process.env.REQUESTS
 const odrl = process.env.ODRL
 const dpv = process.env.DPV
+const dpvlegal = process.env.DPVLEGAL
 const oac = process.env.OAC
 
 async function getGivenSolidDataset(datasetURL, session) {
@@ -49,7 +50,6 @@ async function saveGivenSolidDataset(datasetURL, courseSolidDataset, session) {
 module.exports = {
 
     getSolidThing: async function (req, session) {
-        // console.log("req", req);
         let datasetURL = getDataset(req.policyURL);
         const solidDataset = await getGivenSolidDataset(datasetURL, session);
         const policy = await getThing(solidDataset, req.policyURL);
@@ -66,9 +66,11 @@ module.exports = {
         const techOrgMeasureConstraint = await this.getSolidThing({ policyURL: `${URL}_techOrgMeasureConstraint` }, session);
         const recipientConstraint = await this.getSolidThing({ policyURL: `${URL}_recipientConstraint` }, session);
         const durationConstraint = await this.getSolidThing({ policyURL: `${URL}_durationConstraint` }, session);
+        const jurisdictionConstraint = await this.getSolidThing({ policyURL: `${URL}_jurisdictionConstraint` }, session);
+        const thirdCountryConstraint = await this.getSolidThing({ policyURL: `${URL}_thirdCountryConstraint` }, session);
         const projectThing = await this.getSolidThing({ policyURL: solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0] }, session);
 
-        const policy = await this.formatAgreement(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, projectThing);
+        const policy = await this.formatAgreement(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing);
         return policy;
     },
 
@@ -77,10 +79,12 @@ module.exports = {
         const ID = solidThing.url.split('#')[1];
         const creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
         const policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
-        const partOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
+        const isPartOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
         const assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
         const assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
         const references = solidThing.predicates[DCTERMS.references]["namedNodes"][0];
+        const hasJustification = solidThing.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
+        const hasConsequence = solidThing.predicates[`${dpv}hasConsequence`]["literals"][XSD.string][0];
 
         const purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
         const organisation = extractTerm(organisationConstraint.predicates[ODRL.rightOperand]["namedNodes"][0])
@@ -96,11 +100,17 @@ module.exports = {
         } else {
             sellingInsights = true;
         }
-        const measuresArray = techOrgMeasureConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        const measuresArray = techOrgMeasureConstraint?.predicates?.[ODRL.rightOperand]?.["namedNodes"] || [];
         const techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
-        const recipientsArray = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
-        const recipients = recipientsArray.map((recipient) => extractTerm(recipient));
+        const recipients = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        const recipientsJustification = recipientConstraint.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
         const untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
+        const durationJustification = durationConstraint.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
+        const juridiction = extractTerm(jurisdictionConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
+        const thirdCountriesArray = thirdCountryConstraint?.predicates?.[ODRL.rightOperand]?.["namedNodes"] || [];
+        const thirdCountry = thirdCountriesArray.map((country) => extractTerm(country));
+        const thirdCountryJustification = thirdCountryConstraint?.predicates?.[`${dpv}hasJustification`]?.["literals"]?.[XSD.string]?.[0] || "Data will remain in the State.";
+        thirdCountryJustification = thirdCountryJustification === undefined ? "Data will remain in the State." : thirdCountryJustification;
 
         const title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
         const description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
@@ -112,7 +122,7 @@ module.exports = {
         const offerEndTime = projectThing.predicates[`${projectSchema}#offerEndTime`]["literals"][XSD.dateTime][0];
         const threshold = projectThing.predicates[`${projectSchema}#threshold`]["literals"][XSD.decimal][0];
 
-        const policy = new Agreement(URL, ID, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, untilTimeDuration, references, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
+        const policy = new Agreement(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, references, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
         return policy.toJson();
     },
 
@@ -126,24 +136,27 @@ module.exports = {
         const techOrgMeasureConstraint = await this.getSolidThing({ policyURL: `${URL}_techOrgMeasureConstraint` }, session);
         const recipientConstraint = await this.getSolidThing({ policyURL: `${URL}_recipientConstraint` }, session);
         const durationConstraint = await this.getSolidThing({ policyURL: `${URL}_durationConstraint` }, session);
+        const jurisdictionConstraint = await this.getSolidThing({ policyURL: `${URL}_jurisdictionConstraint` }, session);
+        const thirdCountryConstraint = await this.getSolidThing({ policyURL: `${URL}_thirdCountryConstraint` }, session);
         const projectThing = await this.getSolidThing({ policyURL: solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0] }, session);
 
-        const policy = await this.formatProposal(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, projectThing);
+        const policy = await this.formatProposal(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing);
         return policy;
     },
 
-    formatProposal: async function (solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, projectThing) {
+    formatProposal: async function (solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing) {
         const URL = solidThing.url;
         const ID = solidThing.url.split('#')[1];
         const creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
         const policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
-
-        const partOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
+        const isPartOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
         const assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
         const assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
         const adminStatus = extractTerm(solidThing.predicates[`${policySchema}#adminApproved`]["namedNodes"][0]);
         const memberStatus = extractTerm(solidThing.predicates[`${policySchema}#memberApproved`]["namedNodes"][0]);
         const thirdPartyStatus = extractTerm(solidThing.predicates[`${policySchema}#thirdPartyApproved`]["namedNodes"][0]);
+        const hasJustification = solidThing.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
+        const hasConsequence = solidThing.predicates[`${dpv}hasConsequence`]["literals"][XSD.string][0];
 
         const purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
         const organisation = extractTerm(organisationConstraint.predicates[ODRL.rightOperand]["namedNodes"][0])
@@ -159,10 +172,18 @@ module.exports = {
         } else {
             sellingInsights = true;
         }
-        const measuresArray = techOrgMeasureConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        const measuresArray = techOrgMeasureConstraint?.predicates?.[ODRL.rightOperand]?.["namedNodes"] || [];
         const techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
         const recipients = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
+        const recipientsJustification = recipientConstraint.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
         const untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
+        const durationJustification = durationConstraint.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
+        const juridiction = extractTerm(jurisdictionConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
+        const thirdCountriesArray = thirdCountryConstraint?.predicates?.[ODRL.rightOperand]?.["namedNodes"] || [];
+        let thirdCountry = thirdCountriesArray.map((country) => extractTerm(country));
+        let thirdCountryJustification = thirdCountryConstraint?.predicates?.[`${dpv}hasJustification`]?.["literals"]?.[XSD.string]?.[0] || "Data will remain in the State.";
+        thirdCountryJustification = thirdCountryJustification === undefined ? "Data will remain in the State." : thirdCountryJustification;
+
 
         const title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
         const description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
@@ -174,7 +195,8 @@ module.exports = {
         const offerEndTime = projectThing.predicates[`${projectSchema}#offerEndTime`]["literals"][XSD.dateTime][0];
         const threshold = projectThing.predicates[`${projectSchema}#threshold`]["literals"][XSD.decimal][0];
 
-        const policy = new Proposal(URL, ID, creator, policyCreationTime, partOf, assigner, assignee, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, untilTimeDuration, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
+        const policy = new Proposal(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
+
         return policy.toJson();
     },
 
@@ -198,31 +220,95 @@ module.exports = {
         let creator = req.creator;
         let assigner = req.assigner;
         let assignee = req.assignee;
+        let hasJustification = req.hasJustification;
+        let hasConsequence = req.hasConsequence;
         let purpose = req.purpose;
         let sellingData = req.sellingData;
         let sellingInsights = req.sellingInsights;
         let organisation = req.organisation;
         let techOrgMeasures = req.measures;
         let recipients = req.recipients;
+        let recipientsJustification = req.recipientsJustification;
         let untilTimeDuration = req.untilTimeDuration;
+        let durationJustification = req.durationJustification;
+        let juridiction = req.juridiction;
+        let thirdCountry = req.thirdCountry;
+        let thirdCountryJustification = req.thirdCountryJustification;
         let project = req.project;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         const policyID = uuidv4();
         const policyURL = `${datasetURL}#${policyID}`;
 
-        const organisationConstraint = buildThing(createThing({ url: `${policyURL}_organisationConstraint` }))
-            .addUrl(RDF.type, ODRL.Constraint)
-            .addUrl(ODRL.leftOperand, `${oac}Organisation`)
-            .addUrl(ODRL.operator, ODRL.isA)
-            .addUrl(ODRL.rightOperand, `${dpv}${organisation}`)
-            .build();
+        let newPolicy = buildThing(createThing({ url: `${policyURL}` }))
+            .addUrl(RDF.type, `${odrl}${req.type}`)
+            .addUrl(DCTERMS.creator, creator)
+            .addDatetime(DCTERMS.issued, new Date())
+            .addUrl(DCTERMS.isPartOf, project)
+            .addUrl(ODRL.uid, `${datasetURL}#${policyID}`)
+            .addStringNoLocale(`${dpv}hasJustification`, hasJustification)
+            .addStringNoLocale(`${dpv}hasConsequence`, hasConsequence)
+            .addUrl(ODRL.profile, `${policySchema}`)
+            .addUrl(ODRL.permission, `${datasetURL}#${policyID}_permission`);
 
-        const durationConstraint = buildThing(createThing({ url: `${policyURL}_durationConstraint` }))
-            .addUrl(RDF.type, ODRL.Constraint)
-            .addUrl(ODRL.leftOperand, `${dpv}UntilTimeDuration`)
-            .addUrl(ODRL.operator, ODRL.eq)
-            .addDatetime(ODRL.rightOperand, new Date(untilTimeDuration))
-            .build();
+        if (req.type == "Request" || req.type == "Offer") {
+            let thirdPartyApproved = req.thirdPartyApproved;
+            let memberApproved = req.memberApproved;
+            let adminApproved = req.adminApproved;
+            newPolicy = newPolicy
+                .addUrl(`${policySchema}#thirdPartyApproved`, `${policySchema}#${thirdPartyApproved}`)
+                .addUrl(`${policySchema}#memberApproved`, `${policySchema}#${memberApproved}`)
+                .addUrl(`${policySchema}#adminApproved`, `${policySchema}#${adminApproved}`);
+        }
+        else {
+            newPolicy = newPolicy
+                .addUrl(DCTERMS.references, req.references)
+                .addUrl(`${dpv}hasDataSubject`, `${req.assigner}`)
+                .addUrl(`${dpv}hasJointDataController`, `${req.assignee}`)
+                .addUrl(`${dpv}hasJointDataController`, `${req.assigner}`)
+                .addUrl(`${dpv}hasLegalBasis`, `${dpv}Consent`);
+        }
+
+        newPolicy = newPolicy.build();
+        solidDataset = setThing(solidDataset, newPolicy);
+
+        let newPermission = buildThing(createThing({ url: `${policyURL}_permission` }))
+            .addUrl(RDF.type, ODRL.Permission)
+            .addUrl(ODRL.assigner, assigner)
+            .addUrl(ODRL.assignee, assignee)
+            .addUrl(ODRL.action, `${dpv}Use`)
+            .addUrl(ODRL.action, `${dpv}Transform`)
+            .addUrl(ODRL.action, `${dpv}Copy`)
+            .addUrl(ODRL.action, `${dpv}Store`)
+            .addUrl(ODRL.action, `${dpv}Remove`)
+            .addUrl(ODRL.target, `https://w3id.org/dpv/dpv-pd#MedicalHealth`)
+            .addUrl(ODRL.constraint,
+                `${datasetURL}#${policyID}_organisationConstraint`)
+            .addUrl(ODRL.constraint,
+                `${datasetURL}#${policyID}_durationConstraint`)
+            .addUrl(ODRL.constraint,
+                `${datasetURL}#${policyID}_purposeConstraint`)
+            .addUrl(ODRL.constraint,
+                `${datasetURL}#${policyID}_sellingDataConstraint`)
+            .addUrl(ODRL.constraint,
+                `${datasetURL}#${policyID}_sellingInsightsConstraint`)
+
+        if (techOrgMeasures.length > 0) {
+            newPermission = newPermission.addUrl(ODRL.constraint,
+                `${datasetURL}#${policyID}_techOrgMeasureConstraint`);
+        }
+        if (recipients.length > 0) {
+            newPermission = newPermission.addUrl(ODRL.constraint,
+                `${datasetURL}#${policyID}_recipientConstraint`);
+        }
+        newPermission = newPermission.addUrl(ODRL.constraint,
+            `${datasetURL}#${policyID}_jurisdictionConstraint`)
+        if (thirdCountry.length > 0) {
+            newPermission = newPermission.addUrl(ODRL.constraint,
+                `${datasetURL}#${policyID}_thirdCountryConstraint`)
+
+        }
+        newPermission = newPermission.build();
+        solidDataset = setThing(solidDataset, newPermission);
 
         const purposeConstraint = buildThing(createThing({ url: `${policyURL}_purposeConstraint` }))
             .addUrl(RDF.type, ODRL.Constraint)
@@ -231,9 +317,25 @@ module.exports = {
             .addUrl(ODRL.rightOperand, `${dpv}${purpose}`)
             .build();
 
-        solidDataset = setThing(solidDataset, organisationConstraint);
-        solidDataset = setThing(solidDataset, durationConstraint);
         solidDataset = setThing(solidDataset, purposeConstraint);
+
+        const organisationConstraint = buildThing(createThing({ url: `${policyURL}_organisationConstraint` }))
+            .addUrl(RDF.type, ODRL.Constraint)
+            .addUrl(ODRL.leftOperand, `${oac}Organisation`)
+            .addUrl(ODRL.operator, ODRL.isA)
+            .addUrl(ODRL.rightOperand, `${dpv}${organisation}`)
+            .build();
+
+        solidDataset = setThing(solidDataset, organisationConstraint);
+
+        const jurisdictionConstraint = buildThing(createThing({ url: `${policyURL}_jurisdictionConstraint` }))
+            .addUrl(RDF.type, ODRL.Constraint)
+            .addUrl(ODRL.leftOperand, `${dpv}hasJurisdiction`)
+            .addUrl(ODRL.operator, ODRL.eq)
+            .addUrl(ODRL.rightOperand, `${dpv}${juridiction}`)
+            .build();
+
+        solidDataset = setThing(solidDataset, jurisdictionConstraint);
 
         let sellingDataConstraint = buildThing(createThing({ url: `${policyURL}_sellingDataConstraint` }))
         if (sellingData === true) {
@@ -270,12 +372,12 @@ module.exports = {
         }
         sellingInsightsConstraint = sellingInsightsConstraint.build();
         solidDataset = setThing(solidDataset, sellingInsightsConstraint);
+
         if (techOrgMeasures.length > 0) {
             let techOrgMeasureConstraint = buildThing(createThing({ url: `${policyURL}_techOrgMeasureConstraint` }))
                 .addUrl(RDF.type, ODRL.Constraint)
                 .addUrl(ODRL.leftOperand, `${oac}TechnicalOrganisationalMeasure`)
                 .addUrl(ODRL.operator, ODRL.isAllOf);
-
             techOrgMeasures.forEach((measure) => {
                 techOrgMeasureConstraint = techOrgMeasureConstraint.addUrl(ODRL.rightOperand, `${dpv}${measure}`);
             });
@@ -286,6 +388,7 @@ module.exports = {
         if (recipients.length > 0) {
             let recipientConstraint = buildThing(createThing({ url: `${policyURL}_recipientConstraint` }))
                 .addUrl(RDF.type, ODRL.Constraint)
+                .addStringNoLocale(`${dpv}hasJustification`, recipientsJustification)
                 .addUrl(ODRL.leftOperand, `${oac}Recipient`)
                 .addUrl(ODRL.operator, ODRL.isAllOf);
 
@@ -295,63 +398,32 @@ module.exports = {
             recipientConstraint = recipientConstraint.build();
             solidDataset = setThing(solidDataset, recipientConstraint);
         }
-        const newPermission = buildThing(createThing({ url: `${policyURL}_permission` }))
-            .addUrl(RDF.type, ODRL.Permission)
-            .addUrl(ODRL.assigner, assigner)
-            .addUrl(ODRL.assignee, assignee)
-            .addUrl(ODRL.action, `${dpv}Use`)
-            .addUrl(ODRL.action, `${dpv}Transform`)
-            .addUrl(ODRL.action, `${dpv}Copy`)
-            .addUrl(ODRL.action, `${dpv}Store`)
-            .addUrl(ODRL.action, `${dpv}Remove`)
-            .addUrl(ODRL.target, `https://w3id.org/dpv/dpv-pd#MedicalHealth`)
-            .addUrl(ODRL.constraint,
-                `${datasetURL}#${policyID}_organisationConstraint`)
-            .addUrl(ODRL.constraint,
-                `${datasetURL}#${policyID}_durationConstraint`)
-            .addUrl(ODRL.constraint,
-                `${datasetURL}#${policyID}_purposeConstraint`)
-            .addUrl(ODRL.constraint,
-                `${datasetURL}#${policyID}_sellingDataConstraint`)
-            .addUrl(ODRL.constraint,
-                `${datasetURL}#${policyID}_sellingInsightsConstraint`)
-            .addUrl(ODRL.constraint,
-                `${datasetURL}#${policyID}_techOrgMeasureConstraint`)
-            .addUrl(ODRL.constraint,
-                `${datasetURL}#${policyID}_recipientConstraint`)
+
+        const durationConstraint = buildThing(createThing({ url: `${policyURL}_durationConstraint` }))
+            .addUrl(RDF.type, ODRL.Constraint)
+            .addStringNoLocale(`${dpv}hasJustification`, durationJustification)
+            .addUrl(ODRL.leftOperand, `${dpv}UntilTimeDuration`)
+            .addUrl(ODRL.operator, ODRL.eq)
+            .addDatetime(ODRL.rightOperand, new Date(untilTimeDuration))
             .build();
 
-        solidDataset = setThing(solidDataset, newPermission);
+        solidDataset = setThing(solidDataset, durationConstraint);
 
-        let newPolicy = buildThing(createThing({ url: `${policyURL}` }))
-            .addUrl(RDF.type, `${odrl}${req.type}`)
-            .addUrl(DCTERMS.creator, creator)
-            .addDatetime(DCTERMS.issued, new Date())
-            .addUrl(DCTERMS.isPartOf, project)
-            .addUrl(ODRL.uid, `${datasetURL}#${policyID}`)
-            .addUrl(ODRL.profile, `${oac}`)
-            .addUrl(ODRL.permission, `${datasetURL}#${policyID}_permission`);
+        if (thirdCountry.length > 0) {
+            let thirdCountryConstraint = buildThing(createThing({ url: `${policyURL}_thirdCountryConstraint` }))
+                .addUrl(RDF.type, ODRL.Constraint)
+                .addStringNoLocale(`${dpv}hasJustification`, thirdCountryJustification)
+                .addUrl(ODRL.leftOperand, `${dpv}ThirdCountry`)
+                .addUrl(ODRL.operator, ODRL.isAllOf)
 
-        if (req.type == "Request" || req.type == "Offer") {
-            let thirdPartyApproved = req.thirdPartyApproved;
-            let memberApproved = req.memberApproved;
-            let adminApproved = req.adminApproved;
-            newPolicy = newPolicy
-                .addUrl(`${policySchema}#thirdPartyApproved`, `${policySchema}#${thirdPartyApproved}`)
-                .addUrl(`${policySchema}#memberApproved`, `${policySchema}#${memberApproved}`)
-                .addUrl(`${policySchema}#adminApproved`, `${policySchema}#${adminApproved}`);
-        }
-        else {
-            newPolicy = newPolicy
-                .addUrl(DCTERMS.references, req.references)
-                .addUrl(`${dpv}hasDataSubject`, `${req.assigner}`)
-                .addUrl(`${dpv}hasJointDataController`, `${req.assignee}`)
-                .addUrl(`${dpv}hasJointDataController`, `${req.assigner}`)
-                .addUrl(`${dpv}hasLegalBasis`, `${dpv}Consent`);
+            thirdCountry.forEach((item) => {
+                thirdCountryConstraint = thirdCountryConstraint.addUrl(ODRL.rightOperand, `${dpvlegal}${item}`);
+            });
+            thirdCountryConstraint = thirdCountryConstraint.build();
+            solidDataset = setThing(solidDataset, thirdCountryConstraint);
         }
 
-        newPolicy = newPolicy.build();
-        solidDataset = setThing(solidDataset, newPolicy);
+
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
         return policyURL;
     },
@@ -384,6 +456,8 @@ module.exports = {
         const recipientConstraint = getThing(solidDataset, `${policyURL}_recipientConstraint`);
         const organisationConstraint = getThing(solidDataset, `${policyURL}_organisationConstraint`);
         const durationConstraint = getThing(solidDataset, `${policyURL}_durationConstraint`);
+        const jurisdictionConstraint = getThing(solidDataset, `${policyURL}_jurisdictionConstraint`);
+        const thirdCountryConstraint = getThing(solidDataset, `${policyURL}_thirdCountryConstraint`);
         if (policy === null) {
             throw new Error("Policy not found.");
         }
@@ -403,10 +477,16 @@ module.exports = {
                     solidDataset = removeThing(solidDataset, purposeConstraint);
                     solidDataset = removeThing(solidDataset, sellingDataConstraint);
                     solidDataset = removeThing(solidDataset, sellingInsightsConstraint);
-                    solidDataset = removeThing(solidDataset, techOrgMeasureConstraint);
+                    if (techOrgMeasureConstraint !== null) {
+                        solidDataset = removeThing(solidDataset, techOrgMeasureConstraint);
+                    }
                     solidDataset = removeThing(solidDataset, recipientConstraint);
                     solidDataset = removeThing(solidDataset, organisationConstraint);
                     solidDataset = removeThing(solidDataset, durationConstraint);
+                    solidDataset = removeThing(solidDataset, jurisdictionConstraint);
+                    if (thirdCountryConstraint !== null) {
+                        solidDataset = removeThing(solidDataset, thirdCountryConstraint);
+                    }
                     await saveGivenSolidDataset(datasetURL, solidDataset, session);
 
                 }
@@ -430,6 +510,8 @@ module.exports = {
         const recipientConstraint = getThing(solidDataset, `${policyURL}_recipientConstraint`);
         const organisationConstraint = getThing(solidDataset, `${policyURL}_organisationConstraint`);
         const durationConstraint = getThing(solidDataset, `${policyURL}_durationConstraint`);
+        const jurisdictionConstraint = getThing(solidDataset, `${policyURL}_jurisdictionConstraint`);
+        const thirdCountryConstraint = getThing(solidDataset, `${policyURL}_thirdCountryConstraint`);
 
         const projectURL = getUrl(policy, DCTERMS.isPartOf);
         const referenceURL = getUrl(policy, DCTERMS.references);
@@ -452,10 +534,16 @@ module.exports = {
         solidDataset = removeThing(solidDataset, purposeConstraint);
         solidDataset = removeThing(solidDataset, sellingDataConstraint);
         solidDataset = removeThing(solidDataset, sellingInsightsConstraint);
-        solidDataset = removeThing(solidDataset, techOrgMeasureConstraint);
+        if (techOrgMeasureConstraint !== null) {
+            solidDataset = removeThing(solidDataset, techOrgMeasureConstraint);
+        }
         solidDataset = removeThing(solidDataset, recipientConstraint);
         solidDataset = removeThing(solidDataset, organisationConstraint);
         solidDataset = removeThing(solidDataset, durationConstraint);
+        solidDataset = removeThing(solidDataset, jurisdictionConstraint);
+        if (thirdCountryConstraint !== null) {
+            solidDataset = removeThing(solidDataset, thirdCountryConstraint);
+        }
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
 
         return thirdparty;

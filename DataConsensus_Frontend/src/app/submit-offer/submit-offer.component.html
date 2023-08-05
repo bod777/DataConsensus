@@ -6,63 +6,104 @@
         <div *ngIf="loading" class="loading">
             <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
         </div>
-        <div *ngIf="!loading">
-            <div class="form-field-container">
-                <mat-form-field [style.width.px]=800>
-                    <mat-label>Purpose</mat-label>
-                    <mat-select [(ngModel)]="purpose" required>
-                        <mat-option value="AcademicResearch">Academic Scientific Organisation</mat-option>
-                        <mat-option value="CommercialResearch">For-Profit Organisation</mat-option>
-                        <mat-option value="NonCommercialResearch">Governmental Organisation</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="form-field-container">
-                <mat-checkbox [(ngModel)]="sellingData">Selling Data</mat-checkbox>
-                <mat-checkbox [(ngModel)]="sellingInsights">Selling Insights</mat-checkbox>
-            </div>
-            <div class="form-field-container">
-                <mat-form-field [style.width.px]=800>
-                    <mat-label>Technical Organisational Measures</mat-label>
-                    <mat-select [(ngModel)]="techOrgMeasures" multiple required>
-                        <mat-option *ngFor="let option of measuresOptions" [value]="option.value">
-                            {{ option.displayText }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="form-field-container">
-                <mat-form-field [style.width.px]=800>
-                    <mat-label>Recipients</mat-label>
-                    <mat-chip-grid #chipGrid aria-label="Enter recipients">
-                        <mat-chip-row *ngFor="let recipient of recipients" (removed)="removeRecipient(recipient)"
-                            [editable]="true" (edited)="editRecipient(recipient, $event)"
-                            [aria-description]="'press enter to edit ' + recipient">
-                            {{recipient}}
-                            <button matChipRemove [attr.aria-label]="'remove ' + recipient">
-                                <mat-icon>cancel</mat-icon>
-                            </button>
-                        </mat-chip-row>
-                        <input placeholder="New recipient..." [matChipInputFor]="chipGrid"
-                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
-                            (matChipInputTokenEnd)="addRecipient($event)" />
-                    </mat-chip-grid>
-                </mat-form-field>
-            </div>
-            <div class="form-field-container">
-                <mat-form-field [style.width.px]=800>
-                    <mat-label>Choose the date that access to and processing of the data will end.</mat-label>
-                    <input matInput [(ngModel)]="duration" [matDatepicker]="picker">
-                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-            </div>
-            <mat-card-actions class="button-container" style="padding-bottom: 100px;">
-                <button mat-raised-button color="primary" (click)="submit()">Save</button>
-                <button mat-raised-button (click)="cancelChanges()">Cancel</button>
-                <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"
-                    *ngIf="showProgressBar"></mat-progress-spinner>
-            </mat-card-actions>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Please select the purpose for your proposed data processing.</mat-label>
+                <mat-select [(ngModel)]="purpose" required>
+                    <mat-option *ngFor="let key of purposeOptions | keys" [value]="key">
+                        {{ purposeOptions[key] }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
         </div>
+        <div class="form-field-container">
+            <mat-checkbox [(ngModel)]="sellingData">Will you be selling the data?</mat-checkbox>
+            <mat-checkbox [(ngModel)]="sellingInsights">Will you be selling insights from the data?</mat-checkbox>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Select the technical/organisational measures</mat-label>
+                <mat-select [(ngModel)]="techOrgMeasures" multiple>
+                    <mat-option *ngFor="let key of measuresOptions | keys" [value]="key">
+                        {{ measuresOptions[key] }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="guidelines">
+            <h3>Please identity the persons/parties carrying out the research or otherwise will have access
+                to the personal data before and after processing, including data processors and any other joint data
+                controllers.</h3>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Recipients</mat-label>
+                <mat-chip-grid #chipGrid aria-label="Enter recipients">
+                    <mat-chip-row *ngFor="let recipient of recipients" (removed)="removeRecipient(recipient)"
+                        [editable]="true" (edited)="editRecipient(recipient, $event)"
+                        [aria-description]="'press enter to edit ' + recipient">
+                        {{recipient}}
+                        <button matChipRemove [attr.aria-label]="'remove ' + recipient">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
+                    <input placeholder="New recipient..." [matChipInputFor]="chipGrid"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                        (matChipInputTokenEnd)="addRecipient($event)" />
+                </mat-chip-grid>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Please explain why the persons/parties above are necessary. </mat-label>
+                <textarea matInput type="text" [(ngModel)]="recipientJustification" required></textarea>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Choose the date that access to and processing of the data will end.</mat-label>
+                <input matInput [(ngModel)]="duration" [matDatepicker]="picker">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Why it is necessary to keep the data for this period?</mat-label>
+                <textarea matInput type="text" [(ngModel)]="durationJustification" required></textarea>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Please identify the specific jurisdation the data processing will take place.</mat-label>
+                <mat-select [(ngModel)]="jurisdiction" required>
+                    <mat-option *ngFor="let key of countryOptions | keys" [value]="key">
+                        {{ countryOptions[key] }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Please indicate any other countries the data will go.</mat-label>
+                <mat-select [(ngModel)]="thirdCountries" multiple>
+                    <mat-option *ngFor="let key of countryOptions | keys" [value]="key">
+                        {{ countryOptions[key] }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="form-field-container">
+            <mat-form-field [style.width.px]=800>
+                <mat-label>Please explain why the data will be going to the above countries?</mat-label>
+                <textarea matInput type="text" [(ngModel)]="thirdCountriesJustification"></textarea>
+            </mat-form-field>
+        </div>
+        <mat-card-actions class="button-container" style="padding-bottom: 100px;">
+            <button mat-raised-button color="primary" (click)="submit()">Save</button>
+            <button mat-raised-button (click)="cancelChanges()">Cancel</button>
+            <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"
+                *ngIf="showProgressBar"></mat-progress-spinner>
+        </mat-card-actions>
     </mat-card>
 </div>

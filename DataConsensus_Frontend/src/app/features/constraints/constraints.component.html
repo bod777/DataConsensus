@@ -21,6 +21,9 @@
 <p>
     <b>Ends on:</b> {{ policy.untilTimeDuration | date:'dd/MM/yyyy hh:mma'}}
 </p>
+<p>
+    <b>Justification for duration:</b> {{ policy.durationJustification }}
+</p>
 <p><b>Technical and Organisational Measures</b></p>
 <mat-chip-set aria-label="Measures selection">
     <mat-chip *ngFor="let measure of policy.techOrgMeasures">{{measure}}</mat-chip>
@@ -29,3 +32,17 @@
 <mat-chip-set aria-label="Recipients selection">
     <mat-chip *ngFor="let recipient of policy.recipients">{{recipient}}</mat-chip>
 </mat-chip-set>
+<p>
+    <b>Justification for recipients:</b> {{ policy.recipientsJustification }}
+</p>
+<p>
+    <b>Jurisdiction:</b> {{ policy.jurisdiction }}
+</p>
+<div *ngIf="policy.thirdCountry.length > 0">
+    <mat-chip-set aria-label="Third Country Selection">
+        <mat-chip *ngFor="let country of policy.thirdCountry">{{country}}</mat-chip>
+    </mat-chip-set>
+    <p>
+        <b>Justification for third country:</b> {{ policy.thirdCountryJustification }}
+    </p>
+</div>

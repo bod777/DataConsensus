@@ -9,6 +9,7 @@
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix request: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/requests.ttl#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dpvlegal: <https://w3id.org/dpv/dpv-legal#> .
 
 request:d1739b02-2e77-4930-ac2e-e41ad39ac985_purposeConstraint
         rdf:type           odrl:Constraint ;
@@ -24,9 +25,16 @@ request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_techOrgMeasureConstraint
 
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_durationConstraint
         rdf:type           odrl:Constraint ;
+        dpv:hasJustification       "This is a justification" ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
         odrl:rightOperand  "2024-12-31T00:00:00"^^xsd:dateTime .
+
+request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_jurisdictionConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   policy:hasJurisdiction ;
+        odrl:operator      oac:eq ;
+        odrl:rightOperand  dpvlegal:IE .
 
 request:d1739b02-2e77-4930-ac2e-e41ad39ac985_sellingDataConstraint
         rdf:type           odrl:Constraint ;
@@ -34,14 +42,22 @@ request:d1739b02-2e77-4930-ac2e-e41ad39ac985_sellingDataConstraint
         odrl:operator      oac:isNotA ;
         odrl:rightOperand  dpv:SellDataToThirdParties .
 
+request:d1739b02-2e77-4930-ac2e-e41ad39ac985_jurisdictionConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   policy:hasJurisdiction ;
+        odrl:operator      oac:eq ;
+        odrl:rightOperand  dpvlegal:IE .
+
 request:d1739b02-2e77-4930-ac2e-e41ad39ac985_durationConstraint
         rdf:type           odrl:Constraint ;
+        dpv:hasJustification       "This is a justification" ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
         odrl:rightOperand  "2044-12-31T00:00:00"^^xsd:dateTime .
 
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_recipientConstraint
         rdf:type           odrl:Constraint ;
+        dpv:hasJustification       "This is a justification" ;
         odrl:leftOperand   oac:Recipient ;
         odrl:operator      odrl:isAnyOf ;
         odrl:rightOperand  <https://id.inrupt.com/DataConsensus> , <https://id.inrupt.com/InsuranceCompany> .
@@ -66,12 +82,20 @@ request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_sellingInsightsConstraint
 
 request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_durationConstraint
         rdf:type           odrl:Constraint ;
+        dpv:hasJustification       "This is a justification" ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
         odrl:rightOperand  "2023-12-31T00:00:00"^^xsd:dateTime .
 
+request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_jurisdictionConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   policy:hasJurisdiction ;
+        odrl:operator      oac:eq ;
+        odrl:rightOperand  dpvlegal:IE .
+
 request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_recipientConstraint
         rdf:type           odrl:Constraint ;
+        dpv:hasJustification       "This is a justification" ;
         odrl:leftOperand   oac:Recipient ;
         odrl:operator      odrl:isAnyOf ;
         odrl:rightOperand  dpv:AcademicScientificOrganisation , <https://id.inrupt.com/DataConsensus> , <https://id.inrupt.com/DrJohnSmith> .
@@ -98,6 +122,8 @@ request:12d6eb50-f6e2-488c-8923-fb0c4d47749a
         odrl:permission            request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_permission ;
         odrl:profile               oac: ;
         odrl:uid                   request:12d6eb50-f6e2-488c-8923-fb0c4d47749a ;
+        dpv:hasJustification       "This is a justification" ;
+        dpv:hasConsequence         "This is a consequence" ;
         policy:adminApproved       policy:Pending ;
         policy:memberApproved      policy:Approved ;
         policy:thirdPartyApproved  policy:Approved .
@@ -110,6 +136,7 @@ request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_purposeConstraint
 
 request:d1739b02-2e77-4930-ac2e-e41ad39ac985_recipientConstraint
         rdf:type           odrl:Constraint ;
+        dpv:hasJustification       "This is a justification" ;
         odrl:leftOperand   oac:Recipient ;
         odrl:operator      odrl:isAnyOf ;
         odrl:rightOperand  <https://id.inrupt.com/DataConsensus> , <https://id.inrupt.com/thirdparty> .
@@ -160,6 +187,8 @@ request:72013827-a31e-4a27-a7cb-0b86fa9ddf15
         odrl:permission            request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_permission ;
         odrl:profile               oac: ;
         odrl:uid                   request:72013827-a31e-4a27-a7cb-0b86fa9ddf15 ;
+        dpv:hasJustification       "This is a justification" ;
+        dpv:hasConsequence         "This is a consequence" ;
         policy:adminApproved       policy:Blocked ;
         policy:memberApproved      policy:Rejected ;
         policy:thirdPartyApproved  policy:Approved .
@@ -192,6 +221,8 @@ request:d1739b02-2e77-4930-ac2e-e41ad39ac985
         odrl:permission            request:d1739b02-2e77-4930-ac2e-e41ad39ac985_permission ;
         odrl:profile               oac: ;
         odrl:uid                   request:d1739b02-2e77-4930-ac2e-e41ad39ac985 ;
+        dpv:hasJustification       "This is a justification" ;
+        dpv:hasConsequence         "This is a consequence" ;
         policy:adminApproved       policy:Blocked ;
         policy:memberApproved      policy:Rejected ;
         policy:thirdPartyApproved  policy:Approved .
@@ -204,6 +235,8 @@ request:53280de2-47e2-4413-a9ff-a980da0d47b5
         odrl:permission            request:53280de2-47e2-4413-a9ff-a980da0d47b5_permission ;
         odrl:profile               oac: ;
         odrl:uid                   request:53280de2-47e2-4413-a9ff-a980da0d47b5 ;
+        dpv:hasJustification       "This is a justification" ;
+        dpv:hasConsequence         "This is a consequence" ;
         policy:adminApproved       policy:Blocked ;
         policy:memberApproved      policy:Rejected ;
         policy:thirdPartyApproved  policy:Approved .
@@ -236,6 +269,7 @@ request:53280de2-47e2-4413-a9ff-a980da0d47b5_sellingInsightsConstraint
 
 request:53280de2-47e2-4413-a9ff-a980da0d47b5_durationConstraint
         rdf:type           odrl:Constraint ;
+        dpv:hasJustification       "This is a justification" ;
         odrl:leftOperand   dpv:UntilTimeDuration ;
         odrl:operator      odrl:eq ;
         odrl:rightOperand  "2024-07-29T23:00:00.000Z"^^xsd:dateTime .
@@ -249,6 +283,7 @@ request:53280de2-47e2-4413-a9ff-a980da0d47b5_organisationConstraint
 
 request:53280de2-47e2-4413-a9ff-a980da0d47b5_recipientConstraint
         rdf:type           odrl:Constraint ;
+        dpv:hasJustification       "This is a justification" ;
         odrl:leftOperand   oac:Recipient ;
         odrl:operator      odrl:isAllOf ;
         odrl:rightOperand  <https://id.inrupt.com/thirdparty> .
@@ -258,3 +293,9 @@ request:53280de2-47e2-4413-a9ff-a980da0d47b5_techOrgMeasureConstraint
         odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
         odrl:operator      odrl:isAllOf ;
         odrl:rightOperand  dpv:MultiFactorAuthentication , dpv:ConsultationWithDPO , dpv:CodeOfConduct , dpv:ProfessionalTraining , dpv:CryptographicMethods , dpv:LoggingPolicies , dpv:EncryptionInTransfer , dpv:DataProtectionTraining , dpv:EncryptionAtRest , dpv:MonitoringPolicies , dpv:NDA , dpv:ComplianceMonitoring , dpv:NeworkSecurityProtocols .
+
+request:53280de2-47e2-4413-a9ff-a980da0d47b5_jurisdictionConstraint
+        rdf:type           odrl:Constraint ;
+        odrl:leftOperand   policy:hasJurisdiction ;
+        odrl:operator      oac:eq ;
+        odrl:rightOperand  dpvlegal:IE .
