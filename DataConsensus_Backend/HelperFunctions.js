@@ -72,7 +72,6 @@ function getPolicyType(policyURL) {
 }
 
 function getDataset(policyURL) {
-    // console.log(policyURL);
     parts = policyURL.split("#");
     return parts[0];
 }

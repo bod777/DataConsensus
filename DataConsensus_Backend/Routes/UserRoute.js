@@ -6,6 +6,7 @@ const {
     Session
 } = require("@inrupt/solid-client-authn-node");
 const userService = require("../CRUDService/UserService.js");
+const mailer = require("../Logic/Mailer.js");
 const { Member, ThirdParty, Admin } = require("../Models/User.js");
 
 const resourceURL = process.env.RESOURCE_URL;
@@ -49,8 +50,6 @@ module.exports = function (appSession) {
         }
         else {
             const existsAlready = await userService.checkUserByType({ webID: webID, type: "MEMBER" }, appSession);
-            // console.log("does it exist?", existsAlready);
-            // const existsAlready = false;
             if (existsAlready) {
                 res.status(400).send({ message: "User is already registered as a member." });
             }
@@ -58,6 +57,8 @@ module.exports = function (appSession) {
                 try {
                     await userService.addMember(req, appSession);
                     await userService.addNewData(dataSource, appSession, userSession);
+                    await userService.addAsDataSubect(webID, appSession)
+                    await mailer.sendNewDataNotification(appSession);
                     res.send({ message: "Member registered successfully." });
                 }
                 catch (error) {
@@ -166,7 +167,6 @@ module.exports = function (appSession) {
     });
 
     router.put("/update-member", async (req, res, next) => {
-        // console.log(req.body);
         if (!req.body.webID) {
             res.status(400).send({ message: "WebID are required." });
         }
@@ -190,7 +190,6 @@ module.exports = function (appSession) {
                         res.status(403).send({ message: "You do not have permission to access this file. Please double check the datasource URL.", error: error.message });
                     }
                     else {
-                        console.log("generic");
                         console.error(error);
                         res.status(500).send({ message: "Error in updating user.", error: error.message });
                     }
@@ -258,6 +257,8 @@ module.exports = function (appSession) {
             const user = newMember.toJson();
             await userService.removeMember(webID, appSession);
             await userService.removeData(user.dataSource, appSession);
+            await userService.removeAsDataSubect(webID, appSession);
+            await mailer.sendDeletionNotification(appSession);
             res.send({ message: "Data removed successfully." });
         }
         catch (error) {

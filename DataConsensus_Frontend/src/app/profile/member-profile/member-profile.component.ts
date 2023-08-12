@@ -95,12 +95,13 @@ export class MemberProfileComponent implements OnInit {
                 this.email = profile.data.email;
                 this.issued = new Date(profile.data.issued);
                 this.dataSource = profile.data.dataSource;
+                console.log(profile.data);
             },
             (error) => {
                 this._snackBar.open("Error retrieving profile: " + error, "Close");
                 this.broken = true;
             }
         );
-        this.loading = true;
+        this.loading = false;
     }
 }

@@ -1,7 +1,7 @@
 <div class="content">
     <mat-card class="card-container">
         <mat-card-header>
-            <mat-card-title>Submit Request</mat-card-title>
+            <mat-card-title>Request Builder</mat-card-title>
         </mat-card-header>
         <div class="form-field-container">
             <mat-form-field [style.width.px]=800>
@@ -21,7 +21,7 @@
             </mat-form-field>
         </div>
         <div class="guidelines">
-            <h3>Please explain why you will to access this data? </h3>
+            <h3>Please explain why you want to access this data? </h3>
         </div>
         <div class="form-field-container">
             <mat-form-field [style.width.px]=800>
@@ -148,7 +148,7 @@
                 destroyed once the date specified above has passed. </h3>
         </div>
         <mat-card-actions class="button-container" style="padding-bottom: 100px;">
-            <button mat-raised-button color="primary" (click)="submit()">Save</button>
+            <button mat-raised-button color="primary" (click)="submit()">Submit</button>
             <button mat-raised-button (click)="cancelChanges()">Cancel</button>
             <mat-progress-spinner color="primary" mode="indeterminate" diameter="50"
                 *ngIf="showProgressBar"></mat-progress-spinner>

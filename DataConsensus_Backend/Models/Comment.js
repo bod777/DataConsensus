@@ -43,7 +43,6 @@ class Comment {
         if (this.moderatorID) {
             json.moderatorID = this.moderatorID;
         }
-        // console.log(json);
         return json
     }
 }

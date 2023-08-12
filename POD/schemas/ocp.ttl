@@ -1,0 +1,173 @@
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix dpv:  <https://w3id.org/dpv#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix schema: <http://schema.org/> .
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix profile: <http://www.w3.org/ns/dx/prof/> .
+@prefix ocp: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/ocp.ttl#> .
+
+ocp:
+    a owl:Ontology, profile:Profile ;
+	profile:isProfileOf <http://www.w3.org/ns/odrl/2/core> ;
+    rdfs:label "Example Profile 1"@en ;
+    owl:versionInfo "0.1" ;
+    dct:title "Collective Access Control";
+    dct:creator "Bríd O'Donnell";
+    dct:created "2023-06-12"^^xsd:date ;
+	dct:modified "2023-08-10"^^xsd:date ;
+    dct:description "The Example Profile 1 Vocabulary defines a set of concepts required by the Any-Industry."@en ;
+    rdfs:comment "This is the RDF ontology for Example Profile 1 as of 2019-08-22"@en ;
+    dct:license <http://creativecommons.org/licenses/by/4.0/> .
+
+ocp:
+    a skos:Collection ;
+    skos:prefLabel "Example Profile 1 Vocabulary"@en ;
+    skos:scopeNote "Terms based on the DPV vocabularies"@en ;
+    skos:member ocp:Request;
+    skos:member ocp:Offer ;
+    skos:member ocp:Agreement ;
+    skos:member ocp:Organisation ;
+    skos:member ocp:UntilTimeDuration ;
+    skos:member ocp:hasJurisdiction ;
+    skos:member ocp:ThirdCountry ;
+    skos:member ocp:hasJustification ;
+    skos:member ocp:hasConsequence ;
+    skos:member ocp:isAllOf ;
+    skos:member ocp:isAnyOf ;
+    skos:member ocp:thirdPartyApproved ;
+    skos:member ocp:memberApproved ;
+    skos:member ocp:adminApproved ;
+    skos:member ocp:Status ;
+    skos:member ocp:Approved ;
+    skos:member ocp:Rejected ;
+    skos:member ocp:Pending ;
+    skos:member ocp:Blocked ;
+    skos:member ocp:Removed .
+
+ocp:Request rdfs:subClassOf odrl:Policy ;
+    owl:disjointWith odrl:Agreement, odrl:Assertion, odrl:Offer, odrl:Privacy, odrl:Request, odrl:Ticket ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:subClassOf odrl:Policy ;
+    rdfs:label "Request"@en ;
+    skos:definition "A Request Policy for Data Cooperatives"@en ;
+    skos:note "..."@en .
+
+ocp:Offer rdfs:subClassOf odrl:Policy ;
+    owl:disjointWith odrl:Agreement, odrl:Assertion, odrl:Offer, odrl:Privacy, odrl:Request, odrl:Ticket ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:subClassOf odrl:Policy ;
+    rdfs:label "Request"@en ;
+    skos:definition "A Request Policy for Data Cooperatives"@en ;
+    skos:note "..."@en .
+
+ocp:Agreement rdfs:subClassOf odrl:Policy;
+    owl:disjointWith odrl:Agreement, odrl:Assertion, odrl:Offer, odrl:Privacy, odrl:Request, odrl:Ticket ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:subClassOf odrl:Policy ;
+    rdfs:label "Request"@en ;
+    skos:definition "A Request Policy for Data Cooperatives"@en ;
+    skos:note "..."@en .
+
+ocp:Organisation a dpv:Organisation, odrl:LeftOperand, owl:NamedIndividual, skos:Concept ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Organisation"@en ;
+    skos:definition "Constraint on the purpose for which the processing of personal data is permitted or prohibited."@en ;
+    skos:example "..."@en ;
+    skos:note "..."@en .
+
+ocp:UntilTimeDuration a dpv:UntilTimeDuration, odrl:LeftOperand, skos:Concept ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "UntilTimeDuration"@en ;
+    skos:definition "Constraint on the datetime on which the processing of personal data must end."@en ;
+    skos:example "..."@en ;
+    skos:note "..."@en .
+
+ocp:hasJurisdiction a dpv:hasJurisdiction, odrl:LeftOperand, skos:Concept ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Has Jurisdiction"@en ;
+    skos:definition "Constraint on the purpose for which the processing of personal data is permitted or prohibited."@en ;
+    skos:example "..."@en ;
+    skos:note "..."@en .
+
+ocp:ThirdCountry a dpv:ThirdCountry, odrl:LeftOperand, skos:Concept ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Has Third Country"@en ;
+    skos:definition "Constraint whether XXXXX for which the processing of personal data is permitted or prohibited."@en ;
+    skos:example "..."@en ;
+    skos:note "..."@en .
+
+ocp:hasJustification a dpv:hasJustification, rdf:Property ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Has Justification"@en ;
+    skos:definition "XXX"@en ;
+    skos:example "..."@en ;
+    skos:note "..."@en .
+
+ocp:hasConsequence a dpv:hasConsequence, rdf:Property ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Has Justification"@en ;
+    skos:definition "XXX"@en ;
+    skos:example "..."@en ;
+    skos:note "..."@en .
+
+ocp:isAllOf a odrl:isAllOf ;
+	rdfs:isDefinedBy ocp: ;
+    rdfs:label "Is all of"@en ;
+	skos:definition "Indicates that a given Left Operand is all of the instances of the Right Operand of the Constraint."@en ;
+    skos:example "The purpose constraint of a rule can not be an instance of a academic research."@en .
+
+ocp:isAnyOf a odrl:isAnyOf ;
+	rdfs:isDefinedBy ocp: ;
+    rdfs:label "Is any of"@en ;
+	skos:definition "Indicates that a given Left Operand is any of the instances of the Right Operand of the Constraint."@en ;
+    skos:example "The purpose constraint of a rule can not be an instance of a academic research."@en .
+
+ocp:thirdPartyApproved a rdf:Property ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Third Party Approval Status" ;
+    rdfs:domain ocp:Request, ocp:Offer ;
+    rdfs:range ocp:Status .
+
+ocp:memberApproved a rdf:Property ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Member Approval Status" ;
+    rdfs:domain ocp:Request, ocp:Offer ;
+    rdfs:range ocp:Status .
+
+ocp:adminApproved a rdf:Property ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Admin Approval Status" ;
+    rdfs:domain ocp:Request, ocp:Offer ;
+    rdfs:range ocp:Status .
+
+ocp:Status a rdfs:Class ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Approval Status" ;
+    owl:oneOf (ocp:Approved ocp:Rejected ocp:Pending ocp:Blocked ocp:Removed) .
+
+ocp:Approved a ocp:Status ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Approved" ;
+    rdfs:comment "The policy has been approved by this actor." .
+ocp:Rejected a ocp:Status ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Rejected" ;
+    rdfs:comment "The policy has been rejected by this actor." .
+ocp:Pending a ocp:Status ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Pending" ;
+    rdfs:comment "The policy is currently pending approval or rejection.".
+ocp:Blocked a ocp:Status ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Blocked" ;
+    rdfs:comment "Because of actions of other actor, the approval status for this actor is not needed.".
+ocp:Removed a ocp:Status ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Removed" ;
+    rdfs:comment "The policy has been removed and is no longer in effect." .
+

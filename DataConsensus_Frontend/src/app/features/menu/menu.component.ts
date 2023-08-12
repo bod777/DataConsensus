@@ -30,6 +30,7 @@ export class MenuComponent {
     logout() {
         localStorage.removeItem('webID');
         localStorage.removeItem('userType');
+        localStorage.removeItem('sessionID');
         localStorage.setItem('loggedIn', 'false');
         this.router.navigateByUrl('/login');
     }

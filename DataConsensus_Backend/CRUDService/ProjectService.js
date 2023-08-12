@@ -21,16 +21,14 @@ const { v4: uuidv4 } = require('uuid');
 const { RDF, DCTERMS, XSD } = require("@inrupt/vocab-common-rdf");
 const { Project } = require("../Models/Project.js");
 const { extractTerm, getDataset } = require("../HelperFunctions.js");
+const policyService = require("./PolicyService.js");
+const VoteCounter = require("../Logic/VoteCounter.js");
 
-const policy = process.env.POLICY;
-const project = process.env.PROJECT;
-const policySchema = process.env.POLICY;
 const projectSchema = process.env.PROJECT;
 const agreementsList = process.env.AGREEMENTS
 const offersList = process.env.OFFERS
 const projectsList = process.env.PROJECTS
 const requestsList = process.env.REQUESTS
-const odrl = process.env.ODRL
 const dpv = process.env.DPV
 const oac = process.env.OAC
 
@@ -61,11 +59,13 @@ module.exports = {
         const projectOffers = await this.getRelatedPolicies(projectThing, offersList, session);
         const projectAgreements = await this.getRelatedPolicies(projectThing, agreementsList, session);
         const projectPolicies = { requests: projectRequests, offers: projectOffers, agreements: projectAgreements };
-        const project = await this.formatProject(projectThing, projectPolicies, session);
+        const requestResults = await VoteCounter.calculateBinaryVotes(projectRequests, session);
+        const offersResults = await VoteCounter.calculatePreferenceVotes(projectThing, projectOffers, session);
+        let project = await this.formatProject(projectThing, projectPolicies, { request: requestResults, offers: offersResults }, session);
         return project;
     },
 
-    formatProject: async function (projectThing, projectPolicies, session) {
+    formatProject: async function (projectThing, projectPolicies, results) {
         const projectURL = projectThing.url;
         const projectID = projectThing.url.split('#')[1];
         const creator = projectThing.predicates[DCTERMS.creator]["namedNodes"][0];
@@ -81,7 +81,7 @@ module.exports = {
         const offerEndTime = projectThing.predicates[`${projectSchema}#offerEndTime`]["literals"][XSD.dateTime][0];
         const threshold = projectThing.predicates[`${projectSchema}#threshold`]["literals"][XSD.decimal][0];
 
-        const project = new Project(projectURL, projectID, creator, title, description, organisation, projectStatus, hasAgreement, hasAccess, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies);
+        const project = new Project(projectURL, projectID, creator, title, description, organisation, projectStatus, hasAgreement, hasAccess, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies, results);
         return project.toJson();
     },
 
@@ -93,8 +93,9 @@ module.exports = {
             const projectOffers = await this.getRelatedPolicies(item, offersList, session);
             const projectAgreements = await this.getRelatedPolicies(item, agreementsList, session);
             const projectPolicies = { requests: projectRequests, offers: projectOffers, agreements: projectAgreements };
-            const project = await this.formatProject(item, projectPolicies, session);
-
+            const requestResults = await VoteCounter.calculateBinaryVotes(projectRequests, session);
+            const offersResults = await VoteCounter.calculatePreferenceVotes(item, projectOffers, session);
+            let project = await this.formatProject(item, projectPolicies, { request: requestResults, offers: offersResults }, session);
             return project;
         });
         const projectList = await Promise.all(projectPromises);
@@ -103,21 +104,13 @@ module.exports = {
 
     getRelatedPolicies: async function (project, dataset, session) {
         const policyService = require("../CRUDService/PolicyService.js");
-        // console.log("Project ", project.url);
         const policyDataset = await getGivenSolidDataset(dataset, session);
-        // console.log("Policy Dataset ", policyDataset);
         const policies = getThingAll(policyDataset);
-        // console.log("Policies ", policies)
         let projectPolicies = [];
         let policySolidThings = policies.filter((policy) => getUrl(policy, DCTERMS.isPartOf) === project.url);
-        // console.log("Policy Solid Things", policySolidThings);
         policyURLs = policySolidThings.map((policy) => policy.url);
-        // console.log("Policy URLs", policyURLs);
-        // const filteredPolicies = policies.filter(obj => policyURLs.includes(obj.url));
         const filteredPolicies = policies.filter(obj => policyURLs.some(url => (obj.url.includes(url))));
-        // console.log("Filtered Policies", filteredPolicies);
         for (const URL of policyURLs) {
-            // console.log("For loop URL", URL);
             const solidThing = filteredPolicies.find(obj => obj.url === `${URL}`);
             const permissionThing = filteredPolicies.find(obj => obj.url === `${URL}_permission`);
             const purposeConstraint = filteredPolicies.find(obj => obj.url === `${URL}_purposeConstraint`);
@@ -130,7 +123,6 @@ module.exports = {
             const jurisdictionConstraint = filteredPolicies.find(obj => obj.url === `${URL}_jurisdictionConstraint`);
             const thirdCountryConstraint = filteredPolicies.find(obj => obj.url === `${URL}_thirdCountryConstraint`);
 
-            // console.log("Duration ", durationConstraint);
             let policy;
             if (dataset !== agreementsList) {
                 policy = await policyService.formatProposal(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, project);
@@ -138,10 +130,8 @@ module.exports = {
             else {
                 policy = await policyService.formatAgreement(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, project);
             }
-            // console.log("formated policy", policy);
             projectPolicies.push(policy);
         }
-        // console.log("project policies", projectPolicies);
         return projectPolicies;
     },
 

@@ -39,13 +39,15 @@ export class MemberSignUpComponent implements OnInit {
         this.name = localStorage.getItem('name') || "";
         this.email = localStorage.getItem('email') || "";
         this.dataSource = localStorage.getItem('dataSource') || "";
+        console.log(this.name, this.email, this.dataSource);
         localStorage.removeItem('name');
         localStorage.removeItem('email');
         localStorage.removeItem('dataSource');
         console.log("Signing Up");
         this.route.queryParams.subscribe((params) => {
-            const isLoggedIn = params["isLoggedIn"];
+            const isLoggedIn = params["isLoggedIn"] === "true" ? true : false;
             const sessionID = params["sessionId"];
+            console.log(params);
             if (isLoggedIn) {
                 this.webID = params["webId"];
                 this.showProgressBar = true;
@@ -65,7 +67,7 @@ export class MemberSignUpComponent implements OnInit {
                             localStorage.setItem("webID", this.webID);
                             localStorage.setItem("isLoggedIn", "true");
                             localStorage.setItem("userType", "MEMBER");
-                            this.router.navigate(['/home']);
+                            this.router.navigate(['/']);
                         },
                         (error) => {
                             if (error.error.message === "User is already registered as a member.") {

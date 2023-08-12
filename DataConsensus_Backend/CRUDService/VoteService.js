@@ -12,10 +12,14 @@ const {
 const { RDF, XSD, DCTERMS } = require("@inrupt/vocab-common-rdf");
 const { v4: uuidv4 } = require('uuid');
 const { getGivenSolidDataset, saveGivenSolidDataset, extractTerm } = require("../HelperFunctions.js");
+const policyService = require("./PolicyService.js");
+const projectService = require("./ProjectService.js");
 const { BinaryVote, PreferenceVote } = require("../Models/Vote.js");
 const voteSchema = process.env.VOTE;
 const votesList = process.env.VOTES
-
+const offersList = process.env.OFFERS
+const requestsList = process.env.REQUESTS
+const projectsList = process.env.PROJECTS
 
 module.exports = {
 
@@ -34,7 +38,6 @@ module.exports = {
             }
         }
         if (existingVote) {
-            // console.log("updating vote for ", req.policyURL);
             existingVote = buildThing(existingVote)
                 .setDatetime(DCTERMS.modified, new Date())
                 .setInteger(`${voteSchema}#voteRank`, req.voteRank)
@@ -48,7 +51,6 @@ module.exports = {
             } else {
                 voteType = `${voteSchema}#BinaryVote`;
             }
-            // console.log("creating vote for ", req.policyURL);
             existingVote = buildThing(createThing({ url: voteURL }))
                 .addUrl(RDF.type, `${voteSchema}#Vote`)
                 .addUrl(`${voteSchema}#hasVoteType`, voteType)
@@ -60,7 +62,6 @@ module.exports = {
                 .addInteger(`${voteSchema}#voteRank`, req.voteRank)
                 .build();
         }
-        // console.log("existingVote", JSON.stringify(existingVote));
         solidDataset = setThing(solidDataset, existingVote);
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
     },
@@ -109,7 +110,6 @@ module.exports = {
     },
 
     getPreferenceVote: async function (req, session) {
-        // console.log(req);
         let datasetURL = votesList;
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         const existingVotes = getThingAll(solidDataset);
@@ -119,7 +119,6 @@ module.exports = {
             const policy = getUrl(vote, `${voteSchema}#hasPolicy`);
             const project = getUrl(vote, DCTERMS.isPartOf);
             if (voter === req.voter && policy === req.policyURL && project === req.projectURL) {
-                // console.log(policy);
                 existingVote = vote;
                 break;
             }
@@ -137,5 +136,5 @@ module.exports = {
         const rank = existingVote.predicates[`${voteSchema}#voteRank`]["literals"][XSD.integer][0];
         const vote = new PreferenceVote(voteURL, project, policy, voter, created, modified, rank);
         return vote.toJson();
-    }
-}
+    },
+};

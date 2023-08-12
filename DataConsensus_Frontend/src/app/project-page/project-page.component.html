@@ -87,7 +87,7 @@
                                     href="https://penny.vincenttunru.com/" target="_blank">Penny</a> and search for
                                 the
                                 following URL:</p>
-                            <p>https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv
+                            <p>https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/pool/datapool.csv
                             </p>
                         </div>
                     </mat-card-content>
@@ -202,12 +202,12 @@
                     <!-- RESULTS FOR OFFER -->
                     <mat-card-content
                         *ngIf="projectStatus === 'Closed' || projectStatus === 'AdminApprovalNeeded' || projectStatus === 'ThirdPartyApprovalNeeded'">
-                        <div *ngIf="offerResult==='rejection'">
+                        <div *ngIf="offerWinner==='rejection'">
                             <p><b>All proposed offers rejected by members</b></p>
                         </div>
-                        <div *ngIf="offerResult!=='rejection'">
+                        <div *ngIf="offerWinner!=='rejection'">
                             <p><b>Members have approved a counter offer to the third party request.</b></p>
-                            <p><b>Winning offer: </b>{{offerResult.split("#")[1]}}</p>
+                            <p><b>Winning offer: </b>{{offerWinner}}</p>
                         </div>
                     </mat-card-content>
                     <mat-card-content *ngIf="projectStatus==='RequestDeliberation'||projectStatus==='Pending'">

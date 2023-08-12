@@ -44,6 +44,7 @@ export class ProjectPageComponent implements OnInit {
     requestUpvotes: Number = 0;
     requestAbstentions: Number = 0;
     offerResult: any = {};
+    offerWinner: string = "rejection";
 
     // Function to update the selected tab
     setSelectedTab(tab: string) {
@@ -223,7 +224,6 @@ export class ProjectPageComponent implements OnInit {
         });
         this.policyService.getProject(this.projectID).subscribe(
             (project: any) => {
-                console.log(project.data)
                 this.project = project.data;
                 this.userService.getMemberCount(this.project.requestEndTime).subscribe(
                     (member: any) => {
@@ -283,6 +283,13 @@ export class ProjectPageComponent implements OnInit {
                             }
                         );
                     }
+                    if (this.request && this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation" && project.data.results.request.error !== "requestEndTime is not passed yet") {
+                        this.requestResult = project.data.results.request.result;
+                        this.requestDownvotes = project.data.results.request.downvotes;
+                        this.requestUpvotes = project.data.results.request.upvotes;
+                        this.requestAbstentions = project.data.results.request.abstention;
+                        this.toBeApproved = project.data.projectPolicies.requests[0].URL;
+                    }
                     if (project.data.projectPolicies.offers.length > 0) {
                         this.project.projectPolicies.offers.forEach((offer: any) => {
                             offer.policyCreationTime = new Date(offer.policyCreationTime);
@@ -303,12 +310,19 @@ export class ProjectPageComponent implements OnInit {
                             this.voteService.getPreference(this.user, this.projectID).subscribe(
                                 (vote: any) => {
                                     this.offerRanking = vote.data;
-                                    console.log(this.offerRanking);
                                 },
                                 (error) => {
                                     this._snackBar.open("Error retrieving offer preference: " + error, "Close");
                                 }
                             );
+                        }
+                        if (this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation" && this.projectStatus !== "OfferDeliberation" && this.offers.length !== 0 && project.data.results.offers.error !== "offerEndTime has not passed yet or no offer to deliberate occured") {
+                            this.offerResult = project.data.results.offers;
+                            if (this.offerResult.winner !== "rejection") {
+                                this.toBeApproved = this.offerResult.winner;
+                                this.offerWinner = this.offerResult.winner.split("#")[1];
+                                console.log(this.offerWinner);
+                            }
                         }
                     }
                     if (this.project.projectPolicies.agreements.length > 0) {
@@ -326,49 +340,50 @@ export class ProjectPageComponent implements OnInit {
                         this.project.projectPolicies.agreements[0].threshold = Number(this.project.projectPolicies.agreements[0].threshold);
                         this.agreement = this.project.projectPolicies.agreements[0];
                     }
-                }
-
-                // Fetching request results after the initial results fetch
-                if (this.request && this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation") {
-                    this.voteService.getRequestResult(this.request.ID, this.project.requestEndTime.toISOString()).subscribe(
-                        (response) => {
-                            this.requestResult = response.result;
-                            this.requestDownvotes = response.downvotes;
-                            this.requestUpvotes = response.upvotes;
-                            this.requestAbstentions = response.abstentions;
-                            if (this.requestResult === true) {
-                                this.toBeApproved = this.request.URL;
-                                this.loading = false;
-                                console.log(this.loading);
-                            }
-                        },
-                        (error) => {
-                            console.log(error);
-                            this._snackBar.open("Error in fetching request deliberation result: " + error, "Close");
-                            this.broken = true;
-                        }
-                    );
-                }
-                // Fetching offer results after the initial results fetch
-                if (this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation" && this.projectStatus !== "OfferDeliberation" && this.offers.length !== 0) {
-                    this.voteService.getOfferResult(this.projectID, this.project.offerEndTime.toISOString()).subscribe(
-                        (response) => {
-                            this.offerResult = response.winner;
-                            if (this.offerResult !== "rejection") {
-                                this.toBeApproved = this.offerResult;
-                            }
-                            this.loading = false;
-                            console.log(this.loading);
-                        },
-                        (error) => {
-                            console.log(error);
-                            this._snackBar.open("Error in fetching offer deliberation result. Try Refreshing. Error: " + error.message, "Close");
-                            this.broken = true;
-                        }
-                    );
-                } else {
                     this.loading = false;
                 }
+
+                // // Fetching request results after the initial results fetch
+                // if (this.request && this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation") {
+                //     this.voteService.getRequestResult(this.request.ID, this.project.requestEndTime.toISOString()).subscribe(
+                //         (response) => {
+                //             this.requestResult = response.result;
+                //             this.requestDownvotes = response.downvotes;
+                //             this.requestUpvotes = response.upvotes;
+                //             this.requestAbstentions = response.abstentions;
+                //             if (this.requestResult === true) {
+                //                 this.toBeApproved = this.request.URL;
+                //                 this.loading = false;
+                //                 console.log(this.loading);
+                //             }
+                //         },
+                //         (error) => {
+                //             console.log(error);
+                //             this._snackBar.open("Error in fetching request deliberation result: " + error, "Close");
+                //             this.broken = true;
+                //         }
+                //     );
+                // }
+                // // Fetching offer results after the initial results fetch
+                // if (this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation" && this.projectStatus !== "OfferDeliberation" && this.offers.length !== 0) {
+                //     this.voteService.getOfferResult(this.projectID, this.project.offerEndTime.toISOString()).subscribe(
+                //         (response) => {
+                //             this.offerResult = response.winner;
+                //             if (this.offerResult !== "rejection") {
+                //                 this.toBeApproved = this.offerResult;
+                //             }
+                //             this.loading = false;
+                //             console.log(this.loading);
+                //         },
+                //         (error) => {
+                //             console.log(error);
+                //             this._snackBar.open("Error in fetching offer deliberation result. Try Refreshing. Error: " + error.message, "Close");
+                //             this.broken = true;
+                //         }
+                //     );
+                // } else {
+                //     this.loading = false;
+                // }
             },
             (error) => {
                 this._snackBar.open("Error retrieving project. Try refreshing. Error:" + error, "Close");

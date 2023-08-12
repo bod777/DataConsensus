@@ -1,5 +1,5 @@
 class Project {
-    constructor(url, id, creator, title, description, organisation, projectStatus, hasAgreement, hasAccess, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies) {
+    constructor(url, id, creator, title, description, organisation, projectStatus, hasAgreement, hasAccess, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies, results) {
         this.projectURL = url;
         this.projectID = id;
         this.creator = creator;
@@ -15,9 +15,10 @@ class Project {
         this.offerEndTime = offerEndTime;
         this.threshold = threshold;
         this.projectPolicies = projectPolicies;
+        this.results = results;
     }
 
-    setProject(url, id, creator, title, description, organisation, projectStatus, hasAgreement, hasAccess, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies) {
+    setProject(url, id, creator, title, description, organisation, projectStatus, hasAgreement, hasAccess, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, projectPolicies, results) {
         this.projectURL = url;
         this.projectID = id;
         this.creator = creator;
@@ -33,6 +34,7 @@ class Project {
         this.offerEndTime = offerEndTime;
         this.threshold = threshold;
         this.projectPolicies = projectPolicies;
+        this.results = results;
     }
 
     toJson() {
@@ -51,7 +53,8 @@ class Project {
             requestEndTime: new Date(this.requestEndTime),
             offerEndTime: new Date(this.offerEndTime),
             threshold: this.threshold,
-            projectPolicies: this.projectPolicies
+            projectPolicies: this.projectPolicies,
+            results: this.results
         };
     }
 }

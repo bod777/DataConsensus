@@ -24,7 +24,8 @@ const { ODRL, DCTERMS, XSD, RDF } = require("@inrupt/vocab-common-rdf");
 const { extractTerm, getDatasetUrl, getDataset } = require("../HelperFunctions.js");
 const projectService = require("./ProjectService.js");
 
-const policySchema = process.env.POLICY;
+const resource = process.env.RESOURCE_URL;
+const ocp = process.env.OCP;
 const projectSchema = process.env.PROJECT;
 const agreementsList = process.env.AGREEMENTS
 const offersList = process.env.OFFERS
@@ -48,6 +49,10 @@ async function saveGivenSolidDataset(datasetURL, courseSolidDataset, session) {
 }
 
 module.exports = {
+
+    testfunction: async function (req, session) {
+        console.log("testfunction");
+    },
 
     getSolidThing: async function (req, session) {
         let datasetURL = getDataset(req.policyURL);
@@ -74,7 +79,7 @@ module.exports = {
         return policy;
     },
 
-    formatAgreement: async function (solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, projectThing) {
+    formatAgreement: async function (solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing) {
         const URL = solidThing.url;
         const ID = solidThing.url.split('#')[1];
         const creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
@@ -83,8 +88,8 @@ module.exports = {
         const assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
         const assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
         const references = solidThing.predicates[DCTERMS.references]["namedNodes"][0];
-        const hasJustification = solidThing.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
-        const hasConsequence = solidThing.predicates[`${dpv}hasConsequence`]["literals"][XSD.string][0];
+        const hasJustification = solidThing.predicates[`${ocp}#hasJustification`]["literals"][XSD.string][0];
+        const hasConsequence = solidThing.predicates[`${ocp}#hasConsequence`]["literals"][XSD.string][0];
 
         const purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
         const organisation = extractTerm(organisationConstraint.predicates[ODRL.rightOperand]["namedNodes"][0])
@@ -103,13 +108,13 @@ module.exports = {
         const measuresArray = techOrgMeasureConstraint?.predicates?.[ODRL.rightOperand]?.["namedNodes"] || [];
         const techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
         const recipients = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
-        const recipientsJustification = recipientConstraint.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
+        const recipientsJustification = recipientConstraint.predicates[`${ocp}#hasJustification`]["literals"][XSD.string][0];
         const untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
-        const durationJustification = durationConstraint.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
+        const durationJustification = durationConstraint.predicates[`${ocp}#hasJustification`]["literals"][XSD.string][0];
         const juridiction = extractTerm(jurisdictionConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
         const thirdCountriesArray = thirdCountryConstraint?.predicates?.[ODRL.rightOperand]?.["namedNodes"] || [];
         const thirdCountry = thirdCountriesArray.map((country) => extractTerm(country));
-        const thirdCountryJustification = thirdCountryConstraint?.predicates?.[`${dpv}hasJustification`]?.["literals"]?.[XSD.string]?.[0] || "Data will remain in the State.";
+        let thirdCountryJustification = thirdCountryConstraint?.predicates?.[`${ocp}#hasJustification`]?.["literals"]?.[XSD.string]?.[0] || "Data will remain in the State.";
         thirdCountryJustification = thirdCountryJustification === undefined ? "Data will remain in the State." : thirdCountryJustification;
 
         const title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
@@ -152,11 +157,11 @@ module.exports = {
         const isPartOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
         const assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
         const assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
-        const adminStatus = extractTerm(solidThing.predicates[`${policySchema}#adminApproved`]["namedNodes"][0]);
-        const memberStatus = extractTerm(solidThing.predicates[`${policySchema}#memberApproved`]["namedNodes"][0]);
-        const thirdPartyStatus = extractTerm(solidThing.predicates[`${policySchema}#thirdPartyApproved`]["namedNodes"][0]);
-        const hasJustification = solidThing.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
-        const hasConsequence = solidThing.predicates[`${dpv}hasConsequence`]["literals"][XSD.string][0];
+        const adminStatus = extractTerm(solidThing.predicates[`${ocp}#adminApproved`]["namedNodes"][0]);
+        const memberStatus = extractTerm(solidThing.predicates[`${ocp}#memberApproved`]["namedNodes"][0]);
+        const thirdPartyStatus = extractTerm(solidThing.predicates[`${ocp}#thirdPartyApproved`]["namedNodes"][0]);
+        const hasJustification = solidThing.predicates[`${ocp}#hasJustification`]["literals"][XSD.string][0];
+        const hasConsequence = solidThing.predicates[`${ocp}#hasConsequence`]["literals"][XSD.string][0];
 
         const purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
         const organisation = extractTerm(organisationConstraint.predicates[ODRL.rightOperand]["namedNodes"][0])
@@ -175,13 +180,13 @@ module.exports = {
         const measuresArray = techOrgMeasureConstraint?.predicates?.[ODRL.rightOperand]?.["namedNodes"] || [];
         const techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
         const recipients = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
-        const recipientsJustification = recipientConstraint.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
+        const recipientsJustification = recipientConstraint.predicates[`${ocp}#hasJustification`]["literals"][XSD.string][0];
         const untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
-        const durationJustification = durationConstraint.predicates[`${dpv}hasJustification`]["literals"][XSD.string][0];
+        const durationJustification = durationConstraint.predicates[`${ocp}#hasJustification`]["literals"][XSD.string][0];
         const juridiction = extractTerm(jurisdictionConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
         const thirdCountriesArray = thirdCountryConstraint?.predicates?.[ODRL.rightOperand]?.["namedNodes"] || [];
         let thirdCountry = thirdCountriesArray.map((country) => extractTerm(country));
-        let thirdCountryJustification = thirdCountryConstraint?.predicates?.[`${dpv}hasJustification`]?.["literals"]?.[XSD.string]?.[0] || "Data will remain in the State.";
+        let thirdCountryJustification = thirdCountryConstraint?.predicates?.[`${ocp}#hasJustification`]?.["literals"]?.[XSD.string]?.[0] || "Data will remain in the State.";
         thirdCountryJustification = thirdCountryJustification === undefined ? "Data will remain in the State." : thirdCountryJustification;
 
 
@@ -245,9 +250,10 @@ module.exports = {
             .addDatetime(DCTERMS.issued, new Date())
             .addUrl(DCTERMS.isPartOf, project)
             .addUrl(ODRL.uid, `${datasetURL}#${policyID}`)
-            .addStringNoLocale(`${dpv}hasJustification`, hasJustification)
-            .addStringNoLocale(`${dpv}hasConsequence`, hasConsequence)
-            .addUrl(ODRL.profile, `${policySchema}`)
+            .addStringNoLocale(`${ocp}#hasJustification`, hasJustification)
+            .addStringNoLocale(`${ocp}#hasConsequence`, hasConsequence)
+            .addUrl(ODRL.profile, ocp)
+            .addUrl(ODRL.profile, oac)
             .addUrl(ODRL.permission, `${datasetURL}#${policyID}_permission`);
 
         if (req.type == "Request" || req.type == "Offer") {
@@ -255,15 +261,18 @@ module.exports = {
             let memberApproved = req.memberApproved;
             let adminApproved = req.adminApproved;
             newPolicy = newPolicy
-                .addUrl(`${policySchema}#thirdPartyApproved`, `${policySchema}#${thirdPartyApproved}`)
-                .addUrl(`${policySchema}#memberApproved`, `${policySchema}#${memberApproved}`)
-                .addUrl(`${policySchema}#adminApproved`, `${policySchema}#${adminApproved}`);
+                .addUrl(`${ocp}#thirdPartyApproved`, `${ocp}#${thirdPartyApproved}`)
+                .addUrl(`${ocp}#memberApproved`, `${ocp}#${memberApproved}`)
+                .addUrl(`${ocp}#adminApproved`, `${ocp}#${adminApproved}`);
         }
         else {
             newPolicy = newPolicy
-                .addUrl(DCTERMS.references, req.references)
-                .addUrl(`${dpv}hasDataSubject`, `${req.assigner}`)
-                .addUrl(`${dpv}hasJointDataController`, `${req.assignee}`)
+                .addUrl(DCTERMS.references, req.references);
+            const members = await userService.getWebIDs(session);
+            for (const member of members) {
+                newPolicy = newPolicy.addUrl(`${dpv}hasDataSubject`, member);
+            };
+            newPolicy = newPolicy.addUrl(`${dpv}hasJointDataController`, `${req.assignee}`)
                 .addUrl(`${dpv}hasJointDataController`, `${req.assigner}`)
                 .addUrl(`${dpv}hasLegalBasis`, `${dpv}Consent`);
         }
@@ -280,7 +289,7 @@ module.exports = {
             .addUrl(ODRL.action, `${dpv}Copy`)
             .addUrl(ODRL.action, `${dpv}Store`)
             .addUrl(ODRL.action, `${dpv}Remove`)
-            .addUrl(ODRL.target, `https://w3id.org/dpv/dpv-pd#MedicalHealth`)
+            .addUrl(ODRL.target, resource)
             .addUrl(ODRL.constraint,
                 `${datasetURL}#${policyID}_organisationConstraint`)
             .addUrl(ODRL.constraint,
@@ -321,7 +330,7 @@ module.exports = {
 
         const organisationConstraint = buildThing(createThing({ url: `${policyURL}_organisationConstraint` }))
             .addUrl(RDF.type, ODRL.Constraint)
-            .addUrl(ODRL.leftOperand, `${oac}Organisation`)
+            .addUrl(ODRL.leftOperand, `${ocp}#Organisation`)
             .addUrl(ODRL.operator, ODRL.isA)
             .addUrl(ODRL.rightOperand, `${dpv}${organisation}`)
             .build();
@@ -330,9 +339,9 @@ module.exports = {
 
         const jurisdictionConstraint = buildThing(createThing({ url: `${policyURL}_jurisdictionConstraint` }))
             .addUrl(RDF.type, ODRL.Constraint)
-            .addUrl(ODRL.leftOperand, `${dpv}hasJurisdiction`)
+            .addUrl(ODRL.leftOperand, `${ocp}#hasJurisdiction`)
             .addUrl(ODRL.operator, ODRL.eq)
-            .addUrl(ODRL.rightOperand, `${dpv}${juridiction}`)
+            .addUrl(ODRL.rightOperand, `${dpvlegal}${juridiction}`)
             .build();
 
         solidDataset = setThing(solidDataset, jurisdictionConstraint);
@@ -377,7 +386,7 @@ module.exports = {
             let techOrgMeasureConstraint = buildThing(createThing({ url: `${policyURL}_techOrgMeasureConstraint` }))
                 .addUrl(RDF.type, ODRL.Constraint)
                 .addUrl(ODRL.leftOperand, `${oac}TechnicalOrganisationalMeasure`)
-                .addUrl(ODRL.operator, ODRL.isAllOf);
+                .addUrl(ODRL.operator, `${ocp}#isAllOf`);
             techOrgMeasures.forEach((measure) => {
                 techOrgMeasureConstraint = techOrgMeasureConstraint.addUrl(ODRL.rightOperand, `${dpv}${measure}`);
             });
@@ -388,9 +397,9 @@ module.exports = {
         if (recipients.length > 0) {
             let recipientConstraint = buildThing(createThing({ url: `${policyURL}_recipientConstraint` }))
                 .addUrl(RDF.type, ODRL.Constraint)
-                .addStringNoLocale(`${dpv}hasJustification`, recipientsJustification)
+                .addStringNoLocale(`${ocp}#hasJustification`, recipientsJustification)
                 .addUrl(ODRL.leftOperand, `${oac}Recipient`)
-                .addUrl(ODRL.operator, ODRL.isAllOf);
+                .addUrl(ODRL.operator, `${ocp}#isAllOf`)
 
             recipients.forEach((item) => {
                 recipientConstraint = recipientConstraint.addUrl(ODRL.rightOperand, item);
@@ -401,8 +410,8 @@ module.exports = {
 
         const durationConstraint = buildThing(createThing({ url: `${policyURL}_durationConstraint` }))
             .addUrl(RDF.type, ODRL.Constraint)
-            .addStringNoLocale(`${dpv}hasJustification`, durationJustification)
-            .addUrl(ODRL.leftOperand, `${dpv}UntilTimeDuration`)
+            .addStringNoLocale(`${ocp}#hasJustification`, durationJustification)
+            .addUrl(ODRL.leftOperand, `${ocp}#UntilTimeDuration`)
             .addUrl(ODRL.operator, ODRL.eq)
             .addDatetime(ODRL.rightOperand, new Date(untilTimeDuration))
             .build();
@@ -412,9 +421,9 @@ module.exports = {
         if (thirdCountry.length > 0) {
             let thirdCountryConstraint = buildThing(createThing({ url: `${policyURL}_thirdCountryConstraint` }))
                 .addUrl(RDF.type, ODRL.Constraint)
-                .addStringNoLocale(`${dpv}hasJustification`, thirdCountryJustification)
-                .addUrl(ODRL.leftOperand, `${dpv}ThirdCountry`)
-                .addUrl(ODRL.operator, ODRL.isAllOf)
+                .addStringNoLocale(`${ocp}#hasJustification`, thirdCountryJustification)
+                .addUrl(ODRL.leftOperand, `${ocp}#ThirdCountry`)
+                .addUrl(ODRL.operator, `${ocp}#isAllOf`)
 
             thirdCountry.forEach((item) => {
                 thirdCountryConstraint = thirdCountryConstraint.addUrl(ODRL.rightOperand, `${dpvlegal}${item}`);
@@ -434,9 +443,8 @@ module.exports = {
 
         let policyToUpdate = getThing(solidDataset, req.policyURL);
         newThing = buildThing(policyToUpdate)
-            .setUrl(`${policySchema}#${req.actor}`, `${policySchema}#${req.newStatus}`)
+            .setUrl(`${ocp}#${req.actor}`, `${ocp}#${req.newStatus}`)
             .build();
-
         solidDataset = setThing(solidDataset, newThing);
         await saveGivenSolidDataset(datasetURL, solidDataset, session);
         return policyToUpdate;
@@ -464,11 +472,8 @@ module.exports = {
         else {
             // only the creator of the policy or an admin can delete it and only if the memberApproved is Pending
             const isAdmin = await userService.checkUserByType({ type: "ADMIN", webID }, session);
-            // console.log("isAdmin", isAdmin);
-            // console.log(getUrl(policy, DCTERMS.creator));
-            // console.log(webID);
             if (webID === getUrl(policy, DCTERMS.creator) || isAdmin) {
-                if (getUrl(policy, `${policySchema}#memberApproved`) === `${policySchema}#Pending`) {
+                if (getUrl(policy, `${ocp}#memberApproved`) === `${ocp}#Pending`) {
                     if (datasetURL === requestsList) {
                         await projectService.updateProject({ projectURL: getUrl(policy, DCTERMS.isPartOf), status: "Removed" }, session);
                     }
@@ -517,7 +522,6 @@ module.exports = {
         const referenceURL = getUrl(policy, DCTERMS.references);
         const thirdparty = getUrl(permissionThing, ODRL.assignee);
         if (referenceURL !== null) {
-            // console.log("dct:reference:", referenceURL);
             let req = {
                 policyURL: referenceURL,
                 actor: "adminApproved",

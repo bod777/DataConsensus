@@ -7,7 +7,7 @@
 
 <https://id.inrupt.com/DrJohnSmith> a user:User ;
     foaf:name           "Dr John Smith" ;
-    foaf:mbox           "johnsmith@tcd.ie" ;
+    foaf:mbox           "dataconsensusthirdparty@gmail.com" ;
     user:hasUserType    user:ThirdParty ;
     dct:issued          "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
     dpv:Organisation    dpv:AcademicScientificOrganisation;
@@ -23,7 +23,7 @@
 
 <https://id.inrupt.com/InsuranceCompany> a user:User ;
     foaf:name           "Generic Insurance Company" ;
-    foaf:mbox           "insurancecompany@example.com" ;
+    foaf:mbox           "dataconsensusthirdparty@gmail.com" ;
     user:hasUserType    user:ThirdParty ;
     dct:issued          "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
     dpv:Organisation    dpv:ForProfitOrganisation;
@@ -31,7 +31,7 @@
 
 <https://id.inrupt.com/FightDiabetesDublin> a user:User ;
     foaf:name           "Fight Diabetes Dublin" ;
-    foaf:mbox           "fightdiabetesdublin@example.com" ;
+    foaf:mbox           "dataconsensusthirdparty@gmail.com" ;
     user:hasUserType    user:ThirdParty ;
     dct:issued          "2023-06-01T20:09:49.561Z"^^xsd:dateTime ;
     dpv:Organisation    dpv:NonProfitOrganisation;

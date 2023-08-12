@@ -6,7 +6,6 @@
 @prefix oac: <https://w3id.org/oac#> .
 @prefix project: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schema/project.ttl#> .
 @prefix user: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/user.ttl#> .
-@prefix policy: <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/schemas/policy.ttl#> .
 
 project:Project a rdfs:Class ;
     rdfs:subClassOf dct:Collection .

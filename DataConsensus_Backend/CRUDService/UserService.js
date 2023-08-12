@@ -12,6 +12,7 @@ const {
     removeThing,
     getFile,
     overwriteFile,
+    removeUrl,
     isRawData,
     getContentType,
     getSourceUrl
@@ -22,6 +23,8 @@ const Transformer = require("../Logic/Transformer.js");
 const { getGivenSolidDataset, saveGivenSolidDataset, getDatasetUrl } = require("../HelperFunctions.js");
 
 const user = process.env.USER;
+const dpv = process.env.DPV;
+const agreementsList = process.env.AGREEMENTS;
 const membersList = process.env.MEMBER_LIST;
 const thirdPartiesList = process.env.THIRDPARTY_LIST;
 const adminsList = process.env.ADMIN_LIST;
@@ -104,27 +107,22 @@ module.exports = {
         let solidDataset = await getGivenSolidDataset(datasetURL, session);
         let projectToUpdate = getThing(solidDataset, req.body.webID);
         if (req.body.name) {
-            // console.log(req.body.name);
             projectToUpdate = buildThing(projectToUpdate)
                 .setStringNoLocale(FOAF.name, req.body.name)
                 .build();
         }
         if (req.body.email) {
-            // console.log(req.body.email);
             projectToUpdate = buildThing(projectToUpdate)
                 .setStringNoLocale(FOAF.mbox, req.body.email)
                 .build();
         }
         if (req.body.orgType) {
-            // console.log(req.body.orgType);
             projectToUpdate = buildThing(projectToUpdate)
                 .setUrl(`https://w3id.org/dpv#Organisation`, `https://w3id.org/dpv#${req.body.orgType}`)
                 .build();
         }
         if (req.body.dataSource && req.body.sessionID) {
-            // console.log(req.body.dataSource);
             oldDataSource = getUrl(projectToUpdate, `${user}#dataSource`);
-            // console.log(oldDataSource);
             if (oldDataSource !== undefined) {
                 this.removeData(oldDataSource, session);
                 projectToUpdate = buildThing(projectToUpdate)
@@ -134,7 +132,6 @@ module.exports = {
 
         }
         if (req.body.description) {
-            // console.log(req.body.description);
             projectToUpdate = buildThing(projectToUpdate)
                 .setStringNoLocale(DCTERMS.description, req.body.description)
                 .build();
@@ -154,12 +151,17 @@ module.exports = {
         return filteredUsers.length + 1;
     },
 
+    getWebIDs: async function (session) {
+        const datasetUrl = membersList;
+        const solidDataset = await getGivenSolidDataset(datasetUrl, session);
+        const users = getThingAll(solidDataset);
+        const webIDs = users.map(user => user.url);
+        return webIDs;
+    },
+
     addNewData: async function (fileURL, appSession, userSession) {
         try {
-            // console.log("addNewData ", userSessison);
-            // console.log("fileURL ", fileURL);
             const fileHash = await Transformer.hashFileURL(fileURL.trim(), process.env.SECRET);
-            // console.log("fileHash ", fileHash);
             const file = await getFile(fileURL, { fetch: userSession.fetch });
             const arrayBuffer = await file.arrayBuffer();
             const data = new Uint8Array(arrayBuffer);
@@ -173,7 +175,6 @@ module.exports = {
 
             const appendedCsvText = existingCsvText + "\n" + updatedCsvText;
             const appendedData = new TextEncoder().encode(appendedCsvText);
-            // console.log("appendedData ", appendedData);
             const savedFile = await overwriteFile(
                 resourceURL,
                 appendedData,
@@ -189,6 +190,31 @@ module.exports = {
                 throw new Error(error.message);
             }
         }
+    },
+
+    addAsDataSubect: async function (webID, session) {
+        // when new member joins or leaves
+        let solidDataset = await getGivenSolidDataset(agreementsList, session);
+        let agreements = getThingAll(solidDataset);
+        agreements.forEach(async (agreement) => {
+            agreement = buildThing(agreement)
+                .setUrl(`${dpv}#hasDataSubject`, webID)
+                .build();
+            solidDataset = setThing(solidDataset, projectToUpdate);
+            await saveGivenSolidDataset(datasetURL, solidDataset, session);
+        });
+        console.log("Added data subject successfully.");
+    },
+
+    removeAsDataSubect: async function (webID, session) {
+        // when new member joins or leaves
+        let solidDataset = await getGivenSolidDataset(agreementsList, session);
+        let agreements = getThingAll(solidDataset);
+        agreements.forEach(async (agreement) => {
+            agreement = removeUrl(agreement, `${dpv}#hasDataSubject`, webID);
+            await saveGivenSolidDataset(agreementsList, solidDataset, session);
+        });
+        console.log("Removed data subject successfully.");
     },
 
     removeData: async function (fileURL, session) {
@@ -209,29 +235,23 @@ module.exports = {
                 if (columns.length < 3) continue;
                 const identifier = columns[2];
                 if (identifier.trim() === fileHash) {
-                    // console.log(`Found matching row at index ${i}`);
                     matchingRowIndices.push(i);
                 }
             }
-            // console.log(matchingRowIndices);
             if (matchingRowIndices.length > 0) {
                 for (let i = matchingRowIndices.length - 1; i >= 0; i--) {
                     const matchingRowIndex = matchingRowIndices[i];
                     rows.splice(matchingRowIndex, 1);
                 }
                 const updatedCsvText = rows.join('\n');
-                // console.log(updatedCsvText);
                 const updatedData = new TextEncoder().encode(updatedCsvText);
-                // console.log(updatedData);
                 const savedFile = await overwriteFile(
                     resourceURL,
                     updatedData,
                     { contentType: "text/csv", fetch: session.fetch }
                 );
-                // console.log(`Data removed for the hashed identifier: ${fileHash}`)
                 console.log("Data found and removed.");
             } else {
-                // console.log(`No data found for the hashed identifier: ${fileHash}`);
                 console.log("No data found.");
                 return null;
             }
@@ -239,6 +259,7 @@ module.exports = {
             console.log(error);
         }
     },
+
     removeMember: async function (webID, session) {
         if (webID === null) {
             throw new Error("Policy not found.");

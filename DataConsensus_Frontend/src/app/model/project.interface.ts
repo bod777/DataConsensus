@@ -21,4 +21,8 @@ export interface Project {
         offers: string[];
         agreements: string[];
     };
+    results: {
+        request: {},
+        offers: {},
+    }
 }

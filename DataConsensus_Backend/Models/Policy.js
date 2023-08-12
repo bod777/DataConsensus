@@ -153,8 +153,6 @@ class Proposal extends Policy {
             offerEndTime: new Date(this.offerEndTime),
             threshold: this.threshold
         };
-        console.log(policy.isPartOf);
-        console.log(policy.projectCreationTime);
         return policy;
     }
 }

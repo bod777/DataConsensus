@@ -1,10 +1,10 @@
 require("dotenv").config();
 const router = require("express").Router();
 const projectService = require("../CRUDService/ProjectService.js");
+const policyService = require("../CRUDService/PolicyService.js");
+const VoteCounter = require("../Logic/VoteCounter.js");
 const { isDatetimePassed } = require("../HelperFunctions.js");
 const { removeAccess } = require("../AccessControl.js");
-const voteService = require("../CRUDService/VoteService.js");
-const userService = require("../CRUDService/UserService.js");
 
 const projectsList = process.env.PROJECTS;
 const agreementsList = process.env.AGREEMENTS;
@@ -12,11 +12,6 @@ const requestsList = process.env.REQUESTS;
 const offersList = process.env.OFFERS;
 
 module.exports = function (appSession) {
-    router.get("/", (req, res) => {
-        console.log(appSession.info.webId);
-        res.send({ message: `App Session WebID: ${appSession.info.webId}` });
-    });
-
     router.put("/update-project", async (req, res) => {
         if (!req.body.projectID) {
             res.status(400).send({ message: "Project URL is required." });
@@ -53,7 +48,6 @@ module.exports = function (appSession) {
             const projects = await projectService.getProjects(appSession);
             const updatedProjects = projects.map(async project => await updateProjectStatus(project));
             const projectList = await Promise.all(updatedProjects);
-            // console.log(projectList);
             res.send({ data: projectList });
         } catch (error) {
             console.error(error);
@@ -70,7 +64,6 @@ module.exports = function (appSession) {
             const projectURL = `${projectsList}#${req.query.projectID}`;
             const fetchedProject = await projectService.getProject(projectURL, appSession);
             const updatedProjects = await updateProjectStatus(fetchedProject);
-            // console.log(updatedProjects);
             res.send({ data: updatedProjects });
         } catch (error) {
             console.error(error);
@@ -85,47 +78,72 @@ module.exports = function (appSession) {
             project.projectStatus = "RequestDeliberation";
             updatedProject = await projectService.updateProject({ projectURL: project.URL, status: project.projectStatus }, appSession);
         }
-        else if (project.projectStatus === "RequestDeliberation" && isDatetimePassed(project.requestEndTime)) {
-            const upvotes = await voteService.countVotesByRankPolicy(
-                { policyURL: project.projectPolicies.requests[0].URL, rank: 1 },
-                appSession);
-            const membersNumber = await userService.getMemberCount(project.requestEndTime.toISOString(), appSession);
-            const requestResult = upvotes >= Math.ceil(project.threshold * membersNumber);
-            // UPDATING THe PROJECT STATUS
-            if (requestResult === false && project.projectPolicies.offers.length !== 0) {
+        else if (project.projectStatus === "RequestDeliberation" && isDatetimePassed(project.requestEndTime) && project.results.request.error !== "requestEndTime is not passed yet") {
+            const projectToUpdate = { policyURL: project.projectPolicies.requests[0].URL, actor: "memberApproved" };
+            if (project.results.request.result === true) {
+                project.projectPolicies.requests[0].memberApproved = "Approved";
+                projectToUpdate.newStatus = "Approved";
+                await policyService.updatePolicyStatus(projectToUpdate, appSession);
+            }
+            else if (project.results.request.result === false) {
+                project.projectPolicies.requests[0].memberApproved = "Rejected";
+                projectToUpdate.newStatus = "Rejected";
+                await policyService.testfunction();
+                await policyService.updatePolicyStatus(projectToUpdate, appSession);
+                await policyService.updatePolicyStatus({ policyURL: project.projectPolicies.requests[0].URL, actor: "adminApproved", newStatus: "Blocked" }, appSession);
+            }
+            const oldStatus = project.projectStatus;
+            if (project.results.request.result === false && project.projectPolicies.offers.length !== 0) {
                 project.projectStatus = "OfferDeliberation";
             }
-            else if (requestResult === false && project.projectPolicies.offers.length === 0) {
+            else if (project.results.request.result === false && project.projectPolicies.offers.length === 0) {
                 project.projectStatus = "Closed";
             }
             else {
                 project.projectStatus = "AdminApprovalNeeded";
             }
-            updatedProject = await projectService.updateProject({ projectURL: project.URL, status: project.projectStatus }, appSession);
+            if (oldStatus !== project.projectStatus) {
+                updatedProject = await projectService.updateProject({ projectURL: project.URL, status: project.projectStatus }, appSession);
+            }
         }
-        else if (project.projectStatus === "OfferDeliberation" && isDatetimePassed(project.offerEndTime)) {
-            const membersNumber = await userService.getMemberCount(project.offerEndTime.toISOString(), appSession);
-            const cutoff = Math.ceil(project.threshold * membersNumber);
-            const projectOffers = project.projectPolicies.offers.map(offer => offer.URL);
-            let results = [];
-            let winner = `rejection`;
-            for (const offer of projectOffers) {
-                const firstPreference = await voteService.countVotesByRankPolicy(
-                    { policyURL: offer, rank: 1 },
-                    appSession);
-                results.push({ policyUrl: offer, count: firstPreference });
+        else if (project.projectStatus === "OfferDeliberation" && isDatetimePassed(project.offerEndTime) && project.results.offers.error !== "offerEndTime has not passed yet or no offer to deliberate occured") {
+            for (let i = 0; i < project.results.offers.sortedResults.length - 1; i++) {
+                const policyURL = project.results.offers.sortedResults[i].policyUrl;
+                const memberUpdate = { policyURL, actor: "memberApproved", newStatus: "Rejected" };
+                const adminUpdate = { policyURL, actor: "adminApproved", newStatus: "Pending" };
+                const thirdPartyUpdate = { policyURL, actor: "thirdPartyApproved", newStatus: "Pending" };
+                const oldMemberStatus = project.projectPolicies.offers[i].memberApproved;
+                const oldAdminStatus = project.projectPolicies.offers[i].adminApproved;
+                const oldThirdStatus = project.projectPolicies.offers[i].thirdPartyApproved;
+                if (project.results.offers.winner === policyURL) {
+                    project.projectPolicies.offers[i].memberApproved = "Approved";
+                } else if (policyToUpdate.policyURL !== `${offersList}#rejection`) {
+                    project.projectPolicies.offers[i].memberApproved = "Rejected";
+                    project.projectPolicies.offers[i].adminApproved = "Blocked";
+                    project.projectPolicies.offers[i].thirdPartyApproved = "Blocked";
+                }
+                if (oldMemberStatus !== project.projectPolicies.offers[i].memberApproved) {
+                    memberUpdate.newStatus = project.projectPolicies.offers[i].memberApproved;
+                    await policyService.updatePolicyStatus(memberUpdate, appSession);
+                }
+                if (oldAdminStatus !== project.projectPolicies.offers[i].adminApproved) {
+                    adminUpdate.newStatus = project.projectPolicies.offers[i].adminApproved;
+                    await policyService.updatePolicyStatus(adminUpdate, appSession);
+                }
+                if (oldThirdStatus !== project.projectPolicies.offers[i].thirdPartyApproved) {
+                    thirdPartyUpdate.newStatus = project.projectPolicies.offers[i].thirdPartyApproved;
+                    await policyService.updatePolicyStatus(thirdPartyUpdate, appSession);
+                }
             }
-            const rejectVote = await voteService.countVotesByRankPolicy({ policyURL: `${offersList}#rejection`, rank: 1 }, appSession);
-            results.push({ policyUrl: `${offersList}#rejection`, count: rejectVote });
-            const sortedResults = results.sort((a, b) => b.count - a.count);
-            if (sortedResults[0].count > cutoff) {
-                winner = sortedResults[0].policyUrl.split('#')[1];
-            }
-            project.projectStatus = "Closed";
-            if (winner !== "rejection") {
+            const oldStatus = project.projectStatus;
+            if (project.results.offers.winner !== "rejection") {
                 project.projectStatus = "ThirdPartyApprovalNeeded";
+            } else {
+                project.projectStatus = "Closed";
             }
-            updatedProject = await projectService.updateProject({ projectURL: project.URL, status: project.projectStatus }, appSession);
+            if (oldStatus !== project.projectStatus) {
+                updatedProject = await projectService.updateProject({ projectURL: project.URL, status: project.projectStatus }, appSession);
+            }
         }
         if (project.hasAgreement === true) {
             if (isDatetimePassed(project.projectPolicies.agreements[0].untilTimeDuration)) {
