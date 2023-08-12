@@ -49,11 +49,12 @@ export const organisationOptions: { [key: string]: string } = {
 
 export const projectStatusOptions: { [key: string]: string } = {
     'Pending': 'Pending',
-    'Completed': 'Completed',
-    'AdminApprovalNeeded': 'Admin Approval Needed',
-    'ThirdPartyApprovalNeeded': 'Third Party Approval Needed',
-    'OfferDeliberation': 'Offer Deliberation in Progress',
     'RequestDeliberation': 'Request Deliberation in Progress',
+    'OfferDeliberation': 'Offer Deliberation in Progress',
+    'ThirdPartyApprovalNeeded': 'Third Party Approval Needed',
+    'AdminApprovalNeeded': 'Admin Approval Needed',
+    'Closed': 'Closed',
+    'Revoked': 'Revoked',
 };
 
 export const countryOptions: { [key: string]: string } = {

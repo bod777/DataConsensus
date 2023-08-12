@@ -19,10 +19,11 @@ const {
 } = require("@inrupt/solid-client");
 const { v4: uuidv4 } = require('uuid');
 const userService = require("./UserService.js")
-const { Proposal, Agreement } = require("../Models/Policy.js");
+const { Policy, Agreement } = require("../Models/Policy.js");
 const { ODRL, DCTERMS, XSD, RDF } = require("@inrupt/vocab-common-rdf");
-const { extractTerm, getDatasetUrl, getDataset } = require("../HelperFunctions.js");
+const { extractTerm, getDatasetUrl, getDataset, getPolicyType } = require("../HelperFunctions.js");
 const projectService = require("./ProjectService.js");
+const { grantAccess, removeAccess } = require("../AccessControl.js");
 
 const resource = process.env.RESOURCE_URL;
 const ocp = process.env.OCP;
@@ -50,10 +51,6 @@ async function saveGivenSolidDataset(datasetURL, courseSolidDataset, session) {
 
 module.exports = {
 
-    testfunction: async function (req, session) {
-        console.log("testfunction");
-    },
-
     getSolidThing: async function (req, session) {
         let datasetURL = getDataset(req.policyURL);
         const solidDataset = await getGivenSolidDataset(datasetURL, session);
@@ -61,7 +58,7 @@ module.exports = {
         return policy;
     },
 
-    fetchAgreement: async function (URL, session) {
+    fetchPolicy: async function (URL, session) {
         const solidThing = await this.getSolidThing({ policyURL: `${URL}` }, session);
         const permissionThing = await this.getSolidThing({ policyURL: `${URL}_permission` }, session);
         const purposeConstraint = await this.getSolidThing({ policyURL: `${URL}_purposeConstraint` }, session);
@@ -75,81 +72,21 @@ module.exports = {
         const thirdCountryConstraint = await this.getSolidThing({ policyURL: `${URL}_thirdCountryConstraint` }, session);
         const projectThing = await this.getSolidThing({ policyURL: solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0] }, session);
 
-        const policy = await this.formatAgreement(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing);
+        let policy;
+        if (getPolicyType(URL) === "AGREEMENT") {
+            const { URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold } = await this.formatPolicy(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing);
+            const references = solidThing.predicates[DCTERMS.references]["namedNodes"][0];
+            const agreement = new Agreement(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, references);
+            policy = agreement.toJson();
+        } else {
+            const { URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold } = await this.formatPolicy(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing);
+            const proposal = new Policy(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
+            policy = proposal.toJson();
+        }
         return policy;
     },
 
-    formatAgreement: async function (solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing) {
-        const URL = solidThing.url;
-        const ID = solidThing.url.split('#')[1];
-        const creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
-        const policyCreationTime = extractTerm(solidThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0]);
-        const isPartOf = solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0];
-        const assigner = permissionThing.predicates[ODRL.assigner]["namedNodes"][0];
-        const assignee = permissionThing.predicates[ODRL.assignee]["namedNodes"][0];
-        const references = solidThing.predicates[DCTERMS.references]["namedNodes"][0];
-        const hasJustification = solidThing.predicates[`${ocp}#hasJustification`]["literals"][XSD.string][0];
-        const hasConsequence = solidThing.predicates[`${ocp}#hasConsequence`]["literals"][XSD.string][0];
-
-        const purpose = extractTerm(purposeConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
-        const organisation = extractTerm(organisationConstraint.predicates[ODRL.rightOperand]["namedNodes"][0])
-        let sellingData;
-        let sellingInsights;
-        if (sellingDataConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
-            sellingData = false;
-        } else {
-            sellingData = true;
-        }
-        if (sellingInsightsConstraint.predicates[ODRL.operator]["namedNodes"][0] === `${oac}isNotA`) {
-            sellingInsights = false;
-        } else {
-            sellingInsights = true;
-        }
-        const measuresArray = techOrgMeasureConstraint?.predicates?.[ODRL.rightOperand]?.["namedNodes"] || [];
-        const techOrgMeasures = measuresArray.map((measure) => extractTerm(measure));
-        const recipients = recipientConstraint.predicates[ODRL.rightOperand]["namedNodes"];
-        const recipientsJustification = recipientConstraint.predicates[`${ocp}#hasJustification`]["literals"][XSD.string][0];
-        const untilTimeDuration = durationConstraint.predicates[ODRL.rightOperand]["literals"][XSD.dateTime][0];
-        const durationJustification = durationConstraint.predicates[`${ocp}#hasJustification`]["literals"][XSD.string][0];
-        const juridiction = extractTerm(jurisdictionConstraint.predicates[ODRL.rightOperand]["namedNodes"][0]);
-        const thirdCountriesArray = thirdCountryConstraint?.predicates?.[ODRL.rightOperand]?.["namedNodes"] || [];
-        const thirdCountry = thirdCountriesArray.map((country) => extractTerm(country));
-        let thirdCountryJustification = thirdCountryConstraint?.predicates?.[`${ocp}#hasJustification`]?.["literals"]?.[XSD.string]?.[0] || "Data will remain in the State.";
-        thirdCountryJustification = thirdCountryJustification === undefined ? "Data will remain in the State." : thirdCountryJustification;
-
-        const title = projectThing.predicates[DCTERMS.title]["literals"][XSD.string][0];
-        const description = projectThing.predicates[DCTERMS.description]["literals"][XSD.string][0];
-        const projectStatus = extractTerm(projectThing.predicates[`${projectSchema}#hasProjectStatus`]["namedNodes"][0]);
-        const hasAgreement = projectThing.predicates[`${projectSchema}#hasAgreement`]["literals"][XSD.boolean][0];
-        const projectCreationTime = projectThing.predicates[DCTERMS.issued]["literals"][XSD.dateTime][0];
-        const requestStartTime = projectThing.predicates[`${projectSchema}#requestStartTime`]["literals"][XSD.dateTime][0];
-        const requestEndTime = projectThing.predicates[`${projectSchema}#requestEndTime`]["literals"][XSD.dateTime][0];
-        const offerEndTime = projectThing.predicates[`${projectSchema}#offerEndTime`]["literals"][XSD.dateTime][0];
-        const threshold = projectThing.predicates[`${projectSchema}#threshold`]["literals"][XSD.decimal][0];
-
-        const policy = new Agreement(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, references, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
-        return policy.toJson();
-    },
-
-    fetchProposal: async function (URL, session) {
-        const solidThing = await this.getSolidThing({ policyURL: `${URL}` }, session);
-        const permissionThing = await this.getSolidThing({ policyURL: `${URL}_permission` }, session);
-        const purposeConstraint = await this.getSolidThing({ policyURL: `${URL}_purposeConstraint` }, session);
-        const sellingDataConstraint = await this.getSolidThing({ policyURL: `${URL}_sellingDataConstraint` }, session);
-        const sellingInsightsConstraint = await this.getSolidThing({ policyURL: `${URL}_sellingInsightsConstraint` }, session);
-        const organisationConstraint = await this.getSolidThing({ policyURL: `${URL}_organisationConstraint` }, session);
-        const techOrgMeasureConstraint = await this.getSolidThing({ policyURL: `${URL}_techOrgMeasureConstraint` }, session);
-        const recipientConstraint = await this.getSolidThing({ policyURL: `${URL}_recipientConstraint` }, session);
-        const durationConstraint = await this.getSolidThing({ policyURL: `${URL}_durationConstraint` }, session);
-        const jurisdictionConstraint = await this.getSolidThing({ policyURL: `${URL}_jurisdictionConstraint` }, session);
-        const thirdCountryConstraint = await this.getSolidThing({ policyURL: `${URL}_thirdCountryConstraint` }, session);
-        const projectThing = await this.getSolidThing({ policyURL: solidThing.predicates[DCTERMS.isPartOf]["namedNodes"][0] }, session);
-
-        const policy = await this.formatProposal(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing);
-        return policy;
-    },
-
-    formatProposal: async function (solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing) {
+    formatPolicy: async function (solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, projectThing) {
         const URL = solidThing.url;
         const ID = solidThing.url.split('#')[1];
         const creator = solidThing.predicates[DCTERMS.creator]["namedNodes"][0];
@@ -200,11 +137,8 @@ module.exports = {
         const offerEndTime = projectThing.predicates[`${projectSchema}#offerEndTime`]["literals"][XSD.dateTime][0];
         const threshold = projectThing.predicates[`${projectSchema}#threshold`]["literals"][XSD.decimal][0];
 
-        const policy = new Proposal(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
-
-        return policy.toJson();
+        return { URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold };
     },
-
 
     // FIX THIS
     getpolicyURLs: async function (policyType, session) {
@@ -267,6 +201,9 @@ module.exports = {
         }
         else {
             newPolicy = newPolicy
+                .addUrl(`${ocp}#thirdPartyApproved`, `${ocp}#Approved`)
+                .addUrl(`${ocp}#memberApproved`, `${ocp}#Approved`)
+                .addUrl(`${ocp}#adminApproved`, `${ocp}#Approved`)
                 .addUrl(DCTERMS.references, req.references);
             const members = await userService.getWebIDs(session);
             for (const member of members) {
@@ -493,7 +430,6 @@ module.exports = {
                         solidDataset = removeThing(solidDataset, thirdCountryConstraint);
                     }
                     await saveGivenSolidDataset(datasetURL, solidDataset, session);
-
                 }
             }
             else {
@@ -501,55 +437,4 @@ module.exports = {
             }
         }
     },
-
-    removeAgreement: async function (policyURL, session) {
-        const datasetURL = agreementsList
-        let solidDataset = await getGivenSolidDataset(datasetURL, session);
-
-        const policy = getThing(solidDataset, policyURL);
-        const permissionThing = getThing(solidDataset, `${policyURL}_permission`);
-        const purposeConstraint = getThing(solidDataset, `${policyURL}_purposeConstraint`);
-        const sellingDataConstraint = getThing(solidDataset, `${policyURL}_sellingDataConstraint`);
-        const sellingInsightsConstraint = getThing(solidDataset, `${policyURL}_sellingInsightsConstraint`);
-        const techOrgMeasureConstraint = getThing(solidDataset, `${policyURL}_techOrgMeasureConstraint`);
-        const recipientConstraint = getThing(solidDataset, `${policyURL}_recipientConstraint`);
-        const organisationConstraint = getThing(solidDataset, `${policyURL}_organisationConstraint`);
-        const durationConstraint = getThing(solidDataset, `${policyURL}_durationConstraint`);
-        const jurisdictionConstraint = getThing(solidDataset, `${policyURL}_jurisdictionConstraint`);
-        const thirdCountryConstraint = getThing(solidDataset, `${policyURL}_thirdCountryConstraint`);
-
-        const projectURL = getUrl(policy, DCTERMS.isPartOf);
-        const referenceURL = getUrl(policy, DCTERMS.references);
-        const thirdparty = getUrl(permissionThing, ODRL.assignee);
-        if (referenceURL !== null) {
-            let req = {
-                policyURL: referenceURL,
-                actor: "adminApproved",
-                newStatus: "Removed"
-            };
-            await this.updatePolicyStatus(req, session);
-        }
-        if (projectURL !== "") {
-            await projectService.updateProject({ projectURL, hasAgreement: false, hasAccess: false, status: "Removed" }, session);
-        }
-
-        solidDataset = removeThing(solidDataset, policy);
-        solidDataset = removeThing(solidDataset, permissionThing);
-        solidDataset = removeThing(solidDataset, purposeConstraint);
-        solidDataset = removeThing(solidDataset, sellingDataConstraint);
-        solidDataset = removeThing(solidDataset, sellingInsightsConstraint);
-        if (techOrgMeasureConstraint !== null) {
-            solidDataset = removeThing(solidDataset, techOrgMeasureConstraint);
-        }
-        solidDataset = removeThing(solidDataset, recipientConstraint);
-        solidDataset = removeThing(solidDataset, organisationConstraint);
-        solidDataset = removeThing(solidDataset, durationConstraint);
-        solidDataset = removeThing(solidDataset, jurisdictionConstraint);
-        if (thirdCountryConstraint !== null) {
-            solidDataset = removeThing(solidDataset, thirdCountryConstraint);
-        }
-        await saveGivenSolidDataset(datasetURL, solidDataset, session);
-
-        return thirdparty;
-    }
 }

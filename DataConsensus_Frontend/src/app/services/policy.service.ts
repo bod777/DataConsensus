@@ -16,10 +16,6 @@ export class PolicyService {
 
     constructor(private http: HttpClient, public datepipe: DatePipe) { }
 
-    login(): Observable<any> {
-        return this.http.get('http://localhost:3000/login');
-    }
-
     getAgreement(agreementID: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -139,23 +135,21 @@ export class PolicyService {
         return this.http.put('http://localhost:3000/api/v1/project/update-project', { projectID, status }, { headers });
     }
 
-    removeAgreement(policyID: string): Observable<any> {
+    revokeApproval(policyURL: string, webID: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        const params = new HttpParams().set('policyID', policyID)
-        return this.http.delete('http://localhost:3000/api/v1/policy/remove-approval', { headers, params });
+        return this.http.put('http://localhost:3000/api/v1/policy/revoke-approval', { policyURL, webID }, { headers });
     }
 
-    removeProposal(policyURL: string, webID: string): Observable<any> {
+    removeOffer(policyURL: string, webID: string): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
         const parts = policyURL.split('#');
         const policyID = parts[1];
-        const policyType = parts[0];
-        const params = new HttpParams().set('policyID', policyID).set('webID', webID).set('policyType', policyType);
-        return this.http.delete('http://localhost:3000/api/v1/policy/remove-proposal', { headers, params });
+        const params = new HttpParams().set('policyID', policyID).set('webID', webID);
+        return this.http.delete('http://localhost:3000/api/v1/policy/remove-offer', { headers, params });
     }
 
     adminApproval(policyURL: string, status: string): Observable<any> {

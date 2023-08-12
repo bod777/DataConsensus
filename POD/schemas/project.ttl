@@ -45,7 +45,7 @@ project:OfferDeliberation a project:projectStatus .
 project:ThirdPartyApprovalNeeded a project:projectStatus .
 project:AdminApprovalNeeded a project:projectStatus .
 project:Closed a project:projectStatus .
-project:Removed a project:projectStatus .
+project:Revoked a project:projectStatus .
 
 project:requestStartTime a rdf:Property ;
     rdfs:domain project:Project ;

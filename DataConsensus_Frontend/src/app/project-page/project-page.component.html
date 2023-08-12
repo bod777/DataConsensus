@@ -10,11 +10,11 @@
             <mat-drawer mode="side" opened>
                 <mat-button-toggle-group class="sidebar" name="tab" [(ngModel)]="tab" aria-label="Font Style">
                     <mat-button-toggle class="sidebar-panel" value="overview">Overview</mat-button-toggle>
-                    <mat-button-toggle *ngIf="request!=={}" class="sidebar-panel"
+                    <mat-button-toggle *ngIf="project.projectPolicies.requests.length > 0" class="sidebar-panel"
                         value="request">Request</mat-button-toggle>
                     <mat-button-toggle *ngIf="offers.length>0" class="sidebar-panel"
                         value="offer">Offers</mat-button-toggle>
-                    <mat-button-toggle *ngIf="project.hasAgreement===true" class="sidebar-panel"
+                    <mat-button-toggle *ngIf="project.projectPolicies.agreements.length > 0" class="sidebar-panel"
                         value="agreement">Agreement</mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-drawer>
@@ -167,11 +167,11 @@
                         </mat-card-actions>
                     </mat-card-content>
                     <!-- REMOVE REQUEST -->
-                    <mat-card-content *ngIf="request.creator === user">
+                    <mat-card-content *ngIf="request.creator === user && request.thirdPartyApproved === 'Approved'">
                         <mat-card-actions>
                             <mat-card-actions class="button-container">
-                                <button mat-raised-button color="warn" (click)="removeProposal(request.URL)">Remove
-                                    Request</button>
+                                <button mat-raised-button color="warn" (click)="revokeRequest()">Revoke
+                                    Approval</button>
                             </mat-card-actions>
                         </mat-card-actions>
                     </mat-card-content>
@@ -232,11 +232,12 @@
                                 <mat-divider></mat-divider>
                                 <constraints [policy]="offer"></constraints>
                                 <!-- REMOVE OFFER -->
-                                <mat-card-content *ngIf="offer.creator === user">
+                                <mat-card-content
+                                    *ngIf="offer.creator === user && (projectStatus === 'requestDeliberation' || 'pending')">
                                     <mat-card-actions>
                                         <mat-card-actions class="button-container">
                                             <button mat-raised-button color="warn"
-                                                (click)="removeProposal(offer.URL)">Remove
+                                                (click)="removeOffer(offer.URL)">Remove
                                                 OFFER</button>
                                         </mat-card-actions>
                                     </mat-card-actions>
@@ -259,6 +260,11 @@
                         <mat-card-subtitle>Agreement</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content>
+                        <div
+                            *ngIf="agreement.thirdPartyApproved === 'Revoked' || agreement.adminApproved === 'Revoked'">
+
+                            <policy-status [policy]="agreement"></policy-status>
+                        </div>
                         <p>
                             <b>Project description:</b> {{ agreement.description }}
                         </p>
@@ -275,11 +281,11 @@
                         <constraints [policy]="agreement"></constraints>
                     </mat-card-content>
                     <!-- REMOVE AGREEMENT BUTTON -->
-                    <mat-card-content *ngIf="project.projectStatus==='Closed' && userType==='ADMIN'">
+                    <mat-card-content *ngIf="project.projectStatus==='Closed' && userType!=='MEMBER'">
                         <mat-card-actions>
                             <mat-card-actions class="button-container">
-                                <button mat-raised-button (click)="removeAgreement()" color="warn">Remove
-                                    Agreement</button>
+                                <button mat-raised-button (click)="revokeAgreement()" color="warn">Revoke
+                                    Approval</button>
                             </mat-card-actions>
                         </mat-card-actions>
                     </mat-card-content>

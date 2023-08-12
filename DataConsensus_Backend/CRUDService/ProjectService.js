@@ -20,7 +20,8 @@ const {
 const { v4: uuidv4 } = require('uuid');
 const { RDF, DCTERMS, XSD } = require("@inrupt/vocab-common-rdf");
 const { Project } = require("../Models/Project.js");
-const { extractTerm, getDataset } = require("../HelperFunctions.js");
+const { Policy, Agreement } = require("../Models/Policy.js");
+const { extractTerm, getDataset, getPolicyType } = require("../HelperFunctions.js");
 const policyService = require("./PolicyService.js");
 const VoteCounter = require("../Logic/VoteCounter.js");
 
@@ -124,11 +125,15 @@ module.exports = {
             const thirdCountryConstraint = filteredPolicies.find(obj => obj.url === `${URL}_thirdCountryConstraint`);
 
             let policy;
-            if (dataset !== agreementsList) {
-                policy = await policyService.formatProposal(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, project);
-            }
-            else {
-                policy = await policyService.formatAgreement(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, project);
+            if (getPolicyType(URL) === "agreement") {
+                const { URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold } = await policyService.formatPolicy(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, project);
+                const references = solidThing.predicates[DCTERMS.references]["namedNodes"][0];
+                const agreement = new Agreement(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold, references);
+                policy = agreement.toJson();
+            } else {
+                const { URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold } = await policyService.formatPolicy(solidThing, permissionThing, purposeConstraint, sellingDataConstraint, sellingInsightsConstraint, organisationConstraint, techOrgMeasureConstraint, recipientConstraint, durationConstraint, jurisdictionConstraint, thirdCountryConstraint, project);
+                const proposal = new Policy(URL, ID, creator, policyCreationTime, isPartOf, assigner, assignee, hasJustification, hasConsequence, purpose, sellingData, sellingInsights, organisation, techOrgMeasures, recipients, recipientsJustification, untilTimeDuration, durationJustification, juridiction, thirdCountry, thirdCountryJustification, thirdPartyStatus, memberStatus, adminStatus, title, description, projectStatus, hasAgreement, projectCreationTime, requestStartTime, requestEndTime, offerEndTime, threshold);
+                policy = proposal.toJson();
             }
             projectPolicies.push(policy);
         }

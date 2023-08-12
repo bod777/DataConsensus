@@ -145,7 +145,7 @@ module.exports = function (appSession) {
         else {
             try {
                 const policyURL = `${requestsList}#${policyID}`;
-                const policyJSON = await policyService.fetchProposal(policyURL, appSession);
+                const policyJSON = await policyService.fetchPolicy(policyURL, appSession);
                 const upvotes = await voteService.countVotesByRankPolicy(
                     { policyURL: policyURL, rank: 1 },
                     appSession);

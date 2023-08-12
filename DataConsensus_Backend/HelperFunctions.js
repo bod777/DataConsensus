@@ -33,13 +33,13 @@ function getDatasetUrl(userType) {
         case 'ADMIN':
             datasetURL = adminsList;
             break;
-        case 'Request':
+        case 'REQUEST':
             datasetURL = requestsList;
             break;
-        case 'Offer':
+        case 'OFFER':
             datasetURL = offersList;
             break;
-        case 'Agreement':
+        case 'AGREEMENT':
             datasetURL = agreementsList;
             break;
     }
@@ -53,19 +53,17 @@ function extractTerm(URL) {
 }
 
 function getPolicyType(policyURL) {
-    const segments = policyURL.split("/");
-    const filename = segments[segments.length - 1];
-    const policyType = filename.split(".")[0];
+    const policyDataset = getDataset(policyURL);
     let type
-    switch (policyType) {
+    switch (policyDataset) {
         case offersList:
-            type = 'offer';
+            type = 'OFFER';
             break;
         case requestsList:
-            type = 'requests';
+            type = 'REQUEST';
             break;
         case agreementsList:
-            type = 'agreements';
+            type = 'AGREEMENT';
             break;
     }
     return type;

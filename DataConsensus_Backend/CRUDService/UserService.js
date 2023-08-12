@@ -34,6 +34,20 @@ module.exports = {
 
     /* USER RELATED FUNCTIONS */
 
+    checkUser: async function (webID, session) {
+        const userTypes = ["MEMBER", "THIRDPARTY", "ADMIN"];
+        let isUser = false;
+        let type;
+        for (const userType of userTypes) {
+            isUser = await this.checkUserByType({ type: userType, webID }, session);
+            if (isUser) {
+                type = userType;
+                break;
+            }
+        }
+        return { isUser, type };
+    },
+
     checkUserByType: async function (req, session) {
         const datasetURL = getDatasetUrl(req.type);
 

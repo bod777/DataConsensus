@@ -1,11 +1,12 @@
 require("dotenv").config();
 const router = require("express").Router();
-const policyService = require("../CRUDService/PolicyService.js");
-const { grantAccess } = require("../AccessControl.js");
-const projectService = require("../CRUDService/ProjectService.js");
 const { DCTERMS } = require("@inrupt/vocab-common-rdf");
-const { extractTerm } = require("../HelperFunctions.js");
-const { removeAccess } = require("../AccessControl.js");
+const policyService = require("../CRUDService/PolicyService.js");
+const projectService = require("../CRUDService/ProjectService.js");
+const userService = require("../CRUDService/UserService.js");
+const { Policy, Agreement } = require("../Models/Policy.js");
+const { getPolicyType } = require("../HelperFunctions.js");
+const { grantAccess, removeAccess } = require("../AccessControl.js");
 
 const agreementsList = process.env.AGREEMENTS;
 const requestsList = process.env.REQUESTS;
@@ -14,16 +15,23 @@ const offersList = process.env.OFFERS;
 module.exports = function (appSession) {
     /* 
         Expected req.body variables:
-        title: string
-        description: string
-        user: string
-        organisation: string
-        purpose: string
-        sellingData: string
-        sellingInsights: string
-        measures: string
-        recipients: string
-        untilTimeDuration: string
+            title,
+            description,
+            user,
+            hasJustification,
+            hasConsequence,
+            organisation,
+            purpose,
+            sellingData,
+            sellingInsights,
+            measures,
+            recipients,
+            recipientsJustification,
+            untilTimeDuration,
+            durationJustification,
+            juridiction,
+            thirdCountry,
+            thirdCountryJustification
     */
     router.post("/submit-request", async function (req, res) {
         const {
@@ -52,7 +60,7 @@ module.exports = function (appSession) {
         try {
             const projectURL = await projectService.createProject(project, appSession);
             const policy = {
-                type: "Request",
+                type: "REQUEST",
                 project: projectURL,
                 creator: user,
                 assigner: user,
@@ -77,7 +85,7 @@ module.exports = function (appSession) {
             };
             try {
                 const policyURL = await policyService.createPolicy(policy, appSession);
-                const request = await policyService.fetchProposal(policyURL, appSession);
+                const request = await policyService.fetchPolicy(policyURL, appSession);
                 res.send({ data: request, message: "Request submitted successfully." });
             }
             catch (error) {
@@ -93,31 +101,47 @@ module.exports = function (appSession) {
 
     /* 
         Expected req.body variables:
-        title: string
-        description: string
-        user: string
-        requester: string
-        organisation: string
-        purpose: string
-        sellingData: string
-        sellingInsights: string
-        measures: string
-        recipients: string
-        untilTimeDuration: string
+            project,
+            user,
+            requester,
+            organisation,
+            purpose,
+            sellingData,
+            sellingInsights,
+            measures,
+            recipients,
+            recipientsJustification,
+            untilTimeDuration,
+            durationJustification,
+            juridiction,
+            thirdCountry,
+            thirdCountryJustification
     */
     router.post("/submit-offer", async (req, res) => {
         const {
-            project, user, requester, purpose, sellingData, sellingInsights, organisation, measures, recipients, untilTimeDuration
+            project,
+            user,
+            requester,
+            organisation,
+            purpose,
+            sellingData,
+            sellingInsights,
+            measures,
+            recipients,
+            recipientsJustification,
+            untilTimeDuration,
+            durationJustification,
+            juridiction,
+            thirdCountry,
+            thirdCountryJustification
         } = req.body;
 
         const policy = {
-            type: "Offer",
+            type: "OFFER",
             project,
             creator: user,
             assigner: requester,
             assignee: "https://id.inrupt.com/DataConsensus",
-            hasJustification,
-            hasConsequence,
             purpose,
             sellingData,
             sellingInsights,
@@ -136,7 +160,7 @@ module.exports = function (appSession) {
         };
         try {
             const policyURL = await policyService.createPolicy(policy, appSession);
-            const offer = await policyService.fetchProposal(policyURL, appSession);
+            const offer = await policyService.fetchPolicy(policyURL, appSession);
             res.send({ data: offer, message: "Request submitted successfully." });
         }
         catch (error) {
@@ -147,41 +171,14 @@ module.exports = function (appSession) {
 
     /*      
         Expected req.body variables:
-        policyURL: string
-        status: string
-    */
-    router.put("/members-approved", async (req, res) => {
-        const { policyURL, status } = req.body;
-
-        if (!URL) {
-            res.status(400).send({ message: "Request URL is required." });
-            return;
-        }
-
-        try {
-            await policyService.updatePolicyStatus({ policyURL, actor: 'memberApproved', newStatus: status }, appSession);
-            if (status == "Rejected") {
-                const policy = await policyService.fetchProposal(policyURL, appSession);
-                const projectURL = policy.isPartOf;
-                await policyService.updateProject({ projectURL, status: "Completed" }, appSession);
-            }
-            res.send({ message: "Offer response by third party received." });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: "Error in approving the offer.", error: error.message });
-        }
-    });
-
-    /*      
-        Expected req.body variables:
-        policyURL: string
-        status: string
+            policyURL: string
+            status: string
     */
     router.put("/thirdparty-approved", async (req, res) => {
         try {
             const { policyURL, status } = req.body;
             await policyService.updatePolicyStatus({ policyURL, type: "Offer", actor: 'thirdPartyApproved', newStatus: status }, appSession);
-            const policy = await policyService.fetchProposal(policyURL, appSession);
+            const policy = await policyService.fetchPolicy(policyURL, appSession);
             const projectURL = policy.isPartOf;
             if (status == "Rejected") {
                 await projectService.updateProject({ projectURL, status: "Closed" }, appSession);
@@ -198,8 +195,8 @@ module.exports = function (appSession) {
 
     /*      
         Expected req.body variables:
-        policyURL: string
-        status: string
+            policyURL: string
+            status: string
     */
     router.put("/admin-approved", async (req, res) => {
         try {
@@ -208,9 +205,9 @@ module.exports = function (appSession) {
             const projectURL = updatedPolicy.predicates[DCTERMS.isPartOf]["namedNodes"][0];
             if (status == "Approved") {
                 await projectService.updateProject({ projectURL, hasAgreement: true, hasAccess: true, status: "Closed" }, appSession);
-                const policy = await policyService.fetchProposal(policyURL, appSession);
+                const policy = await policyService.fetchPolicy(policyURL, appSession);
                 const agreement = {
-                    type: "Agreement",
+                    type: "AGREEMENT",
                     project: policy.isPartOf,
                     creator: policy.creator,
                     references: policyURL,
@@ -245,30 +242,75 @@ module.exports = function (appSession) {
             res.status(500).send({ message: "Error in approving the policy.", error: error.message });
         }
     });
+
     /*      
-        Expected req.body variables:
-        policyURL: string
-        webID: string
+        Expected req.query variables:
+            policyURL: string
+            webID: string
+            policyType: string
     */
-    router.delete("/remove-proposal", async (req, res) => {
+    router.delete("/remove-offer", async (req, res) => {
         try {
-            const { policyID, webID, policyType } = req.query;
-            await policyService.removeProposal({ policyURL: `${policyType}#${policyID}`, requester: webID }, appSession);
-            res.send({ message: "Proposal removed successfully" });
+            const { policyID, webID } = req.query;
+            await policyService.removeProposal({ policyURL: `${offersList}#${policyID}`, requester: webID }, appSession);
+            res.send({ message: "Policy deleted successfully." });
         } catch (error) {
             console.error(error);
-            res.status(500).send({ message: "Error in removing proposal", error: error.message });
+            res.status(500).send({ message: "Error in deleting the policy.", error: error.message });
         }
     });
 
-    router.delete("/remove-approval", async (req, res) => {
+    /*      
+        Expected req.query variables:
+            policyURL: string
+            webID: string
+            policyType: string
+    */
+    router.put("/revoke-approval", async (req, res) => {
         try {
-            const thirdparty = await policyService.removeAgreement(`${agreementsList}#${req.query.policyID}`, appSession);
-            removeAccess(thirdparty, appSession);
-            res.send({ message: "Agreement removed successfully" });
+            const { policyURL, webID } = req.body;
+            const { isUser, type } = await userService.checkUser(webID, appSession);
+            let actorType = "";
+            const policy = await policyService.fetchPolicy(policyURL, appSession);
+            if (type !== "MEMBER") {
+                switch (type) {
+                    case "THIRDPARTY":
+                        actorType = "thirdPartyApproved";
+                        otherType = "adminApproved";
+                        break;
+                    case "ADMIN":
+                        actorType = "adminApproved";
+                        otherType = "thirdPartyApproved";
+                        break;
+                }
+                if (getPolicyType(policyURL) === "AGREEMENT") {
+                    if (policy.assignee === webID || type === "ADMIN") {
+                        await policyService.updatePolicyStatus({ policyURL, actor: actorType, newStatus: "Revoked" }, appSession);
+                        await policyService.updatePolicyStatus({ policyURL: policy.references, actor: actorType, newStatus: "Revoked" }, appSession);
+                        await projectService.updateProject({ projectURL: policy.isPartOf, hasAgreement: false, hasAccess: false, status: "Revoked" }, appSession);
+                        removeAccess(policy.assignee, appSession);
+                        res.send({ message: "Agreement successfully revoked" });
+                    } else {
+                        res.send({ message: "User is not authorized to revoke the agreement" });
+                    }
+                } else {
+                    if (policy.creator === webID || type === "ADMIN") {
+                        await policyService.updatePolicyStatus({ policyURL, actor: actorType, newStatus: "Revoked" }, appSession);
+                        await policyService.updatePolicyStatus({ policyURL, actor: "memberApproved", newStatus: "Blocked" }, appSession);
+                        await policyService.updatePolicyStatus({ policyURL, actor: otherType, newStatus: "Blocked" }, appSession);
+
+                        await projectService.updateProject({ projectURL: policy.isPartOf, hasAgreement: false, hasAccess: false, status: "Closed" }, appSession);
+                        res.send({ message: "Proposal successfully revoked" });
+                    } else {
+                        res.send({ message: "User is not authorized to revoke the proposal" });
+                    }
+                }
+            } else {
+                res.send({ message: "User is not authorized to revoke the policy" });
+            }
         } catch (error) {
             console.error(error);
-            res.status(500).send({ message: "Error in removing agreement", error: error.message });
+            res.status(500).send({ message: "Error in removing proposal", error: error.message });
         }
     });
 
@@ -276,10 +318,10 @@ module.exports = function (appSession) {
 
     router.get("/all-requests", async function (req, res) {
         try {
-            const requestURLs = await policyService.getpolicyURLs("Request", appSession);
+            const requestURLs = await policyService.getpolicyURLs("REQUEST", appSession);
             let requests = [];
             for (const requestURL of requestURLs) {
-                const policy = await policyService.fetchProposal(requestURL, appSession);
+                const policy = await policyService.fetchPolicy(requestURL, appSession);
                 requests.push(policy);
             }
             res.send({ data: requests });
@@ -291,14 +333,14 @@ module.exports = function (appSession) {
 
     router.get("/all-offers", async (req, res) => {
         try {
-            const offerURLs = await policyService.getpolicyURLs("Offer", appSession);
+            const offerURLs = await policyService.getpolicyURLs("OFFER", appSession);
             let offers = [];
             for (const offerURL of offerURLs) {
                 if (offerURL === "https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/policies/offers.ttl#rejection") {
                     continue;
                 }
                 else {
-                    const policy = await policyService.fetchProposal(offerURL, appSession);
+                    const policy = await policyService.fetchPolicy(offerURL, appSession);
                     offers.push(policy);
                 }
             }
@@ -311,10 +353,10 @@ module.exports = function (appSession) {
 
     router.get("/all-agreements", async (req, res) => {
         try {
-            const agreementURLs = await policyService.getpolicyURLs("Agreement", appSession);
+            const agreementURLs = await policyService.getpolicyURLs("AGREEMENT", appSession);
             let agreements = [];
             for (const agreementURL of agreementURLs) {
-                const policy = await policyService.fetchAgreement(agreementURL, appSession);
+                const policy = await policyService.fetchPolicy(agreementURL, appSession);
                 agreements.push(policy);
             }
             res.send({ data: agreements });
@@ -331,7 +373,7 @@ module.exports = function (appSession) {
     router.get("/agreement", async function (req, res) {
         try {
             const policyURL = `${agreementsList}#${req.query.policyID}`;
-            const policy = await policyService.fetchAgreement(policyURL, appSession);
+            const policy = await policyService.fetchPolicy(policyURL, appSession);
             res.send({ data: policy });
         } catch (error) {
             console.error(error);
@@ -346,7 +388,7 @@ module.exports = function (appSession) {
     router.get("/request", async function (req, res) {
         try {
             const policyURL = `${requestsList}#${req.query.policyID}`;
-            const policy = await policyService.fetchProposal(policyURL, appSession);
+            const policy = await policyService.fetchPolicy(policyURL, appSession);
             res.send({ data: policy });
         } catch (error) {
             console.error(error);
@@ -360,7 +402,7 @@ module.exports = function (appSession) {
     router.get("/offer", async function (req, res) {
         try {
             const policyURL = `${offersList}#${req.query.policyID}`;
-            const policy = await policyService.fetchProposal(policyURL, appSession);
+            const policy = await policyService.fetchPolicy(policyURL, appSession);
             res.send({ data: policy });
         } catch (error) {
             console.error(error);

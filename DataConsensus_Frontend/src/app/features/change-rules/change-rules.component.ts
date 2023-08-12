@@ -52,7 +52,7 @@ export class ChangeRulesComponent {
             (response) => {
                 console.log(response);
                 this._snackBar.open("Successfully changed rules", "Close", { duration: 3000 });
-
+                window.location.reload();
             },
             (error) => {
                 this._snackBar.open("Error in changing rules: " + error, "Close", { duration: 3000 });

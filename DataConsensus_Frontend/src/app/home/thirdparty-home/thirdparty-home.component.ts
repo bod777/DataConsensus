@@ -22,8 +22,7 @@ export class ThirdPartyHomeComponent implements OnInit {
     user: string = localStorage.getItem('webID') || '';
     loading: boolean = true;
     public dataSource = new MatTableDataSource<Project>([]);
-    displayedColumns = ['title', 'creator', 'projectCreationTime', 'projectStatus', 'agreementStatus', 'buttons']
-    // displayedColumns = ['title', 'creator', 'projectCreationTime', 'projectStatus', 'buttons']
+    displayedColumns = ['title', 'projectCreationTime', 'projectStatus', 'agreementStatus', 'buttons']
 
 
     isRelevant(project: Project) {

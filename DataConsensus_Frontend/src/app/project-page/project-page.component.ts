@@ -180,12 +180,12 @@ export class ProjectPageComponent implements OnInit {
         );
     }
 
-    removeAgreement() {
-        this.policyService.removeAgreement(this.agreement.ID).subscribe(
+    revokeRequest() {
+        this.policyService.revokeApproval(this.request.URL, this.user).subscribe(
             (response) => {
                 this.project.hasAgreement = false;
                 this.project.hasAccess = false;
-                this.agreement = {};
+                this.projectStatus = "Closed";
                 this.ngOnInit();
                 window.location.reload();
                 this._snackBar.open("Successfully removed agreement", "Close", { duration: 3000 });
@@ -196,8 +196,24 @@ export class ProjectPageComponent implements OnInit {
         );
     }
 
-    removeProposal(policyURL: string) {
-        this.policyService.removeProposal(policyURL, this.user).subscribe(
+    revokeAgreement() {
+        this.policyService.revokeApproval(this.agreement.URL, this.user).subscribe(
+            (response) => {
+                this.project.hasAgreement = false;
+                this.project.hasAccess = false;
+                this.projectStatus = "Revoked";
+                this.ngOnInit();
+                window.location.reload();
+                this._snackBar.open("Successfully removed agreement", "Close", { duration: 3000 });
+            },
+            (error) => {
+                this._snackBar.open("Error in removing agreement: " + error, "Close");
+            }
+        );
+    }
+
+    removeOffer(policyURL: string) {
+        this.policyService.removeOffer(policyURL, this.user).subscribe(
             (response) => {
                 this.ngOnInit();
                 window.location.reload();
@@ -225,6 +241,7 @@ export class ProjectPageComponent implements OnInit {
         this.policyService.getProject(this.projectID).subscribe(
             (project: any) => {
                 this.project = project.data;
+                console.log(this.project);
                 this.userService.getMemberCount(this.project.requestEndTime).subscribe(
                     (member: any) => {
                         this.project.requestCutoff = Math.ceil(member.data * this.project.threshold);
@@ -321,11 +338,10 @@ export class ProjectPageComponent implements OnInit {
                             if (this.offerResult.winner !== "rejection") {
                                 this.toBeApproved = this.offerResult.winner;
                                 this.offerWinner = this.offerResult.winner.split("#")[1];
-                                console.log(this.offerWinner);
                             }
                         }
                     }
-                    if (this.project.projectPolicies.agreements.length > 0) {
+                    if (project.data.projectPolicies.agreements.length > 0) {
                         this.project.projectPolicies.agreements[0].policyCreationTime = new Date(this.project.projectPolicies.agreements[0].policyCreationTime);
                         this.project.projectPolicies.agreements[0].untilTimeDuration = new Date(this.project.projectPolicies.agreements[0].untilTimeDuration);
                         this.project.projectPolicies.agreements[0].projectCreationTime = new Date(this.project.projectPolicies.agreements[0].projectCreationTime);
@@ -341,49 +357,8 @@ export class ProjectPageComponent implements OnInit {
                         this.agreement = this.project.projectPolicies.agreements[0];
                     }
                     this.loading = false;
+                    console.log(this.agreement);
                 }
-
-                // // Fetching request results after the initial results fetch
-                // if (this.request && this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation") {
-                //     this.voteService.getRequestResult(this.request.ID, this.project.requestEndTime.toISOString()).subscribe(
-                //         (response) => {
-                //             this.requestResult = response.result;
-                //             this.requestDownvotes = response.downvotes;
-                //             this.requestUpvotes = response.upvotes;
-                //             this.requestAbstentions = response.abstentions;
-                //             if (this.requestResult === true) {
-                //                 this.toBeApproved = this.request.URL;
-                //                 this.loading = false;
-                //                 console.log(this.loading);
-                //             }
-                //         },
-                //         (error) => {
-                //             console.log(error);
-                //             this._snackBar.open("Error in fetching request deliberation result: " + error, "Close");
-                //             this.broken = true;
-                //         }
-                //     );
-                // }
-                // // Fetching offer results after the initial results fetch
-                // if (this.projectStatus !== "Pending" && this.projectStatus !== "RequestDeliberation" && this.projectStatus !== "OfferDeliberation" && this.offers.length !== 0) {
-                //     this.voteService.getOfferResult(this.projectID, this.project.offerEndTime.toISOString()).subscribe(
-                //         (response) => {
-                //             this.offerResult = response.winner;
-                //             if (this.offerResult !== "rejection") {
-                //                 this.toBeApproved = this.offerResult;
-                //             }
-                //             this.loading = false;
-                //             console.log(this.loading);
-                //         },
-                //         (error) => {
-                //             console.log(error);
-                //             this._snackBar.open("Error in fetching offer deliberation result. Try Refreshing. Error: " + error.message, "Close");
-                //             this.broken = true;
-                //         }
-                //     );
-                // } else {
-                //     this.loading = false;
-                // }
             },
             (error) => {
                 this._snackBar.open("Error retrieving project. Try refreshing. Error:" + error, "Close");

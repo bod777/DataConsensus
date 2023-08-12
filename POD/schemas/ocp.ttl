@@ -47,6 +47,7 @@ ocp:
     skos:member ocp:Rejected ;
     skos:member ocp:Pending ;
     skos:member ocp:Blocked ;
+    skos:member ocp:Revoked ;
     skos:member ocp:Removed .
 
 ocp:Request rdfs:subClassOf odrl:Policy ;
@@ -130,19 +131,19 @@ ocp:isAnyOf a odrl:isAnyOf ;
 ocp:thirdPartyApproved a rdf:Property ;
     rdfs:isDefinedBy ocp: ;
     rdfs:label "Third Party Approval Status" ;
-    rdfs:domain ocp:Request, ocp:Offer ;
+    rdfs:domain ocp:Request, ocp:Offer, ocp:Agreement ;
     rdfs:range ocp:Status .
 
 ocp:memberApproved a rdf:Property ;
     rdfs:isDefinedBy ocp: ;
     rdfs:label "Member Approval Status" ;
-    rdfs:domain ocp:Request, ocp:Offer ;
+    rdfs:domain ocp:Request, ocp:Offer, ocp:Agreement ;
     rdfs:range ocp:Status .
 
 ocp:adminApproved a rdf:Property ;
     rdfs:isDefinedBy ocp: ;
     rdfs:label "Admin Approval Status" ;
-    rdfs:domain ocp:Request, ocp:Offer ;
+    rdfs:domain ocp:Request, ocp:Offer, ocp:Agreement ;
     rdfs:range ocp:Status .
 
 ocp:Status a rdfs:Class ;
@@ -165,9 +166,13 @@ ocp:Pending a ocp:Status ;
 ocp:Blocked a ocp:Status ;
     rdfs:isDefinedBy ocp: ;
     rdfs:label "Blocked" ;
-    rdfs:comment "Because of actions of other actor, the approval status for this actor is not needed.".
+    rdfs:comment "Because of actions of other actor, the approval from this actor is not needed.".
+ocp:Revoked a ocp:Status ;
+    rdfs:isDefinedBy ocp: ;
+    rdfs:label "Revoked" ;
+    rdfs:comment "The approval for this policy has been revoked by this actor." .
 ocp:Removed a ocp:Status ;
     rdfs:isDefinedBy ocp: ;
     rdfs:label "Removed" ;
-    rdfs:comment "The policy has been removed and is no longer in effect." .
+    rdfs:comment "The proposal has been removed prior to deliberation and can no longer be considered." .
 

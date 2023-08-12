@@ -11,6 +11,9 @@
             policy.memberApproved}}</mat-chip>
         <mat-chip class="policy-status" *ngIf="policy.memberApproved==='Blocked'" style="background-color:plum">{{
             policy.memberApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.memberApproved==='Revoked'" style="background-color:lightcoral">{{
+            policy.memberApproved}}
+        </mat-chip>
     </div>
     <div class="status-chip">
         <b>Third Party Status:</b>
@@ -25,6 +28,10 @@
             policy.thirdPartyApproved}}</mat-chip>
         <mat-chip class="policy-status" *ngIf="policy.thirdPartyApproved==='Blocked'" style="background-color:plum">{{
             policy.thirdPartyApproved}}</mat-chip>
+        <mat-chip class="policy-status" *ngIf="policy.thirdPartyApproved==='Revoked'"
+            style="background-color:lightcoral">{{
+            policy.thirdPartyApproved}}
+        </mat-chip>
     </div>
     <div class="status-chip">
         <b>Admin Status: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
@@ -37,7 +44,7 @@
             policy.adminApproved}}</mat-chip>
         <mat-chip class="policy-status" *ngIf="policy.adminApproved==='Blocked'" style="background-color:plum">{{
             policy.adminApproved}}</mat-chip>
-        <mat-chip class="policy-status" *ngIf="policy.adminApproved==='Removed'" style="background-color:red">{{
+        <mat-chip class="policy-status" *ngIf="policy.adminApproved==='Revoked'" style="background-color:lightcoral">{{
             policy.adminApproved}}
         </mat-chip>
     </div>
