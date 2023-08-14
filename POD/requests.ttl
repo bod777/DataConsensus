@@ -59,7 +59,7 @@ request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_recipientConstraint
         ocp:hasJustification       "This is a justification" ;
         odrl:leftOperand   oac:Recipient ;
         odrl:operator      ocp:isAnyOf ;
-        odrl:rightOperand  <https://id.inrupt.com/DataConsensus> , <https://id.inrupt.com/InsuranceCompany> .
+        odrl:rightOperand  <https://id.inrupt.com/InsuranceCompany> .
 
 request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_sellingDataConstraint
         rdf:type           odrl:Constraint ;

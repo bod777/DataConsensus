@@ -48,6 +48,6 @@ dct:description a rdf:Property ;
     rdfs:domain user:ThirdParty ;
     rdfs:range xsd:string .
 
-dpv:email a rdf:Property ;
+foaf:mbox a rdf:Property ;
     rdfs:domain user:User ;
     rdfs:range xsd:string .

@@ -4,6 +4,10 @@
         <router-outlet></router-outlet>
     </div>
     <footer class="footer">
+        <div *ngIf="userType==='MEMBER'">
+            <p>If you no longer want to participate in the DataConsensus data sharing initiative, you can withdraw
+                consent and have your data removed by following the instructions on your profile page.</p>
+        </div>
         <p>&copy; 2023 DataConsensus Designed by Bríd O'Donnell</p>
     </footer>
 </div>

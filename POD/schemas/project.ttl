@@ -18,7 +18,7 @@ dct:description a rdfs:Property ;
     rdfs:domain project:Project ;
     rdfs:range xsd:string .
 
-oac:Organisation a rdfs:Property ;
+dpv:Organisation a rdfs:Property ;
     rdfs:domain project:Project ;
     rdfs:range oac:Organisation .
 

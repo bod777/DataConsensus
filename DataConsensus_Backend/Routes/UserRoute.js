@@ -7,9 +7,10 @@ const {
 } = require("@inrupt/solid-client-authn-node");
 const userService = require("../CRUDService/UserService.js");
 const mailer = require("../Logic/Mailer.js");
+const { grantAccess, removeAccess } = require("../AccessControl.js");
 const { Member, ThirdParty, Admin } = require("../Models/User.js");
 
-const resourceURL = process.env.RESOURCE_URL;
+const agreementsList = process.env.AGREEMENTS
 
 module.exports = function (appSession) {
     router.get("/", (req, res) => {
@@ -58,6 +59,7 @@ module.exports = function (appSession) {
                     await userService.addMember(req, appSession);
                     await userService.addNewData(dataSource, appSession, userSession);
                     await userService.addAsDataSubect(webID, appSession)
+                    await grantAccess(webID, agreementsList, appSession);
                     await mailer.sendNewDataNotification(appSession);
                     res.send({ message: "Member registered successfully." });
                 }

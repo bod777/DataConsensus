@@ -8,6 +8,7 @@ const { Policy, Agreement } = require("../Models/Policy.js");
 const { getPolicyType } = require("../HelperFunctions.js");
 const { grantAccess, removeAccess } = require("../AccessControl.js");
 
+const resourceURL = process.env.RESOURCE_URL;
 const agreementsList = process.env.AGREEMENTS;
 const requestsList = process.env.REQUESTS;
 const offersList = process.env.OFFERS;
@@ -230,7 +231,7 @@ module.exports = function (appSession) {
                 };
                 await policyService.createPolicy(agreement, appSession)
                 const thirdParty = policy.assignee;
-                grantAccess(thirdParty, appSession);
+                grantAccess(thirdParty, resourceURL, appSession);
                 res.send({ message: "Policy approved by admin successfully." });
             }
             else {
@@ -288,7 +289,7 @@ module.exports = function (appSession) {
                         await policyService.updatePolicyStatus({ policyURL, actor: actorType, newStatus: "Revoked" }, appSession);
                         await policyService.updatePolicyStatus({ policyURL: policy.references, actor: actorType, newStatus: "Revoked" }, appSession);
                         await projectService.updateProject({ projectURL: policy.isPartOf, hasAgreement: false, hasAccess: false, status: "Revoked" }, appSession);
-                        removeAccess(policy.assignee, appSession);
+                        removeAccess(policy.assignee, resourceURL, appSession);
                         res.send({ message: "Agreement successfully revoked" });
                     } else {
                         res.send({ message: "User is not authorized to revoke the agreement" });

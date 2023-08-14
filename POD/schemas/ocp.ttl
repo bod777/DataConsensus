@@ -106,15 +106,15 @@ ocp:hasJustification a dpv:hasJustification, rdf:Property ;
     rdfs:isDefinedBy ocp: ;
     rdfs:label "Has Justification"@en ;
     skos:definition "XXX"@en ;
-    skos:example "..."@en ;
-    skos:note "..."@en .
+    rdfs:domain ocp:Request, ocp:Offer, ocp:Agreement ;
+    rdfs:range xsd:string .
 
 ocp:hasConsequence a dpv:hasConsequence, rdf:Property ;
     rdfs:isDefinedBy ocp: ;
     rdfs:label "Has Justification"@en ;
     skos:definition "XXX"@en ;
-    skos:example "..."@en ;
-    skos:note "..."@en .
+    rdfs:domain ocp:Request, ocp:Offer, ocp:Agreement ;
+    rdfs:range xsd:string .
 
 ocp:isAllOf a odrl:isAllOf ;
 	rdfs:isDefinedBy ocp: ;
@@ -171,8 +171,4 @@ ocp:Revoked a ocp:Status ;
     rdfs:isDefinedBy ocp: ;
     rdfs:label "Revoked" ;
     rdfs:comment "The approval for this policy has been revoked by this actor." .
-ocp:Removed a ocp:Status ;
-    rdfs:isDefinedBy ocp: ;
-    rdfs:label "Removed" ;
-    rdfs:comment "The proposal has been removed prior to deliberation and can no longer be considered." .
 

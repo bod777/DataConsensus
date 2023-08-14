@@ -4,38 +4,37 @@ require("dotenv").config();
 
 const { universalAccess } = require("@inrupt/solid-client");
 
-const resourceURL = process.env.RESOURCE_URL;
 
-async function grantAccess(thirdParty, session) {
+async function grantAccess(agent, fileURL, session) {
     universalAccess.setAgentAccess(
-        resourceURL,
-        thirdParty,
+        fileURL,
+        agent,
         { read: true, write: false, },          // Access object
         { fetch: session.fetch }                         // fetch function from authenticated session
     ).then((newAccess) => {
-        console.log(`For resource::: ${resourceURL}`);
+        console.log(`For resource::: ${fileURL}`);
         if (newAccess === null) {
-            console.log(`Could not load ${thirdParty}'s access details.`);
+            console.log(`Could not load ${agent}'s access details.`);
         } else {
-            console.log(`${thirdParty}'s Access:: ${JSON.stringify(newAccess)}`);
+            console.log(`${agent}'s Access:: ${JSON.stringify(newAccess)}`);
         }
     });
 }
 
-async function removeAccess(thirdParty, session) {
+async function removeAccess(agent, fileURL, session) {
     universalAccess.setAgentAccess(
-        resourceURL,
-        thirdParty,
+        fileURL,
+        agent,
         { read: false, write: false, },          // Access object
         { fetch: session.fetch }                         // fetch function from authenticated session
     ).then((newAccess) => {
-        console.log(`For resource::: ${resourceURL}`);
+        console.log(`For resource::: ${fileURL}`);
         if (newAccess === null) {
-            console.log(`Could not load ${thirdParty}'s access details.`);
-            return `Could not load ${thirdParty}'s access details.`;
+            console.log(`Could not load ${agent}'s access details.`);
+            return `Could not load ${agent}'s access details.`;
         } else {
-            console.log(`${thirdParty}'s Access:: ${JSON.stringify(newAccess)}`);
-            return `${thirdParty}'s Access:: ${JSON.stringify(newAccess)}`;
+            console.log(`${agent}'s Access:: ${JSON.stringify(newAccess)}`);
+            return `${agent}'s Access:: ${JSON.stringify(newAccess)}`;
         }
     });
 }
