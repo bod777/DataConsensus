@@ -190,7 +190,7 @@ module.exports = {
             .addUrl(ODRL.profile, oac)
             .addUrl(ODRL.permission, `${datasetURL}#${policyID}_permission`);
 
-        if (req.type == "Request" || req.type == "Offer") {
+        if (req.type == "REQUEST" || req.type == "OFFER") {
             let thirdPartyApproved = req.thirdPartyApproved;
             let memberApproved = req.memberApproved;
             let adminApproved = req.adminApproved;

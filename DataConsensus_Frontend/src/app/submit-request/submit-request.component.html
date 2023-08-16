@@ -117,7 +117,7 @@
         </div>
         <div class="form-field-container">
             <mat-form-field [style.width.px]=800>
-                <mat-label>Please identify the specific jurisdation the data processing will take place.</mat-label>
+                <mat-label>Please identify the specific jurisdiction the data processing will take place.</mat-label>
                 <mat-select [(ngModel)]="jurisdiction" required>
                     <mat-option *ngFor="let key of countryOptions | keys" [value]="key">
                         {{ countryOptions[key] }}

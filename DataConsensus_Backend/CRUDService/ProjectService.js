@@ -94,6 +94,8 @@ module.exports = {
             const projectOffers = await this.getRelatedPolicies(item, offersList, session);
             const projectAgreements = await this.getRelatedPolicies(item, agreementsList, session);
             const projectPolicies = { requests: projectRequests, offers: projectOffers, agreements: projectAgreements };
+            console.log(item.url);
+            console.log(projectRequests);
             const requestResults = await VoteCounter.calculateBinaryVotes(projectRequests, session);
             const offersResults = await VoteCounter.calculatePreferenceVotes(item, projectOffers, session);
             let project = await this.formatProject(item, projectPolicies, { request: requestResults, offers: offersResults }, session);
