@@ -4,21 +4,23 @@ const { ThirdParty } = require("../Models/User");
 require("dotenv").config();
 
 const resource = process.env.RESOURCE_URL;
+const email = process.env.EMAIL;
+const password = process.env.PASSWORD;
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: 'dataconsensus@gmail.com',
-        pass: 'fzxyygalypopugro'
+        user: email,
+        pass: password
     }
 });
 const newMember = {
-    from: 'dataconsensus@gmail.com',
+    from: email,
     subject: 'Updated Data Consensus Data',
     text: 'A new member has joined the DataConsensus Group. Their data has been added to the data pool. You can access the data by logging into a general pod browser and navigating to the following: https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv'
 };
 const deletedMember = {
-    from: 'dataconsensus@gmail.com',
+    from: email,
     subject: 'URGENT ACTION - Deletion Notification',
     text: 'A member has recinded their consent and removed their data from the DataConsensus Group. Their data has been removed to the data pool. Please DELETE any of the previously shared data you have from the DataConsensus and please redownloaded the data. You can access the data by logging into a general pod browser and navigating to the following: https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv'
 };
