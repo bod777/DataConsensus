@@ -10,7 +10,7 @@ Additionally, you will need to register an app to your new WebID and Pod. Take n
 Once you have a pod set up to serve as your DataConsensus pod, upload the files in the POD folder. You may want to change the admins.ttl file to include your personal WebID so you can access all aspects of the frontend.
 Furthermore, you will need to create an app password for an email of your choice. To create one using google, follow these [instructions](https://support.google.com/mail/answer/185833?hl=en).
 
-The public GitHub repository is missing the .env file located in the DataConsensus_Backend directory. It contains a number of essential constants used through the application’s backend. These include the URLs of the DataConsensus pod used in development and testing and other constants that cannot be shared. Therefore, you will need to create a new .env with new constants. A list of the constants to include can be seen in Table XXX.
+The public GitHub repository is missing the .env file located in the DataConsensus_Backend directory. It contains a number of essential constants used through the application’s backend. These include the URLs of the DataConsensus pod used in development and testing and other constants that cannot be shared. Therefore, you will need to create a new .env with new constants. A list of the constants to include can be seen in the table below.
 
 | Name     | Example |
 |----------|---------|
