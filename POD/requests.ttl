@@ -197,7 +197,8 @@ request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_permission
         odrl:action      dpv:Use , dpv:Remove , dpv:Transform , dpv:Store , dpv:Copy ;
         odrl:assignee    <https://id.inrupt.com/InsuranceCompany> ;
         odrl:assigner    <https://id.inrupt.com/DataConsensus> ;
-        odrl:constraint  request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_durationConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_sellingDataConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_purposeConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_recipientConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_techOrgMeasureConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_organisationConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_sellingInsightsConstraint ;
+        odrl:constraint  request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_durationConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_sellingDataConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_purposeConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_recipientConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_techOrgMeasureConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_organisationConstraint , request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_sellingInsightsConstraint ,
+        request:72013827-a31e-4a27-a7cb-0b86fa9ddf15_jurisdictionConstraint ;
         odrl:target      <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv> .
 
 request:12d6eb50-f6e2-488c-8923-fb0c4d47749a_sellingDataConstraint
@@ -245,7 +246,8 @@ request:53280de2-47e2-4413-a9ff-a980da0d47b5_permission
         odrl:action      dpv:Store , dpv:Use , dpv:Transform , dpv:Remove , dpv:Copy ;
         odrl:assignee    <https://id.inrupt.com/DataConsensus> ;
         odrl:assigner    <https://id.inrupt.com/thirdparty> ;
-        odrl:constraint  request:53280de2-47e2-4413-a9ff-a980da0d47b5_techOrgMeasureConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_sellingInsightsConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_purposeConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_sellingDataConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_organisationConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_recipientConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_durationConstraint ;
+        odrl:constraint  request:53280de2-47e2-4413-a9ff-a980da0d47b5_techOrgMeasureConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_sellingInsightsConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_purposeConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_sellingDataConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_organisationConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_recipientConstraint , request:53280de2-47e2-4413-a9ff-a980da0d47b5_durationConstraint ,
+        request:53280de2-47e2-4413-a9ff-a980da0d47b5_jurisdictionConstraint ;
         odrl:target      <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv> .
 
 request:53280de2-47e2-4413-a9ff-a980da0d47b5_purposeConstraint

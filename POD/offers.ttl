@@ -35,7 +35,8 @@ offer:ff284cf0-2c7b-4718-b261-698119c2408c_permission
         odrl:action      dpv:Remove , dpv:Copy , dpv:Store , dpv:Transform , dpv:Use ;
         odrl:assignee    <https://id.inrupt.com/thirdparty> ;
         odrl:assigner    <https://id.inrupt.com/DataConsensus> ;
-        odrl:constraint  offer:ff284cf0-2c7b-4718-b261-698119c2408c_purposeConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_recipientConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingDataConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_techOrgMeasureConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_durationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_organisationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingInsightsConstraint ;
+        odrl:constraint  offer:ff284cf0-2c7b-4718-b261-698119c2408c_purposeConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_recipientConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingDataConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_techOrgMeasureConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_durationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_organisationConstraint , offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingInsightsConstraint ,
+        offer:ff284cf0-2c7b-4718-b261-698119c2408c_jurisdictionConstraint ;
         odrl:target      <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv> .
 
 offer:ff284cf0-2c7b-4718-b261-698119c2408c_sellingInsightsConstraint
@@ -110,7 +111,8 @@ offer:ce627985-5433-4639-87f4-cfe9a9791cae_permission
         odrl:action      dpv:Remove , dpv:Copy , dpv:Store , dpv:Transform , dpv:Use ;
         odrl:assignee    <https://id.inrupt.com/thirdparty> ;
         odrl:assigner    <https://id.inrupt.com/DataConsensus> ;
-        odrl:constraint  offer:ce627985-5433-4639-87f4-cfe9a9791cae_purposeConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_recipientConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_sellingDataConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_techOrgMeasureConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_durationConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_organisationConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_sellingInsightsConstraint ;
+        odrl:constraint  offer:ce627985-5433-4639-87f4-cfe9a9791cae_purposeConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_recipientConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_sellingDataConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_techOrgMeasureConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_durationConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_organisationConstraint , offer:ce627985-5433-4639-87f4-cfe9a9791cae_sellingInsightsConstraint ,
+        offer:ce627985-5433-4639-87f4-cfe9a9791cae_jurisdictionConstraint ;
         odrl:target      <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv> .
 
 offer:ce627985-5433-4639-87f4-cfe9a9791cae_sellingInsightsConstraint
@@ -183,7 +185,8 @@ offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_permission
         odrl:action      dpv:Remove , dpv:Copy , dpv:Store , dpv:Transform , dpv:Use ;
         odrl:assignee    <https://id.inrupt.com/thirdparty> ;
         odrl:assigner    <https://id.inrupt.com/DataConsensus> ;
-        odrl:constraint  offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_purposeConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_recipientConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_sellingDataConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_techOrgMeasureConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_durationConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_organisationConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_sellingInsightsConstraint ;
+        odrl:constraint  offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_purposeConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_recipientConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_sellingDataConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_techOrgMeasureConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_durationConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_organisationConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_sellingInsightsConstraint ,
+        offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_jurisdictionConstraint ;
         odrl:target      <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv> .
 
 offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_sellingInsightsConstraint
@@ -235,62 +238,3 @@ offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_sellingDataConstraint
         odrl:leftOperand   oac:Purpose ;
         odrl:operator      oac:isNotA ;
         odrl:rightOperand  dpv:SellDataToThirdParties .
-
-offer:959e2007-be7f-44cc-a558-1b6708f3bb7b
-        rdf:type                   odrl:Offer ;
-        dct:creator                <https://id.inrupt.com/benchang> ;
-        dct:isPartOf               project:4653ed52-a317-4ee4-8819-b2d09bdfac4a ;
-        dct:issued                 "2023-07-25T12:04:07.958Z"^^xsd:dateTime ;
-        odrl:permission            offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_permission ;
-        odrl:profile               oac:, ocp: ;
-        odrl:uid                   offer:959e2007-be7f-44cc-a558-1b6708f3bb7b ;
-        ocp:hasJustification       "This is a justification" ;
-        ocp:hasConsequence         "This is a consequence" ;
-        ocp:adminApproved       ocp:Pending ;
-        ocp:memberApproved      ocp:Pending ;
-        ocp:thirdPartyApproved  ocp:Pending .
-
-offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_permission
-        rdf:type         odrl:Permission ;
-        odrl:action      dpv:Remove , dpv:Copy , dpv:Store , dpv:Transform , dpv:Use ;
-        odrl:assignee    <https://id.inrupt.com/thirdparty> ;
-        odrl:assigner    <https://id.inrupt.com/DataConsensus> ;
-        odrl:constraint  offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_purposeConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_recipientConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_sellingDataConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_techOrgMeasureConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_durationConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_organisationConstraint , offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_sellingInsightsConstraint ;
-        odrl:target      <https://storage.inrupt.com/b41a41bc-203e-4b52-9b91-4278868cd036/app/data/Resource.csv> .
-
-offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_sellingInsightsConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      oac:isA ;
-        odrl:rightOperand  dpv:SellInsightsFromData .
-
-offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_durationConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   ocp:UntilTimeDuration ;
-        odrl:operator      odrl:eq ;
-        odrl:rightOperand  "2024-07-29T23:00:00.000Z"^^xsd:dateTime .
-
-offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_organisationConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   ocp:Organisation ;
-        odrl:operator      odrl:isA ;
-        odrl:rightOperand  dpv:GovernmentalOrganisation .
-
-offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_techOrgMeasureConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:TechnicalOrganisationalMeasure ;
-        odrl:operator      ocp:isAllOf ;
-        odrl:rightOperand  dpv:ConsultationWithDPO , dpv:OperatingSystemSecurity , dpv:PasswordAuthentication , dpv:CodeOfConduct , dpv:IncidentReportingCommunication , dpv:EncryptionAtRest , dpv:EncryptionInTransfer , dpv:DataProtectionTraining .
-
-offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_purposeConstraint
-        rdf:type           odrl:Constraint ;
-        odrl:leftOperand   oac:Purpose ;
-        odrl:operator      odrl:isA ;
-        odrl:rightOperand  dpv:AcademicResearch .
-
-offer:959e2007-be7f-44cc-a558-1b6708f3bb7b_recipientConstraint
-        rdf:type           odrl:Constraint ;
-        ocp:hasJustification       "This is a justification" ;
-        odrl:leftOperand   oac:Recipient ;
-        odrl:operator      ocp:isAnyOf ;
-        odrl:rightOperand  <https://id.inrupt.com/thirdparty> , <https://id.inrupt.com/DataConsensus> .
