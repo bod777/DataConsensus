@@ -1,0 +1,1529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="bf0082d" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="f934889b-e386-4f7c-aa51-74a6b74bcb7c">
+  <bpmn:collaboration id="DecisionProcess">
+    <bpmn:participant id="Participant_ExpenseReimbursement" name="Decision Process" processRef="Process_ExpenseReimbursement-1jz6xf9" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_ExpenseReimbursement-1jz6xf9" name="Expense Reimbursement" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_0jijmee">{
+  "components": [
+    {
+      "text": "# Expense Claim",
+      "type": "text",
+      "layout": {
+        "row": "Row_0b02kr1",
+        "columns": null
+      },
+      "id": "Field_1gbvbm7"
+    },
+    {
+      "text": "### Personal Information\n\nPlease provide your personal information to ensure proper assignment of the expense claim.",
+      "type": "text",
+      "layout": {
+        "row": "Row_1ef2qla",
+        "columns": null
+      },
+      "id": "Field_1sbsc67",
+      "conditional": {
+        "hide": "=isReview"
+      }
+    },
+    {
+      "label": "First name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11isqe5",
+        "columns": null
+      },
+      "id": "Field_0zyjfuh",
+      "key": "firstName",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "label": "Last name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11isqe5",
+        "columns": null
+      },
+      "id": "Field_0m4s208",
+      "key": "lastName",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "label": "Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0f1wn8t",
+        "columns": null
+      },
+      "id": "Field_02tkefw",
+      "key": "email",
+      "appearance": {
+        "prefixAdorner": "@"
+      },
+      "validate": {
+        "validationType": "email",
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "IT",
+          "value": "IT"
+        },
+        {
+          "label": "Product",
+          "value": "product"
+        },
+        {
+          "label": "Finance",
+          "value": "finance"
+        },
+        {
+          "label": "Accounting",
+          "value": "accounting"
+        },
+        {
+          "label": "Marketing",
+          "value": "marketing"
+        }
+      ],
+      "label": "Department",
+      "type": "select",
+      "layout": {
+        "row": "Row_0f1wn8t",
+        "columns": null
+      },
+      "id": "Field_07rt8k5",
+      "key": "department",
+      "searchable": true
+    },
+    {
+      "text": "### Supervisor\n\nPlease provide the email of your supervisor to review the expense.",
+      "type": "text",
+      "layout": {
+        "row": "Row_1ybnh5e",
+        "columns": null
+      },
+      "id": "Field_0kq8635"
+    },
+    {
+      "label": "Supervisor email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0lcbkut",
+        "columns": 8
+      },
+      "id": "Field_05eprbr",
+      "key": "supervisorEmail",
+      "appearance": {
+        "prefixAdorner": "@"
+      },
+      "conditional": {
+        "hide": "=isReview"
+      }
+    },
+    {
+      "text": "## Expense Details",
+      "type": "text",
+      "layout": {
+        "row": "Row_0jzv103",
+        "columns": null
+      },
+      "id": "Field_0rozem8"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Expense date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_1orcvpn",
+        "columns": null
+      },
+      "id": "Field_0z4pwh0",
+      "key": "expenseDate",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Custom",
+          "value": "custom"
+        },
+        {
+          "label": "Travel",
+          "value": "travel"
+        }
+      ],
+      "label": "Expense type",
+      "type": "select",
+      "layout": {
+        "row": "Row_1orcvpn",
+        "columns": null
+      },
+      "id": "Field_1eiqop0",
+      "key": "expenseType",
+      "searchable": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Travel start",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_010wbhw",
+        "columns": null
+      },
+      "id": "Field_17w0xsu",
+      "key": "travelStart",
+      "conditional": {
+        "hide": "=not(expenseType = \"travel\")"
+},
+      "description": "Enter the start and end date of your travel"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Travel end",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_010wbhw",
+        "columns": null
+      },
+      "id": "Field_1ttfo0c",
+      "key": "travelEnd",
+      "conditional": {
+        "hide": "=not(expenseType = \"travel\")"
+}
+    },
+    {
+      "text": "⚠️ The end date must be after the start date.",
+      "type": "text",
+      "layout": {
+        "row": "Row_1hua3bm",
+        "columns": null
+      },
+      "id": "Field_15j8ot1",
+      "conditional": {
+        "hide": "=travelEnd = null or not(after(travelStart, travelEnd))"
+      }
+    },
+    {
+      "label": "Travel location",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_00kdr2a",
+        "columns": null
+      },
+      "id": "Field_1xz2kcy",
+      "key": "travelLocation",
+      "appearance": {
+        "prefixAdorner": "📍"
+      },
+      "conditional": {
+        "hide": "=not(expenseType = \"travel\")"
+}
+    },
+    {
+      "label": "Custom expense type",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1tqe6ut",
+        "columns": null
+      },
+      "id": "Field_03ow051",
+      "key": "customExpenseType",
+      "conditional": {
+        "hide": "=not(expenseType = \"custom\")"
+}
+    },
+    {
+      "label": "Expense purpose",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0ar8roa",
+        "columns": null
+      },
+      "id": "Field_136skvr",
+      "key": "expensePurpose",
+      "validate": {
+        "required": false
+      },
+      "description": "Describe the purpose of your expense. A good description increases the likelihood of quick approval."
+    },
+    {
+      "label": "Expense amount",
+      "type": "number",
+      "layout": {
+        "row": "Row_0jjom6t",
+        "columns": 8
+      },
+      "id": "Field_189ka5c",
+      "key": "expenseAmount",
+      "appearance": {
+        "prefixAdorner": "USD"
+      },
+      "validate": {
+        "required": true
+      },
+      "decimalDigits": 2,
+      "increment": "0.5"
+    }
+  ],
+  "type": "default",
+  "id": "Form_ExpenseClaim",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.2.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.12.0-rc.0"
+  },
+  "schemaVersion": 9
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_3l1o3dg">{
+  "components": [
+    {
+      "text": "# Expense Claim Review\n\nPlease review the following expense reimbursement claim, and either approve or reject it.",
+      "type": "text",
+      "layout": {
+        "row": "Row_0b02kr1",
+        "columns": null
+      },
+      "id": "Field_1gbvbm7"
+    },
+    {
+      "text": "### Requester Information",
+      "type": "text",
+      "layout": {
+        "row": "Row_1ef2qla",
+        "columns": null
+      },
+      "id": "Field_1sbsc67",
+      "conditional": {
+        "hide": "=isReview"
+      }
+    },
+    {
+      "label": "First name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11isqe5",
+        "columns": null
+      },
+      "id": "Field_0zyjfuh",
+      "key": "firstName",
+      "validate": {
+        "required": false
+      },
+      "readonly": false,
+      "disabled": true
+    },
+    {
+      "label": "Last name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11isqe5",
+        "columns": null
+      },
+      "id": "Field_0m4s208",
+      "key": "lastName",
+      "validate": {
+        "required": false
+      },
+      "disabled": true
+    },
+    {
+      "label": "Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0f1wn8t",
+        "columns": null
+      },
+      "id": "Field_02tkefw",
+      "key": "email",
+      "appearance": {
+        "prefixAdorner": "@"
+      },
+      "validate": {
+        "validationType": "email",
+        "required": false
+      },
+      "disabled": true
+    },
+    {
+      "values": [
+        {
+          "label": "IT",
+          "value": "IT"
+        },
+        {
+          "label": "Product",
+          "value": "product"
+        },
+        {
+          "label": "Finance",
+          "value": "finance"
+        },
+        {
+          "label": "Accounting",
+          "value": "accounting"
+        },
+        {
+          "label": "Marketing",
+          "value": "marketing"
+        }
+      ],
+      "label": "Department",
+      "type": "select",
+      "layout": {
+        "row": "Row_0f1wn8t",
+        "columns": null
+      },
+      "id": "Field_07rt8k5",
+      "key": "department",
+      "searchable": true,
+      "disabled": true
+    },
+    {
+      "text": "### Expense Details",
+      "type": "text",
+      "layout": {
+        "row": "Row_0jzv103",
+        "columns": null
+      },
+      "id": "Field_0rozem8"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Expense date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_1orcvpn",
+        "columns": null
+      },
+      "id": "Field_0z4pwh0",
+      "key": "expenseDate",
+      "validate": {
+        "required": false
+      },
+      "disabled": true
+    },
+    {
+      "values": [
+        {
+          "label": "Custom",
+          "value": "custom"
+        },
+        {
+          "label": "Travel",
+          "value": "travel"
+        }
+      ],
+      "label": "Expense type",
+      "type": "select",
+      "layout": {
+        "row": "Row_1orcvpn",
+        "columns": null
+      },
+      "id": "Field_1eiqop0",
+      "key": "expenseType",
+      "searchable": true,
+      "disabled": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Travel start",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_010wbhw",
+        "columns": null
+      },
+      "id": "Field_17w0xsu",
+      "key": "travelStart",
+      "conditional": {
+        "hide": "=not(expenseType = \"travel\")"
+},
+      "description": "Enter the start and end date of your travel",
+      "disabled": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Travel end",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_010wbhw",
+        "columns": null
+      },
+      "id": "Field_1ttfo0c",
+      "key": "travelEnd",
+      "conditional": {
+        "hide": "=not(expenseType = \"travel\")"
+},
+      "disabled": true
+    },
+    {
+      "label": "Travel location",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_00kdr2a",
+        "columns": null
+      },
+      "id": "Field_1xz2kcy",
+      "key": "travelLocation",
+      "appearance": {
+        "prefixAdorner": "📍"
+      },
+      "conditional": {
+        "hide": "=not(expenseType = \"travel\")"
+},
+      "disabled": true
+    },
+    {
+      "label": "Custom expense type",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1tqe6ut",
+        "columns": null
+      },
+      "id": "Field_03ow051",
+      "key": "customExpenseType",
+      "conditional": {
+        "hide": "=not(expenseType = \"custom\")"
+},
+      "disabled": true
+    },
+    {
+      "label": "Expense purpose",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0ar8roa",
+        "columns": null
+      },
+      "id": "Field_136skvr",
+      "key": "expensePurpose",
+      "validate": {
+        "required": false
+      },
+      "description": "Describe the purpose of your expense. A good description increases the likelihood of quick approval.",
+      "disabled": true
+    },
+    {
+      "label": "Expense amount",
+      "type": "number",
+      "layout": {
+        "row": "Row_0jjom6t",
+        "columns": 8
+      },
+      "id": "Field_189ka5c",
+      "key": "expenseAmount",
+      "appearance": {
+        "prefixAdorner": "USD"
+      },
+      "validate": {
+        "required": false
+      },
+      "decimalDigits": 2,
+      "increment": "0.5",
+      "disabled": true
+    },
+    {
+      "text": "---",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1nymijp",
+        "columns": null
+      },
+      "id": "Field_19s421w"
+    },
+    {
+      "text": "### Approval",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_00khae6",
+        "columns": null
+      },
+      "id": "Field_1ptafde"
+    },
+    {
+      "values": [
+        {
+          "label": "I approve the expense claim.",
+          "value": "approved"
+        },
+        {
+          "label": "I reject the expense claim.",
+          "value": "rejected"
+        }
+      ],
+      "label": "Approval outcome",
+      "type": "radio",
+      "layout": {
+        "row": "Row_0nr03f7",
+        "columns": null
+      },
+      "id": "Field_0qcvtwe",
+      "key": "reviewOutcome",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Rejection reason",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0ehktzg",
+        "columns": null
+      },
+      "id": "Field_1l1k9fd",
+      "key": "rejectionReason",
+      "conditional": {
+        "hide": "=not(reviewOutcome = \"rejected\")"
+},
+      "description": "Provide a reason for rejecting this claim.",
+      "validate": {
+        "minLength": 10
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_ExpenseClaimReview",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.2.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.12.0-rc.0"
+  },
+  "schemaVersion": 9
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_326e1d1">{
+  "components": [
+    {
+      "text": "# Expense Claim Review\n\nPlease review the following expense reimbursement claim, and either approve or reject it.",
+      "type": "text",
+      "layout": {
+        "row": "Row_0b02kr1",
+        "columns": null
+      },
+      "id": "Field_1gbvbm7"
+    },
+    {
+      "text": "### Requester Information",
+      "type": "text",
+      "layout": {
+        "row": "Row_1ef2qla",
+        "columns": null
+      },
+      "id": "Field_1sbsc67",
+      "conditional": {
+        "hide": "=isReview"
+      }
+    },
+    {
+      "label": "First name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11isqe5",
+        "columns": null
+      },
+      "id": "Field_0zyjfuh",
+      "key": "firstName",
+      "validate": {
+        "required": false
+      },
+      "readonly": false,
+      "disabled": true
+    },
+    {
+      "label": "Last name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11isqe5",
+        "columns": null
+      },
+      "id": "Field_0m4s208",
+      "key": "lastName",
+      "validate": {
+        "required": false
+      },
+      "disabled": true
+    },
+    {
+      "label": "Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0f1wn8t",
+        "columns": null
+      },
+      "id": "Field_02tkefw",
+      "key": "email",
+      "appearance": {
+        "prefixAdorner": "@"
+      },
+      "validate": {
+        "validationType": "email",
+        "required": false
+      },
+      "disabled": true
+    },
+    {
+      "values": [
+        {
+          "label": "IT",
+          "value": "IT"
+        },
+        {
+          "label": "Product",
+          "value": "product"
+        },
+        {
+          "label": "Finance",
+          "value": "finance"
+        },
+        {
+          "label": "Accounting",
+          "value": "accounting"
+        },
+        {
+          "label": "Marketing",
+          "value": "marketing"
+        }
+      ],
+      "label": "Department",
+      "type": "select",
+      "layout": {
+        "row": "Row_0f1wn8t",
+        "columns": null
+      },
+      "id": "Field_07rt8k5",
+      "key": "department",
+      "searchable": true,
+      "disabled": true
+    },
+    {
+      "text": "### Expense Details",
+      "type": "text",
+      "layout": {
+        "row": "Row_0jzv103",
+        "columns": null
+      },
+      "id": "Field_0rozem8"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Expense date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_1orcvpn",
+        "columns": null
+      },
+      "id": "Field_0z4pwh0",
+      "key": "expenseDate",
+      "validate": {
+        "required": false
+      },
+      "disabled": true
+    },
+    {
+      "values": [
+        {
+          "label": "Custom",
+          "value": "custom"
+        },
+        {
+          "label": "Travel",
+          "value": "travel"
+        }
+      ],
+      "label": "Expense type",
+      "type": "select",
+      "layout": {
+        "row": "Row_1orcvpn",
+        "columns": null
+      },
+      "id": "Field_1eiqop0",
+      "key": "expenseType",
+      "searchable": true,
+      "disabled": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Travel start",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_010wbhw",
+        "columns": null
+      },
+      "id": "Field_17w0xsu",
+      "key": "travelStart",
+      "conditional": {
+        "hide": "=not(expenseType = \"travel\")"
+},
+      "description": "Enter the start and end date of your travel",
+      "disabled": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Travel end",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_010wbhw",
+        "columns": null
+      },
+      "id": "Field_1ttfo0c",
+      "key": "travelEnd",
+      "conditional": {
+        "hide": "=not(expenseType = \"travel\")"
+},
+      "disabled": true
+    },
+    {
+      "label": "Travel location",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_00kdr2a",
+        "columns": null
+      },
+      "id": "Field_1xz2kcy",
+      "key": "travelLocation",
+      "appearance": {
+        "prefixAdorner": "📍"
+      },
+      "conditional": {
+        "hide": "=not(expenseType = \"travel\")"
+},
+      "disabled": true
+    },
+    {
+      "label": "Custom expense type",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1tqe6ut",
+        "columns": null
+      },
+      "id": "Field_03ow051",
+      "key": "customExpenseType",
+      "conditional": {
+        "hide": "=not(expenseType = \"custom\")"
+},
+      "disabled": true
+    },
+    {
+      "label": "Expense purpose",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0ar8roa",
+        "columns": null
+      },
+      "id": "Field_136skvr",
+      "key": "expensePurpose",
+      "validate": {
+        "required": false
+      },
+      "description": "Describe the purpose of your expense. A good description increases the likelihood of quick approval.",
+      "disabled": true
+    },
+    {
+      "label": "Expense amount",
+      "type": "number",
+      "layout": {
+        "row": "Row_0jjom6t",
+        "columns": 8
+      },
+      "id": "Field_189ka5c",
+      "key": "expenseAmount",
+      "appearance": {
+        "prefixAdorner": "USD"
+      },
+      "validate": {
+        "required": false
+      },
+      "decimalDigits": 2,
+      "increment": "0.5",
+      "disabled": true
+    },
+    {
+      "text": "---",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1nymijp",
+        "columns": null
+      },
+      "id": "Field_19s421w"
+    },
+    {
+      "text": "### Approval",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_00khae6",
+        "columns": null
+      },
+      "id": "Field_1ptafde"
+    },
+    {
+      "values": [
+        {
+          "label": "I approve the expense claim.",
+          "value": "approved"
+        },
+        {
+          "label": "I reject the expense claim.",
+          "value": "rejected"
+        }
+      ],
+      "label": "Approval outcome",
+      "type": "radio",
+      "layout": {
+        "row": "Row_0nr03f7",
+        "columns": null
+      },
+      "id": "Field_0qcvtwe",
+      "key": "reviewOutcome",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Rejection reason",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0ehktzg",
+        "columns": null
+      },
+      "id": "Field_1l1k9fd",
+      "key": "rejectionReason",
+      "conditional": {
+        "hide": "=not(reviewOutcome = \"rejected\")"
+},
+      "description": "Provide a reason for rejecting this claim.",
+      "validate": {
+        "minLength": 10
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_ExpenseClaimReview",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.2.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.12.0-rc.0"
+  },
+  "schemaVersion": 9
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:laneSet id="LaneSet_1wg44px">
+      <bpmn:lane id="Lane_Employee" name="Admin">
+        <bpmn:flowNodeRef>Gateway_14d04lk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_CreateExpenseReport</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0ygm1ah</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0uezto9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1039vk8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0d1h492</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0jyjbt1</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Manager" name="Member">
+        <bpmn:flowNodeRef>Gateway_015arfz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_19rszl4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_13wa4li</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1q1tjo6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0kh4562</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1bgdpwf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1lo3bui</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0g83ddk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1dgzcje</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0nrpakk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1ewiy4c</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0fqkh9t</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0wr7tjh</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1wbl2ae</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0f0vcib</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0l6e5rw</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1lobe7r</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0gr7twl</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0z9vks5</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Finance" name="Third Parties">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0awwj9p</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0qllc67</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1jjowqp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1uwartk</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="Flow_1e0nej8" name="Yes" sourceRef="Gateway_0nrpakk" targetRef="Activity_0qllc67">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=memberApproved = "Approved"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ulab25" name="Yes" sourceRef="Gateway_0awwj9p" targetRef="Activity_0d1h492">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=thirdPartyApproved = "Approved"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_14d04lk" name="Decides to customize">
+      <bpmn:incoming>Flow_1y6av3r</bpmn:incoming>
+      <bpmn:outgoing>Flow_1krsy40</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1nk2doo</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1krsy40" name="Yes" sourceRef="Gateway_14d04lk" targetRef="Activity_CreateExpenseReport">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=yes</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1y6av3r" sourceRef="Activity_1uwartk" targetRef="Gateway_14d04lk" />
+    <bpmn:userTask id="Activity_CreateExpenseReport" name="Customise Rules">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0jijmee" />
+        <zeebe:properties>
+          <zeebe:property name="camundaModeler:exampleOutputJson" value="{&#10;  &#34;firstName&#34;: &#34;John&#34;,&#10;  &#34;lastName&#34;: &#34;Doe&#34;,&#10;  &#34;email&#34;: &#34;john.doe@camunda.com&#34;,&#10;  &#34;department&#34;: &#34;finance&#34;,&#10;  &#34;supervisorEmail&#34;: &#34;jane.doe@camunda.com&#34;,&#10;  &#34;expenseDate&#34;: &#34;2023-06-09&#34;,&#10;  &#34;expenseType&#34;: &#34;travel&#34;,&#10;  &#34;travelStart&#34;: &#34;2023-06-06&#34;,&#10;  &#34;travelEnd&#34;: &#34;2023-06-09&#34;,&#10;  &#34;travelLocation&#34;: &#34;Berlin&#34;,&#10;  &#34;expensePurpose&#34;: &#34;Travel to Berlin Office&#34;,&#10;  &#34;expenseAmount&#34;: 650&#10;}" />
+        </zeebe:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1krsy40</bpmn:incoming>
+      <bpmn:outgoing>Flow_13illkr</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1g10ui0" sourceRef="StartEvent_1" targetRef="Activity_1uwartk" />
+    <bpmn:sequenceFlow id="Flow_0wrw3lp" sourceRef="Activity_0qllc67" targetRef="Gateway_0awwj9p" />
+    <bpmn:sequenceFlow id="Flow_1nonf80" name="No" sourceRef="Gateway_0awwj9p" targetRef="Event_1jjowqp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=thirdPartyApproved = "Rejected"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_13illkr" sourceRef="Activity_CreateExpenseReport" targetRef="Event_13wa4li" />
+    <bpmn:sequenceFlow id="Flow_1nk2doo" name="No" sourceRef="Gateway_14d04lk" targetRef="Event_13wa4li">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=no</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_107xveh" sourceRef="Event_13wa4li" targetRef="Activity_19rszl4" />
+    <bpmn:sequenceFlow id="Flow_1an1m91" sourceRef="Activity_19rszl4" targetRef="Gateway_015arfz" />
+    <bpmn:sequenceFlow id="Flow_0qksbkm" sourceRef="Gateway_1bgdpwf" targetRef="Activity_0d1h492">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=memberApproved = "Approved"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1y6jrs8" sourceRef="Gateway_015arfz" targetRef="Activity_0l6e5rw">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=comment</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0q0n1st" sourceRef="Gateway_015arfz" targetRef="Activity_0f0vcib">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=vote</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0t18nae" sourceRef="Gateway_015arfz" targetRef="Activity_1lobe7r">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=submitOffer</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ljmyk9" sourceRef="Activity_0l6e5rw" targetRef="Event_1q1tjo6" />
+    <bpmn:sequenceFlow id="Flow_10j0uyn" sourceRef="Activity_0f0vcib" targetRef="Event_1q1tjo6" />
+    <bpmn:sequenceFlow id="Flow_1tcadnw" sourceRef="Activity_1lobe7r" targetRef="Event_1q1tjo6" />
+    <bpmn:sequenceFlow id="Flow_0xoous6" sourceRef="Activity_0kh4562" targetRef="Gateway_1bgdpwf" />
+    <bpmn:sequenceFlow id="Flow_0d5g4jj" name="No" sourceRef="Gateway_1bgdpwf" targetRef="Gateway_1lo3bui">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=memberApproved = "Rejected"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0c7uqtw" name="No" sourceRef="Gateway_1lo3bui" targetRef="Event_0g83ddk">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=offers.length &lt; 1</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1gxvru0" name="Yes" sourceRef="Gateway_1lo3bui" targetRef="Activity_0fqkh9t">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=offers.length &gt; 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_14fx4ss" sourceRef="Event_1q1tjo6" targetRef="Activity_0kh4562" />
+    <bpmn:exclusiveGateway id="Gateway_0ygm1ah" name="Admin Approved?">
+      <bpmn:incoming>Flow_0xxdmnl</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xucdwp</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0f88ae6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_0uezto9">
+      <bpmn:incoming>Flow_0xucdwp</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_1039vk8">
+      <bpmn:incoming>Flow_1e3cssf</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0xxdmnl" sourceRef="Activity_0d1h492" targetRef="Gateway_0ygm1ah" />
+    <bpmn:sequenceFlow id="Flow_0xucdwp" name="No" sourceRef="Gateway_0ygm1ah" targetRef="Event_0uezto9">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=adminApproved = "Rejected"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0f88ae6" name="Yes" sourceRef="Gateway_0ygm1ah" targetRef="Activity_0jyjbt1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=adminApproved = "Approved"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1e3cssf" sourceRef="Activity_0jyjbt1" targetRef="Event_1039vk8" />
+    <bpmn:inclusiveGateway id="Gateway_015arfz">
+      <bpmn:incoming>Flow_1an1m91</bpmn:incoming>
+      <bpmn:outgoing>Flow_1y6jrs8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0q0n1st</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0t18nae</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:userTask id="Activity_19rszl4" name="Views request">
+      <bpmn:incoming>Flow_107xveh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1an1m91</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="Event_13wa4li">
+      <bpmn:incoming>Flow_13illkr</bpmn:incoming>
+      <bpmn:incoming>Flow_1nk2doo</bpmn:incoming>
+      <bpmn:outgoing>Flow_107xveh</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1q6wneb">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P1D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Event_1q1tjo6">
+      <bpmn:incoming>Flow_0ljmyk9</bpmn:incoming>
+      <bpmn:incoming>Flow_10j0uyn</bpmn:incoming>
+      <bpmn:incoming>Flow_1tcadnw</bpmn:incoming>
+      <bpmn:outgoing>Flow_14fx4ss</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0m7z60l">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P7D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="Activity_0kh4562" name="Calculate request result">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="call-backend" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_14fx4ss</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xoous6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1bgdpwf" name="Members Approve of Request?">
+      <bpmn:incoming>Flow_0xoous6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qksbkm</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0d5g4jj</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_1lo3bui">
+      <bpmn:incoming>Flow_0d5g4jj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0c7uqtw</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1gxvru0</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_0d1h492" name="Approve or Reject Policy">
+      <bpmn:incoming>Flow_0qksbkm</bpmn:incoming>
+      <bpmn:incoming>Flow_0ulab25</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xxdmnl</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0g83ddk">
+      <bpmn:incoming>Flow_0c7uqtw</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_1dgzcje" name="Calculate offer result">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="call-backend" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07xtjkm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0syf1oz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0nrpakk">
+      <bpmn:incoming>Flow_0syf1oz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e0nej8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_07t03sp</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_1ewiy4c">
+      <bpmn:incoming>Flow_07t03sp</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0syf1oz" sourceRef="Activity_1dgzcje" targetRef="Gateway_0nrpakk" />
+    <bpmn:sequenceFlow id="Flow_07t03sp" name="No" sourceRef="Gateway_0nrpakk" targetRef="Event_1ewiy4c">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=membersApproved = "Rejected"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="Activity_0fqkh9t" name="View offer(s)">
+      <bpmn:incoming>Flow_1gxvru0</bpmn:incoming>
+      <bpmn:outgoing>Flow_116hmok</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:inclusiveGateway id="Gateway_0wr7tjh">
+      <bpmn:incoming>Flow_116hmok</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s4yd3e</bpmn:outgoing>
+      <bpmn:outgoing>Flow_05so2mn</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_116hmok" sourceRef="Activity_0fqkh9t" targetRef="Gateway_0wr7tjh" />
+    <bpmn:sequenceFlow id="Flow_0s4yd3e" sourceRef="Gateway_0wr7tjh" targetRef="Activity_0gr7twl">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=comment</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_05so2mn" sourceRef="Gateway_0wr7tjh" targetRef="Activity_0z9vks5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=rankVote</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:intermediateCatchEvent id="Event_1wbl2ae">
+      <bpmn:incoming>Flow_0d9h327</bpmn:incoming>
+      <bpmn:incoming>Flow_17yxnfw</bpmn:incoming>
+      <bpmn:outgoing>Flow_07xtjkm</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_11oaxt3">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P7D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0d9h327" sourceRef="Activity_0z9vks5" targetRef="Event_1wbl2ae" />
+    <bpmn:sequenceFlow id="Flow_17yxnfw" sourceRef="Activity_0gr7twl" targetRef="Event_1wbl2ae" />
+    <bpmn:sequenceFlow id="Flow_07xtjkm" sourceRef="Event_1wbl2ae" targetRef="Activity_1dgzcje" />
+    <bpmn:userTask id="Activity_0f0vcib" name="Upvote or downvote">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_0q0n1st</bpmn:incoming>
+      <bpmn:outgoing>Flow_10j0uyn</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0l6e5rw" name="Comment on request">
+      <bpmn:incoming>Flow_1y6jrs8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ljmyk9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1lobe7r" name="Submit offer">
+      <bpmn:incoming>Flow_0t18nae</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tcadnw</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1jjowqp">
+      <bpmn:incoming>Flow_1nonf80</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_0qllc67" name="Approve or Reject Offer">
+      <bpmn:incoming>Flow_1e0nej8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wrw3lp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0awwj9p" name="Third Party Approved?">
+      <bpmn:incoming>Flow_0wrw3lp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nonf80</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ulab25</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1g10ui0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_0jyjbt1" name="Grant Access To Data">
+      <bpmn:incoming>Flow_0f88ae6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e3cssf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_0gr7twl" name="Comment on offer(s)">
+      <bpmn:incoming>Flow_0s4yd3e</bpmn:incoming>
+      <bpmn:outgoing>Flow_17yxnfw</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0z9vks5" name="Rank offer(s) and rejection option">
+      <bpmn:incoming>Flow_05so2mn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0d9h327</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1uwartk" name="Submit request">
+      <bpmn:incoming>Flow_1g10ui0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1y6av3r</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DecisionProcess">
+      <bpmndi:BPMNShape id="Participant_15xrhcp_di" bpmnElement="Participant_ExpenseReimbursement" isHorizontal="true">
+        <dc:Bounds x="155" y="85" width="2075" height="865" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0rt1o8j_di" bpmnElement="Lane_Finance" isHorizontal="true">
+        <dc:Bounds x="185" y="710" width="2045" height="240" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1bmavi2_di" bpmnElement="Lane_Manager" isHorizontal="true">
+        <dc:Bounds x="185" y="325" width="2045" height="385" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0x1gxt3_di" bpmnElement="Lane_Employee" isHorizontal="true">
+        <dc:Bounds x="185" y="85" width="2045" height="240" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_14d04lk_di" bpmnElement="Gateway_14d04lk" isMarkerVisible="true">
+        <dc:Bounds x="285" y="180" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="284" y="150" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_090loid_di" bpmnElement="Activity_CreateExpenseReport">
+        <dc:Bounds x="390" y="165" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ygm1ah_di" bpmnElement="Gateway_0ygm1ah" isMarkerVisible="true">
+        <dc:Bounds x="1105" y="140" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1087" y="110" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0uezto9_di" bpmnElement="Event_0uezto9">
+        <dc:Bounds x="1332" y="147" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1039vk8_di" bpmnElement="Event_1039vk8">
+        <dc:Bounds x="692" y="147" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_08msy4t" bpmnElement="Gateway_015arfz">
+        <dc:Bounds x="535" y="495" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0meukv1" bpmnElement="Activity_19rszl4">
+        <dc:Bounds x="390" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_13wa4li_di" bpmnElement="Event_13wa4li">
+        <dc:Bounds x="422" y="362" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1kvbuch_di" bpmnElement="Event_1q1tjo6">
+        <dc:Bounds x="832" y="502" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0txtza9_di" bpmnElement="Activity_0kh4562">
+        <dc:Bounds x="920" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1bgdpwf_di" bpmnElement="Gateway_1bgdpwf" isMarkerVisible="true">
+        <dc:Bounds x="1105" y="495" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1085" y="552" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1lo3bui_di" bpmnElement="Gateway_1lo3bui" isMarkerVisible="true">
+        <dc:Bounds x="1235" y="495" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0d1h492_di" bpmnElement="Activity_0d1h492">
+        <dc:Bounds x="1080" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0g83ddk_di" bpmnElement="Event_0g83ddk">
+        <dc:Bounds x="1242" y="382" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ok3kmm_di" bpmnElement="Activity_1dgzcje">
+        <dc:Bounds x="1940" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0nrpakk_di" bpmnElement="Gateway_0nrpakk" isMarkerVisible="true">
+        <dc:Bounds x="2115" y="495" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_01emm4g" bpmnElement="Event_1ewiy4c">
+        <dc:Bounds x="2122" y="382" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1v1pg60_di" bpmnElement="Activity_0fqkh9t">
+        <dc:Bounds x="1360" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0wr7tjh_di" bpmnElement="Gateway_0wr7tjh">
+        <dc:Bounds x="1535" y="495" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0kyhzqx" bpmnElement="Event_1wbl2ae">
+        <dc:Bounds x="1832" y="502" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0hhukyl_di" bpmnElement="Activity_0f0vcib">
+        <dc:Bounds x="640" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0att8xs_di" bpmnElement="Activity_0l6e5rw">
+        <dc:Bounds x="640" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1c0v8ao_di" bpmnElement="Activity_1lobe7r">
+        <dc:Bounds x="640" y="590" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1jjowqp_di" bpmnElement="Event_1jjowqp">
+        <dc:Bounds x="1042" y="812" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qllc67_di" bpmnElement="Activity_0qllc67">
+        <dc:Bounds x="1340" y="790" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0awwj9p_di" bpmnElement="Gateway_0awwj9p" isMarkerVisible="true">
+        <dc:Bounds x="1165" y="805" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1163" y="768" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wv91m0_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="282" y="812" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="276" y="855" width="50" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ssgx4e_di" bpmnElement="Activity_0jyjbt1">
+        <dc:Bounds x="830" y="125" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0l1sk92_di" bpmnElement="Activity_0gr7twl">
+        <dc:Bounds x="1640" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12cqql2_di" bpmnElement="Activity_0z9vks5">
+        <dc:Bounds x="1640" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qyuicv_di" bpmnElement="Activity_1uwartk">
+        <dc:Bounds x="390" y="790" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1e0nej8_di" bpmnElement="Flow_1e0nej8">
+        <di:waypoint x="2140" y="545" />
+        <di:waypoint x="2140" y="830" />
+        <di:waypoint x="1440" y="830" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2146" y="688" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ulab25_di" bpmnElement="Flow_0ulab25">
+        <di:waypoint x="1190" y="855" />
+        <di:waypoint x="1190" y="900" />
+        <di:waypoint x="2190" y="900" />
+        <di:waypoint x="2190" y="260" />
+        <di:waypoint x="1180" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1581" y="922" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1krsy40_di" bpmnElement="Flow_1krsy40">
+        <di:waypoint x="335" y="205" />
+        <di:waypoint x="390" y="205" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="354" y="187" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y6av3r_di" bpmnElement="Flow_1y6av3r">
+        <di:waypoint x="440" y="790" />
+        <di:waypoint x="440" y="760" />
+        <di:waypoint x="250" y="760" />
+        <di:waypoint x="250" y="205" />
+        <di:waypoint x="285" y="205" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g10ui0_di" bpmnElement="Flow_1g10ui0">
+        <di:waypoint x="318" y="830" />
+        <di:waypoint x="390" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wrw3lp_di" bpmnElement="Flow_0wrw3lp">
+        <di:waypoint x="1340" y="830" />
+        <di:waypoint x="1215" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nonf80_di" bpmnElement="Flow_1nonf80">
+        <di:waypoint x="1165" y="830" />
+        <di:waypoint x="1078" y="830" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1114" y="812" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13illkr_di" bpmnElement="Flow_13illkr">
+        <di:waypoint x="440" y="245" />
+        <di:waypoint x="440" y="362" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nk2doo_di" bpmnElement="Flow_1nk2doo">
+        <di:waypoint x="310" y="230" />
+        <di:waypoint x="310" y="380" />
+        <di:waypoint x="422" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="318" y="302" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_107xveh_di" bpmnElement="Flow_107xveh">
+        <di:waypoint x="440" y="398" />
+        <di:waypoint x="440" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1an1m91_di" bpmnElement="Flow_1an1m91">
+        <di:waypoint x="490" y="520" />
+        <di:waypoint x="535" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qksbkm_di" bpmnElement="Flow_0qksbkm">
+        <di:waypoint x="1130" y="495" />
+        <di:waypoint x="1130" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1104" y="231" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y6jrs8_di" bpmnElement="Flow_1y6jrs8">
+        <di:waypoint x="585" y="520" />
+        <di:waypoint x="640" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0q0n1st_di" bpmnElement="Flow_0q0n1st">
+        <di:waypoint x="560" y="495" />
+        <di:waypoint x="560" y="410" />
+        <di:waypoint x="640" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t18nae_di" bpmnElement="Flow_0t18nae">
+        <di:waypoint x="560" y="545" />
+        <di:waypoint x="560" y="630" />
+        <di:waypoint x="640" y="630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ljmyk9_di" bpmnElement="Flow_0ljmyk9">
+        <di:waypoint x="740" y="520" />
+        <di:waypoint x="832" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10j0uyn_di" bpmnElement="Flow_10j0uyn">
+        <di:waypoint x="740" y="410" />
+        <di:waypoint x="796" y="410" />
+        <di:waypoint x="796" y="520" />
+        <di:waypoint x="832" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tcadnw_di" bpmnElement="Flow_1tcadnw">
+        <di:waypoint x="740" y="630" />
+        <di:waypoint x="796" y="630" />
+        <di:waypoint x="796" y="520" />
+        <di:waypoint x="832" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xoous6_di" bpmnElement="Flow_0xoous6">
+        <di:waypoint x="1020" y="520" />
+        <di:waypoint x="1105" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0d5g4jj_di" bpmnElement="Flow_0d5g4jj">
+        <di:waypoint x="1155" y="520" />
+        <di:waypoint x="1235" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1189" y="502" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c7uqtw_di" bpmnElement="Flow_0c7uqtw">
+        <di:waypoint x="1260" y="495" />
+        <di:waypoint x="1260" y="418" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1268" y="462" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gxvru0_di" bpmnElement="Flow_1gxvru0">
+        <di:waypoint x="1285" y="520" />
+        <di:waypoint x="1360" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1314" y="502" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14fx4ss_di" bpmnElement="Flow_14fx4ss">
+        <di:waypoint x="868" y="520" />
+        <di:waypoint x="920" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xxdmnl_di" bpmnElement="Flow_0xxdmnl">
+        <di:waypoint x="1130" y="220" />
+        <di:waypoint x="1130" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xucdwp_di" bpmnElement="Flow_0xucdwp">
+        <di:waypoint x="1155" y="165" />
+        <di:waypoint x="1332" y="165" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1236" y="147" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f88ae6_di" bpmnElement="Flow_0f88ae6">
+        <di:waypoint x="1105" y="165" />
+        <di:waypoint x="930" y="165" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1009" y="147" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e3cssf_di" bpmnElement="Flow_1e3cssf">
+        <di:waypoint x="830" y="165" />
+        <di:waypoint x="728" y="165" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0syf1oz_di" bpmnElement="Flow_0syf1oz">
+        <di:waypoint x="2040" y="520" />
+        <di:waypoint x="2115" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07t03sp_di" bpmnElement="Flow_07t03sp">
+        <di:waypoint x="2140" y="495" />
+        <di:waypoint x="2140" y="418" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2148" y="462" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_116hmok_di" bpmnElement="Flow_116hmok">
+        <di:waypoint x="1460" y="520" />
+        <di:waypoint x="1535" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s4yd3e_di" bpmnElement="Flow_0s4yd3e">
+        <di:waypoint x="1585" y="520" />
+        <di:waypoint x="1640" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05so2mn_di" bpmnElement="Flow_05so2mn">
+        <di:waypoint x="1560" y="495" />
+        <di:waypoint x="1560" y="410" />
+        <di:waypoint x="1640" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0d9h327_di" bpmnElement="Flow_0d9h327">
+        <di:waypoint x="1740" y="410" />
+        <di:waypoint x="1796" y="410" />
+        <di:waypoint x="1796" y="520" />
+        <di:waypoint x="1832" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17yxnfw_di" bpmnElement="Flow_17yxnfw">
+        <di:waypoint x="1740" y="520" />
+        <di:waypoint x="1832" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07xtjkm_di" bpmnElement="Flow_07xtjkm">
+        <di:waypoint x="1868" y="520" />
+        <di:waypoint x="1940" y="520" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
